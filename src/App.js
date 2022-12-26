@@ -1,9 +1,10 @@
 import React from "react";
+import Registration from "./pages/registration/Registration";
 
 function App() {
   return (
     <>
-      <h1>Hi</h1>
+      <Registration />
     </>
   );
 }
