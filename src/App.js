@@ -20,9 +20,7 @@ let router = createBrowserRouter(
 function App() {
   return (
     <>
-      <RouterProvider router={router}>
-        <Registration />
-      </RouterProvider>
+      <RouterProvider router={router} />
     </>
   );
 }
