@@ -7,12 +7,13 @@ import Image from "../../components/Image";
 import CustomButton from "../../components/CustomButton";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
+import AuthenticationLink from "../../components/AuthenticationLink";
 import "./registration.css";
 
 const CommonButton = styled(Button)({
   color: "#fff",
   borderRadius: "86px",
-  boxShadow: "none",
+  // boxShadow: "none",
   textTransform: "none",
   lineHeight: "24px",
   padding: "20px 0px",
@@ -76,7 +77,20 @@ const Registration = () => {
                   variant="outlined"
                 />
 
-                <CustomButton buttonName={CommonButton} title="Sign up" />
+                <CustomButton
+                  className="reg__button"
+                  buttonName={CommonButton}
+                  title="Sign up"
+                />
+
+                <AuthenticationLink
+                  className="auth__link__area"
+                  href="/login"
+                  textTitle="Already  have an account ?"
+                  textClassName="auth__text"
+                  linkTitle="Sign In"
+                  linkClassName="auth__link"
+                />
               </div>
             </div>
           </div>

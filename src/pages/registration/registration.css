@@ -39,11 +39,35 @@
   width: 368px;
   display: flex;
   flex-direction: column;
-  row-gap: 34.4px;
+  /* row-gap: 34.4px; */
 }
 
 .registration__input__item {
   width: 100%;
+  margin-bottom: 34.4px !important;
+}
+
+.reg__button {
+  margin-top: 20px !important;
+}
+
+.auth__link__area {
+  margin-top: 35px;
+  font-family: "Open Sans", sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.auth__text {
+  color: #03014c;
+  font-weight: 400;
+  margin-top: 0;
+}
+.auth__link {
+  color: #ea6c00;
+  font-weight: 700;
+  margin-top: 0;
+  font-weight: 700;
 }
 /* ====================================================================
                        Registration Left  End
