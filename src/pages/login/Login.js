@@ -11,7 +11,48 @@ import AuthenticationLink from "../../components/AuthenticationLink";
 import { Link } from "react-router-dom";
 import "./login.css";
 
-const CommonButton = styled(Button)({
+import TextField from "@mui/material/TextField";
+
+const LoginTextField = styled(TextField)({
+  ".css-1c2i806-MuiFormLabel-root-MuiInputLabel-root": {
+    top: "10px",
+  },
+  "& .css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root": {
+    top: "17px",
+  },
+  "& .css-whebh7-MuiInputBase-root-MuiInput-root:before": {
+    borderBottom: "2px solid #CDCCDB",
+  },
+  "& .css-whebh7-MuiInputBase-root-MuiInput-root:hover:not(.Mui-disabled, .Mui-error):before":
+    {
+      borderBottom: "2px solid #dfe6e9",
+    },
+  "& .MuiFormLabel-root": {
+    fontFamily: "'Open Sans', sans-serif",
+    fontSize: "14px",
+    fontWeight: "400",
+    color: "#585D8E",
+  },
+  "& .MuiInputBase-root": {
+    height: "70px",
+    borderRadius: 10,
+  },
+  "& .MuiInputBase-input": {
+    fontFamily: "'Open Sans', sans-serif",
+    fontSize: "20px",
+    fontWeight: "600",
+    color: "#11175D",
+    textAlign: "center",
+  },
+  "& label.Mui-focused": {
+    color: "#585D8E",
+  },
+  "& .MuiInput-underline:after": {
+    borderBottomColor: "#B8B9CE",
+  },
+});
+
+const LoginButton = styled(Button)({
   color: "#fff",
   borderRadius: "8.71px",
   textTransform: "none",
@@ -71,17 +112,23 @@ const Login = () => {
                   className="registration__input__item"
                   label="Email Address"
                   variant="standard"
+                  fieldName={LoginTextField}
+                  type="email"
+                  size="normal"
                 />
 
                 <InputBox
                   className="registration__input__item"
                   label="Password"
                   variant="standard"
+                  fieldName={LoginTextField}
+                  type="password"
+                  size="normal"
                 />
 
                 <CustomButton
                   className="reg__button"
-                  buttonName={CommonButton}
+                  buttonName={LoginButton}
                   title="Login to Continue"
                 />
 

@@ -10,10 +10,56 @@ import Button from "@mui/material/Button";
 import AuthenticationLink from "../../components/AuthenticationLink";
 import "./registration.css";
 
+import TextField from "@mui/material/TextField";
+
+const MyTextField = styled(TextField)({
+  "& .css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root": {
+    top: "17px",
+    transform: "translate(17px, 15px) scale(1) !important",
+  },
+  "& .css-1sumxir-MuiFormLabel-root-MuiInputLabel-root": {
+    transform: "translate(17px, -9px) scale(.8) !important",
+  },
+  "& .MuiFormLabel-root": {
+    fontFamily: "'Nunito', sans-serif",
+    fontSize: "14px",
+    fontWeight: "600",
+    color: "#585D8E",
+  },
+  "& .MuiInputBase-root": {
+    height: "81.7px",
+    borderRadius: 10,
+  },
+  "& .MuiInputBase-input": {
+    fontFamily: "'Nunito', sans-serif",
+    fontSize: "20px",
+    fontWeight: "600",
+    color: "#11175D",
+    textAlign: "center",
+  },
+  "& label.Mui-focused": {
+    color: "#585D8E",
+  },
+  "& .MuiInput-underline:after": {
+    borderBottomColor: "green",
+  },
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: "#B8B9CE",
+      borderWidth: "2px",
+    },
+    "&:hover fieldset": {
+      borderColor: "#dfe6e9",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "#B8B9CE",
+    },
+  },
+});
+
 const CommonButton = styled(Button)({
   color: "#fff",
   borderRadius: "86px",
-  // boxShadow: "none",
   textTransform: "none",
   lineHeight: "24px",
   padding: "20px 0px",
@@ -65,16 +111,25 @@ const Registration = () => {
                   className="registration__input__item"
                   label="Email Address"
                   variant="outlined"
+                  fieldName={MyTextField}
+                  type="email"
+                  size="normal"
                 />
                 <InputBox
                   className="registration__input__item"
                   label="Full Name"
                   variant="outlined"
+                  fieldName={MyTextField}
+                  type="text"
+                  size="normal"
                 />
                 <InputBox
                   className="registration__input__item"
                   label="Password"
                   variant="outlined"
+                  fieldName={MyTextField}
+                  type="password"
+                  size="normal"
                 />
 
                 <CustomButton
