@@ -1,14 +1,14 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Heading from "../../components/Heading";
 import InputBox from "../../components/InputBox";
-import Grid from "@mui/material/Grid";
 import Image from "../../components/Image";
+import AuthenticationLink from "../../components/AuthenticationLink";
 import CustomButton from "../../components/CustomButton";
+import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import AuthenticationLink from "../../components/AuthenticationLink";
-import { Link } from "react-router-dom";
 import "./login.css";
 
 import TextField from "@mui/material/TextField";
@@ -130,6 +130,7 @@ const Login = () => {
                   className="reg__button"
                   buttonName={LoginButton}
                   title="Login to Continue"
+                  type="submit"
                 />
 
                 <AuthenticationLink

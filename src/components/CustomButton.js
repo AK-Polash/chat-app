@@ -5,6 +5,7 @@ const CustomButton = (props) => {
     <props.buttonName
       className={props.className}
       variant="contained"
+      type={props.type}
       disableRipple
     >
       {props.title}

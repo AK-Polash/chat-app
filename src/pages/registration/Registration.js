@@ -2,15 +2,14 @@ import React from "react";
 import Header from "../../components/Header";
 import Heading from "../../components/Heading";
 import InputBox from "../../components/InputBox";
-import Grid from "@mui/material/Grid";
 import Image from "../../components/Image";
-import CustomButton from "../../components/CustomButton";
+import AuthenticationLink from "../../components/AuthenticationLink";
+import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import AuthenticationLink from "../../components/AuthenticationLink";
-import "./registration.css";
-
 import TextField from "@mui/material/TextField";
+import CustomButton from "../../components/CustomButton";
+import "./registration.css";
 
 const MyTextField = styled(TextField)({
   "& .css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root": {
@@ -136,6 +135,7 @@ const Registration = () => {
                   className="reg__button"
                   buttonName={CommonButton}
                   title="Sign up"
+                  type="submit"
                 />
 
                 <AuthenticationLink
