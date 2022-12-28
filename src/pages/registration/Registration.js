@@ -9,6 +9,7 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import CustomButton from "../../components/CustomButton";
+import Alert from "@mui/material/Alert";
 import "./registration.css";
 
 const MyTextField = styled(TextField)({
@@ -92,20 +93,28 @@ const Registration = () => {
     password: "",
   });
 
-  console.log(formData);
-
   let handleForm = (e) => {
-    if (e.target.name == "email") {
-      setFormData({ ...formData, email: e.target.value });
-    } else if (e.target.name == "fullName") {
-      setFormData({ ...formData, fullName: e.target.value });
-    } else if (e.target.name == "password") {
-      setFormData({ ...formData, password: e.target.value });
-    }
+    let { name, value } = e.target;
+
+    setFormData({ ...formData, [name]: value });
+
+    setErrorMsg({ emailError: "", fullNameError: "", passwordError: "" });
   };
 
+  let [errorMsg, setErrorMsg] = useState({
+    emailError: "",
+    fullNameError: "",
+    passwordError: "",
+  });
+
   let handleSubmit = () => {
-    console.log("hi");
+    if (!formData.email) {
+      setErrorMsg({ ...errorMsg, emailError: "Email Required" });
+    } else if (!formData.fullName) {
+      setErrorMsg({ ...errorMsg, fullNameError: "Full Name Required" });
+    } else if (!formData.password) {
+      setErrorMsg({ ...errorMsg, passwordError: "Password Required" });
+    }
   };
 
   return (
@@ -138,6 +147,17 @@ const Registration = () => {
                   name="email"
                   onChange={handleForm}
                 />
+
+                {errorMsg.emailError && (
+                  <Alert
+                    className="error__alert__message"
+                    variant="filled"
+                    severity="error"
+                  >
+                    {errorMsg.emailError}
+                  </Alert>
+                )}
+
                 <InputBox
                   className="registration__input__item"
                   label="Full Name"
@@ -148,6 +168,17 @@ const Registration = () => {
                   name="fullName"
                   onChange={handleForm}
                 />
+
+                {errorMsg.fullNameError && (
+                  <Alert
+                    className="error__alert__message"
+                    variant="filled"
+                    severity="error"
+                  >
+                    {errorMsg.fullNameError}
+                  </Alert>
+                )}
+
                 <InputBox
                   className="registration__input__item"
                   label="Password"
@@ -158,6 +189,16 @@ const Registration = () => {
                   name="password"
                   onChange={handleForm}
                 />
+
+                {errorMsg.passwordError && (
+                  <Alert
+                    className="error__alert__message"
+                    variant="filled"
+                    severity="error"
+                  >
+                    {errorMsg.passwordError}
+                  </Alert>
+                )}
 
                 <CustomButton
                   className="reg__button"
