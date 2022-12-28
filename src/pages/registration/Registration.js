@@ -137,68 +137,74 @@ const Registration = () => {
               </div>
 
               <div className="input__container">
-                <InputBox
-                  className="registration__input__item"
-                  label="Email Address"
-                  variant="outlined"
-                  fieldName={MyTextField}
-                  type="email"
-                  size="normal"
-                  name="email"
-                  onChange={handleForm}
-                />
+                <div className="input__wrapper">
+                  <InputBox
+                    className="registration__input__item"
+                    label="Email Address"
+                    variant="outlined"
+                    fieldName={MyTextField}
+                    type="email"
+                    size="normal"
+                    name="email"
+                    onChange={handleForm}
+                  />
 
-                {errorMsg.emailError && (
-                  <Alert
-                    className="error__alert__message"
-                    variant="filled"
-                    severity="error"
-                  >
-                    {errorMsg.emailError}
-                  </Alert>
-                )}
+                  {errorMsg.emailError && (
+                    <Alert
+                      className="error__alert__message"
+                      variant="filled"
+                      severity="error"
+                    >
+                      {errorMsg.emailError}
+                    </Alert>
+                  )}
+                </div>
 
-                <InputBox
-                  className="registration__input__item"
-                  label="Full Name"
-                  variant="outlined"
-                  fieldName={MyTextField}
-                  type="text"
-                  size="normal"
-                  name="fullName"
-                  onChange={handleForm}
-                />
+                <div className="input__wrapper">
+                  <InputBox
+                    className="registration__input__item"
+                    label="Full Name"
+                    variant="outlined"
+                    fieldName={MyTextField}
+                    type="text"
+                    size="normal"
+                    name="fullName"
+                    onChange={handleForm}
+                  />
 
-                {errorMsg.fullNameError && (
-                  <Alert
-                    className="error__alert__message"
-                    variant="filled"
-                    severity="error"
-                  >
-                    {errorMsg.fullNameError}
-                  </Alert>
-                )}
+                  {errorMsg.fullNameError && (
+                    <Alert
+                      className="error__alert__message"
+                      variant="filled"
+                      severity="error"
+                    >
+                      {errorMsg.fullNameError}
+                    </Alert>
+                  )}
+                </div>
 
-                <InputBox
-                  className="registration__input__item"
-                  label="Password"
-                  variant="outlined"
-                  fieldName={MyTextField}
-                  type="password"
-                  size="normal"
-                  name="password"
-                  onChange={handleForm}
-                />
+                <div className="input__wrapper">
+                  <InputBox
+                    className="registration__input__item"
+                    label="Password"
+                    variant="outlined"
+                    fieldName={MyTextField}
+                    type="password"
+                    size="normal"
+                    name="password"
+                    onChange={handleForm}
+                  />
 
-                {errorMsg.passwordError && (
-                  <Alert
-                    className="error__alert__message"
-                    variant="filled"
-                    severity="error"
-                  >
-                    {errorMsg.passwordError}
-                  </Alert>
-                )}
+                  {errorMsg.passwordError && (
+                    <Alert
+                      className="error__alert__message"
+                      variant="filled"
+                      severity="error"
+                    >
+                      {errorMsg.passwordError}
+                    </Alert>
+                  )}
+                </div>
 
                 <CustomButton
                   className="reg__button"

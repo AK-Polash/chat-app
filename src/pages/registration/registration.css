@@ -70,9 +70,22 @@
   font-weight: 700;
 }
 
+.input__wrapper {
+  position: relative;
+  padding: 8px 0;
+}
+
 .error__alert__message {
-  margin-top: -20px;
-  margin-bottom: 16px;
+  font-size: 12px !important;
+  padding: 0 12px !important;
+  align-items: center !important;
+  width: 100%;
+  position: absolute;
+  top: 95px;
+  left: 0;
+}
+.error__alert__message svg {
+  width: 16px !important;
 }
 /* ====================================================================
                        Registration Left  End
