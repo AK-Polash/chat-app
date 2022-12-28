@@ -10,6 +10,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import CustomButton from "../../components/CustomButton";
 import Alert from "@mui/material/Alert";
+import { AiFillEye } from "react-icons/ai";
 import "./registration.css";
 
 const MyTextField = styled(TextField)({
@@ -29,6 +30,7 @@ const MyTextField = styled(TextField)({
   "& .MuiInputBase-root": {
     height: "81.7px",
     borderRadius: 10,
+    padding: "0 27px",
   },
   "& .MuiInputBase-input": {
     fontFamily: "'Nunito', sans-serif",
@@ -194,6 +196,7 @@ const Registration = () => {
                     name="password"
                     onChange={handleForm}
                   />
+                  <AiFillEye className="eye__pass" />
 
                   {errorMsg.passwordError && (
                     <Alert

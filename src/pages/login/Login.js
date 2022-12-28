@@ -115,6 +115,8 @@ const Login = () => {
                   fieldName={LoginTextField}
                   type="email"
                   size="normal"
+                  name=""
+                  onChange=""
                 />
 
                 <InputBox
@@ -124,6 +126,8 @@ const Login = () => {
                   fieldName={LoginTextField}
                   type="password"
                   size="normal"
+                  name=""
+                  onChange=""
                 />
 
                 <CustomButton
@@ -131,6 +135,7 @@ const Login = () => {
                   buttonName={LoginButton}
                   title="Login to Continue"
                   type="submit"
+                  onClick=""
                 />
 
                 <AuthenticationLink

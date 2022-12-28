@@ -87,6 +87,13 @@
 .error__alert__message svg {
   width: 16px !important;
 }
+
+.eye__pass {
+  position: absolute;
+  top: 37px;
+  right: 12px;
+  font-size: 26px;
+}
 /* ====================================================================
                        Registration Left  End
 ==================================================================== */
