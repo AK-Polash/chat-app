@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../../components/Header";
 import Heading from "../../components/Heading";
 import InputBox from "../../components/InputBox";
@@ -86,6 +86,28 @@ const CommonButton = styled(Button)({
 });
 
 const Registration = () => {
+  let [formData, setFormData] = useState({
+    email: "",
+    fullName: "",
+    password: "",
+  });
+
+  console.log(formData);
+
+  let handleForm = (e) => {
+    if (e.target.name == "email") {
+      setFormData({ ...formData, email: e.target.value });
+    } else if (e.target.name == "fullName") {
+      setFormData({ ...formData, fullName: e.target.value });
+    } else if (e.target.name == "password") {
+      setFormData({ ...formData, password: e.target.value });
+    }
+  };
+
+  let handleSubmit = () => {
+    console.log("hi");
+  };
+
   return (
     <>
       <Grid container spacing={2}>
@@ -113,6 +135,8 @@ const Registration = () => {
                   fieldName={MyTextField}
                   type="email"
                   size="normal"
+                  name="email"
+                  onChange={handleForm}
                 />
                 <InputBox
                   className="registration__input__item"
@@ -121,6 +145,8 @@ const Registration = () => {
                   fieldName={MyTextField}
                   type="text"
                   size="normal"
+                  name="fullName"
+                  onChange={handleForm}
                 />
                 <InputBox
                   className="registration__input__item"
@@ -129,6 +155,8 @@ const Registration = () => {
                   fieldName={MyTextField}
                   type="password"
                   size="normal"
+                  name="password"
+                  onChange={handleForm}
                 />
 
                 <CustomButton
@@ -136,6 +164,7 @@ const Registration = () => {
                   buttonName={CommonButton}
                   title="Sign up"
                   type="submit"
+                  onClick={handleSubmit}
                 />
 
                 <AuthenticationLink

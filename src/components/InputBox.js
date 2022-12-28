@@ -11,6 +11,8 @@ const InputBox = (props) => {
         variant={props.variant}
         size={props.size}
         type={props.type}
+        name={props.name}
+        onChange={props.onChange}
       />
     </>
   );
