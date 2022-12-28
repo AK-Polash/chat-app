@@ -10,7 +10,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import CustomButton from "../../components/CustomButton";
 import Alert from "@mui/material/Alert";
-import { AiFillEye } from "react-icons/ai";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import "./registration.css";
 
 const MyTextField = styled(TextField)({
@@ -89,6 +89,8 @@ const CommonButton = styled(Button)({
 });
 
 const Registration = () => {
+  let [show, setShow] = useState(false);
+
   let [formData, setFormData] = useState({
     email: "",
     fullName: "",
@@ -191,12 +193,22 @@ const Registration = () => {
                     label="Password"
                     variant="outlined"
                     fieldName={MyTextField}
-                    type="password"
+                    type={show ? "text" : "password"}
                     size="normal"
                     name="password"
                     onChange={handleForm}
                   />
-                  <AiFillEye className="eye__pass" />
+                  {show ? (
+                    <AiFillEye
+                      onClick={() => setShow(false)}
+                      className="eye__pass"
+                    />
+                  ) : (
+                    <AiFillEyeInvisible
+                      onClick={() => setShow(true)}
+                      className="eye__pass"
+                    />
+                  )}
 
                   {errorMsg.passwordError && (
                     <Alert
