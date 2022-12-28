@@ -11,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import CustomButton from "../../components/CustomButton";
 import Alert from "@mui/material/Alert";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import "./registration.css";
 
 const MyTextField = styled(TextField)({
@@ -89,6 +90,7 @@ const CommonButton = styled(Button)({
 });
 
 const Registration = () => {
+  const auth = getAuth();
   let [show, setShow] = useState(false);
 
   let [formData, setFormData] = useState({
@@ -118,6 +120,18 @@ const Registration = () => {
       setErrorMsg({ ...errorMsg, fullNameError: "Full Name Required" });
     } else if (!formData.password) {
       setErrorMsg({ ...errorMsg, passwordError: "Password Required" });
+    } else {
+      createUserWithEmailAndPassword(auth, formData.email, formData.password)
+        .then((user) => {
+          setFormData({ ...formData, email: "", fullName: "", password: "" });
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          if (errorCode.includes("auth/email-already-in-use")) {
+            setErrorMsg({ ...errorMsg, emailError: "Email Already Exist" });
+          }
+        });
     }
   };
 
