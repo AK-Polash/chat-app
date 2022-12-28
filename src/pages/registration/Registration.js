@@ -11,7 +11,11 @@ import TextField from "@mui/material/TextField";
 import CustomButton from "../../components/CustomButton";
 import Alert from "@mui/material/Alert";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import "./registration.css";
 
 const MyTextField = styled(TextField)({
@@ -124,7 +128,9 @@ const Registration = () => {
       createUserWithEmailAndPassword(auth, formData.email, formData.password)
         .then((user) => {
           setFormData({ ...formData, email: "", fullName: "", password: "" });
-          console.log(user);
+          sendEmailVerification(auth.currentUser).then(() => {
+            console.log("Varification Email Sent");
+          });
         })
         .catch((error) => {
           const errorCode = error.code;
