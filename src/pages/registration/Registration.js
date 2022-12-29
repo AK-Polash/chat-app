@@ -171,6 +171,7 @@ const Registration = () => {
                     size="normal"
                     name="email"
                     onChange={handleForm}
+                    value={formData.email}
                   />
 
                   {errorMsg.emailError && (
@@ -194,6 +195,7 @@ const Registration = () => {
                     size="normal"
                     name="fullName"
                     onChange={handleForm}
+                    value={formData.fullName}
                   />
 
                   {errorMsg.fullNameError && (
@@ -217,6 +219,7 @@ const Registration = () => {
                     size="normal"
                     name="password"
                     onChange={handleForm}
+                    value={formData.password}
                   />
                   {show ? (
                     <AiFillEye

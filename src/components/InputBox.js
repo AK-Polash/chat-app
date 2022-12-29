@@ -3,8 +3,6 @@ import React from "react";
 const InputBox = (props) => {
   return (
     <>
-      {/* <TextField className={className} label={label} variant={variant} /> */}
-
       <props.fieldName
         className={props.className}
         label={props.label}
@@ -13,6 +11,7 @@ const InputBox = (props) => {
         type={props.type}
         name={props.name}
         onChange={props.onChange}
+        value={props.value}
       />
     </>
   );
