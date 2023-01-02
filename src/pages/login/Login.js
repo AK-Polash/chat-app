@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Heading from "../../components/Heading";
@@ -6,12 +6,13 @@ import InputBox from "../../components/InputBox";
 import Image from "../../components/Image";
 import AuthenticationLink from "../../components/AuthenticationLink";
 import CustomButton from "../../components/CustomButton";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import "./login.css";
-
 import TextField from "@mui/material/TextField";
+import Alert from "@mui/material/Alert";
+import "./login.css";
 
 const LoginTextField = styled(TextField)({
   ".css-1c2i806-MuiFormLabel-root-MuiInputLabel-root": {
@@ -36,6 +37,7 @@ const LoginTextField = styled(TextField)({
   "& .MuiInputBase-root": {
     height: "70px",
     borderRadius: 10,
+    padding: "0 40px",
   },
   "& .MuiInputBase-input": {
     fontFamily: "'Open Sans', sans-serif",
@@ -82,6 +84,37 @@ const LoginButton = styled(Button)({
 });
 
 const Login = () => {
+  let [show, setShow] = useState(false);
+
+  let [loginFormData, setLoginFormData] = useState({
+    loginEmail: "",
+    loginPassword: "",
+  });
+
+  let handleLoginFormData = (e) => {
+    let { name, value } = e.target;
+
+    setLoginFormData({ ...loginFormData, [name]: value });
+
+    setLoginErrMsg({ emailErrMsg: "", passwordErrMsg: "" });
+  };
+
+  let [loginErrMsg, setLoginErrMsg] = useState({
+    emailErrMsg: "",
+    passwordErrMsg: "",
+  });
+
+  let handleLoginSubmit = () => {
+    if (!loginFormData.loginEmail) {
+      setLoginErrMsg({ ...loginErrMsg, emailErrMsg: "Email Required" });
+    } else if (!loginFormData.loginPassword) {
+      setLoginErrMsg({ ...loginErrMsg, passwordErrMsg: "Password Required" });
+    } else {
+      setLoginFormData({ loginEmail: "", loginPassword: "" });
+      console.log("Login Success");
+    }
+  };
+
   return (
     <>
       <Grid container spacing={2}>
@@ -108,34 +141,72 @@ const Login = () => {
               </div>
 
               <div className="input__container">
-                <InputBox
-                  className="registration__input__item"
-                  label="Email Address"
-                  variant="standard"
-                  fieldName={LoginTextField}
-                  type="email"
-                  size="normal"
-                  name=""
-                  onChange=""
-                />
+                <div className="input__wrapper">
+                  <InputBox
+                    className="registration__input__item"
+                    label="Email Address"
+                    variant="standard"
+                    fieldName={LoginTextField}
+                    type="email"
+                    size="normal"
+                    name="loginEmail"
+                    onChange={handleLoginFormData}
+                    value={loginFormData.loginEmail}
+                  />
 
-                <InputBox
-                  className="registration__input__item"
-                  label="Password"
-                  variant="standard"
-                  fieldName={LoginTextField}
-                  type="password"
-                  size="normal"
-                  name=""
-                  onChange=""
-                />
+                  {loginErrMsg.emailErrMsg && (
+                    <Alert
+                      className="error__alert__message"
+                      variant="filled"
+                      severity="error"
+                    >
+                      {loginErrMsg.emailErrMsg}
+                    </Alert>
+                  )}
+                </div>
+
+                <div className="input__wrapper">
+                  <InputBox
+                    className="registration__input__item"
+                    label="Password"
+                    variant="standard"
+                    fieldName={LoginTextField}
+                    type={show ? "text" : "password"}
+                    size="normal"
+                    name="loginPassword"
+                    onChange={handleLoginFormData}
+                    value={loginFormData.loginPassword}
+                  />
+
+                  {show ? (
+                    <AiFillEye
+                      onClick={() => setShow(false)}
+                      className="eye__pass reg__eye__pass"
+                    />
+                  ) : (
+                    <AiFillEyeInvisible
+                      onClick={() => setShow(true)}
+                      className="eye__pass reg__eye__pass"
+                    />
+                  )}
+
+                  {loginErrMsg.passwordErrMsg && (
+                    <Alert
+                      className="error__alert__message"
+                      variant="filled"
+                      severity="error"
+                    >
+                      {loginErrMsg.passwordErrMsg}
+                    </Alert>
+                  )}
+                </div>
 
                 <CustomButton
                   className="reg__button"
                   buttonName={LoginButton}
                   title="Login to Continue"
                   type="submit"
-                  onClick=""
+                  onClick={handleLoginSubmit}
                 />
 
                 <AuthenticationLink
