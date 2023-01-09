@@ -124,23 +124,29 @@ const Login = () => {
         loginFormData.loginEmail,
         loginFormData.loginPassword
       )
-        .then((user) => {
+        .then((userCredential) => {
+          let user = userCredential.user;
           setLoginFormData({ loginEmail: "", loginPassword: "" });
-          setLoader(true);
           setDisable(true);
-          toast("Login Successful!");
 
-          setTimeout(() => {
-            toast("Welcome to Chat App!");
-          }, 600);
-
-          setTimeout(() => {
+          if (user.emailVerified) {
+            toast("Login Successful!");
             setLoader(true);
-          }, 1800);
 
-          setTimeout(() => {
-            navigate("/home");
-          }, 2000);
+            setTimeout(() => {
+              navigate("/home");
+            }, 2500);
+          } else {
+            toast("Varify Your Email To Login!");
+
+            setTimeout(() => {
+              navigate(
+                window.location.replace(
+                  "https://mail.google.com/mail/u/0/#inbox"
+                )
+              );
+            }, 2000);
+          }
         })
         .catch((error) => {
           const errorCode = error.code;
