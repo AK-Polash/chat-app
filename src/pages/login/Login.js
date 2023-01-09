@@ -136,7 +136,7 @@ const Login = () => {
 
           setTimeout(() => {
             setLoader(true);
-          }, 1700);
+          }, 1800);
 
           setTimeout(() => {
             navigate("/home");
@@ -263,7 +263,7 @@ const Login = () => {
                     height="80"
                     width="80"
                     ariaLabel="vortex-loading"
-                    wrapperStyle={{}}
+                    wrapperStyle={{ width: "130px", height: "130px" }}
                     wrapperClass="vortex-wrapper loader"
                     colors={[
                       "red",

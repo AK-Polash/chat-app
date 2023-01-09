@@ -226,7 +226,7 @@ const Registration = () => {
 
             setTimeout(() => {
               setLoader(false);
-            }, 1700);
+            }, 1800);
 
             setTimeout(() => {
               navigate("/login");
@@ -381,7 +381,7 @@ const Registration = () => {
                     height="80"
                     width="80"
                     ariaLabel="vortex-loading"
-                    wrapperStyle={{}}
+                    wrapperStyle={{ width: "130px", height: "130px" }}
                     wrapperClass="vortex-wrapper loader"
                     colors={[
                       "red",
