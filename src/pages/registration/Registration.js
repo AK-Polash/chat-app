@@ -104,6 +104,7 @@ const Registration = () => {
   let [disable, setDisable] = useState(false);
   let [progress, setProgress] = useState(0);
   let [progressStepColor, setProgressStepColor] = useState("#e74c3c");
+  let [progressPresence, setProgressPresence] = useState(false);
   let [loader, setLoader] = useState(false);
   let navigate = useNavigate();
 
@@ -134,6 +135,7 @@ const Registration = () => {
       let capitalPasswordRegex = /[A-Z]/;
       let smallPasswordRegex = /[a-z]/;
       let numberPasswordRegex = /[0-9]/;
+      setProgressPresence(true);
       setProgress(0);
 
       if (!capitalPasswordRegex.test(value)) {
@@ -208,6 +210,7 @@ const Registration = () => {
     } else if (!formData.password) {
       setErrorMsg({ ...errorMsg, password: "Password Required" });
     } else {
+      setProgressPresence(false);
       createUserWithEmailAndPassword(auth, formData.email, formData.password)
         .then((user) => {
           setFormData({ ...formData, email: "", fullName: "", password: "" });
@@ -322,21 +325,23 @@ const Registration = () => {
                     value={formData.password}
                   />
 
-                  <LinearProgress
-                    sx={{
-                      width: "100%",
-                      position: "absolute",
-                      bottom: "38px",
-                      left: "0",
-                      borderRadius: "30px",
-                      background: "lightblue",
-                      "& .css-5xe99f-MuiLinearProgress-bar1": {
-                        backgroundColor: `${progressStepColor}`,
-                      },
-                    }}
-                    variant="determinate"
-                    value={progress}
-                  />
+                  {progressPresence && (
+                    <LinearProgress
+                      sx={{
+                        width: "100%",
+                        position: "absolute",
+                        bottom: "38px",
+                        left: "0",
+                        borderRadius: "30px",
+                        background: "lightblue",
+                        "& .css-5xe99f-MuiLinearProgress-bar1": {
+                          backgroundColor: `${progressStepColor}`,
+                        },
+                      }}
+                      variant="determinate"
+                      value={progress}
+                    />
+                  )}
 
                   {show ? (
                     <AiFillEye
