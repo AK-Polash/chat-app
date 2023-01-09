@@ -6,6 +6,10 @@ import InputBox from "../../components/InputBox";
 import Image from "../../components/Image";
 import AuthenticationLink from "../../components/AuthenticationLink";
 import CustomButton from "../../components/CustomButton";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
@@ -84,11 +88,18 @@ const LoginButton = styled(Button)({
 });
 
 const Login = () => {
+  const auth = getAuth();
   let [show, setShow] = useState(false);
+  let navigate = useNavigate();
 
   let [loginFormData, setLoginFormData] = useState({
     loginEmail: "",
     loginPassword: "",
+  });
+
+  let [loginErrMsg, setLoginErrMsg] = useState({
+    emailErrMsg: "",
+    passwordErrMsg: "",
   });
 
   let handleLoginFormData = (e) => {
@@ -99,25 +110,53 @@ const Login = () => {
     setLoginErrMsg({ emailErrMsg: "", passwordErrMsg: "" });
   };
 
-  let [loginErrMsg, setLoginErrMsg] = useState({
-    emailErrMsg: "",
-    passwordErrMsg: "",
-  });
-
   let handleLoginSubmit = () => {
     if (!loginFormData.loginEmail) {
       setLoginErrMsg({ ...loginErrMsg, emailErrMsg: "Email Required" });
     } else if (!loginFormData.loginPassword) {
       setLoginErrMsg({ ...loginErrMsg, passwordErrMsg: "Password Required" });
     } else {
-      setLoginFormData({ loginEmail: "", loginPassword: "" });
-      console.log("Login Success");
+      signInWithEmailAndPassword(
+        auth,
+        loginFormData.loginEmail,
+        loginFormData.loginPassword
+      )
+        .then((userCredential) => {
+          setLoginFormData({ loginEmail: "", loginPassword: "" });
+          // const user = userCredential.user;
+          toast("Login Successful!");
+
+          setTimeout(() => {
+            toast("Welcome to Chat App!");
+          }, 1000);
+
+          setTimeout(() => {
+            navigate("/home");
+          }, 2000);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+
+          if (errorCode.includes("auth/user-not-found")) {
+            setLoginErrMsg({
+              ...loginErrMsg,
+              emailErrMsg: "Incorrect Email Address",
+            });
+          }
+          if (errorCode.includes("auth/wrong-password")) {
+            setLoginErrMsg({
+              ...loginErrMsg,
+              passwordErrMsg: "Incorrect Password",
+            });
+          }
+        });
     }
   };
 
   return (
     <>
       <Grid container spacing={2}>
+        <ToastContainer />
         <Grid item xs={6}>
           <div className="registration__left__wrapper">
             <div className="registration__left">

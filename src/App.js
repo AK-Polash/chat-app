@@ -1,6 +1,7 @@
 import React from "react";
 import Registration from "./pages/registration/Registration";
 import Login from "./pages/login/Login";
+import Home from "./pages/home/Home";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -13,6 +14,7 @@ let router = createBrowserRouter(
     <Route path="/">
       <Route index element={<Registration />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/home" element={<Home />} />
     </Route>
   )
 );

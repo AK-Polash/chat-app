@@ -4,12 +4,16 @@ import Heading from "../../components/Heading";
 import InputBox from "../../components/InputBox";
 import Image from "../../components/Image";
 import AuthenticationLink from "../../components/AuthenticationLink";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import CustomButton from "../../components/CustomButton";
 import Alert from "@mui/material/Alert";
+import LinearProgress from "@mui/material/LinearProgress";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import {
   getAuth,
@@ -97,6 +101,9 @@ const Registration = () => {
   const auth = getAuth();
   let [show, setShow] = useState(false);
   let [disable, setDisable] = useState(false);
+  let [progress, setProgress] = useState(0);
+  let [progressStepColor, setProgressStepColor] = useState("#e74c3c");
+  let navigate = useNavigate();
 
   let [formData, setFormData] = useState({
     email: "",
@@ -110,6 +117,10 @@ const Registration = () => {
     password: "",
   });
 
+  // window.onClick(() =>
+  //   setErrorMsg({ ...errorMsg, email: "", fullName: "", password: "" })
+  // );
+
   let handleForm = (e) => {
     let { name, value } = e.target;
 
@@ -121,6 +132,7 @@ const Registration = () => {
       let capitalPasswordRegex = /[A-Z]/;
       let smallPasswordRegex = /[a-z]/;
       let numberPasswordRegex = /[0-9]/;
+      setProgress(0);
 
       if (!capitalPasswordRegex.test(value)) {
         setErrorMsg({
@@ -129,21 +141,39 @@ const Registration = () => {
         });
         setDisable(true);
         return;
-      } else if (!smallPasswordRegex.test(value)) {
+      } else {
+        setDisable(false);
+        setProgress(25);
+        setProgressStepColor("#e74c3c");
+      }
+
+      if (!smallPasswordRegex.test(value)) {
         setErrorMsg({
           ...errorMsg,
           password: "At lest One Small Letter Required",
         });
         setDisable(true);
         return;
-      } else if (!numberPasswordRegex.test(value)) {
+      } else {
+        setDisable(false);
+        setProgress(50);
+        setProgressStepColor("#f1c40f");
+      }
+
+      if (!numberPasswordRegex.test(value)) {
         setErrorMsg({
           ...errorMsg,
           password: "At lest One Number Required",
         });
         setDisable(true);
         return;
-      } else if (value.length < 8) {
+      } else {
+        setDisable(false);
+        setProgress(75);
+        setProgressStepColor("#2ecc71");
+      }
+
+      if (value.length < 8) {
         setErrorMsg({
           ...errorMsg,
           password: "At lest 8 Character Required",
@@ -152,6 +182,8 @@ const Registration = () => {
         return;
       } else {
         setDisable(false);
+        setProgress(100);
+        setProgressStepColor("lime");
       }
     }
   };
@@ -178,7 +210,15 @@ const Registration = () => {
         .then((user) => {
           setFormData({ ...formData, email: "", fullName: "", password: "" });
           sendEmailVerification(auth.currentUser).then(() => {
-            console.log("Varification Email Sent");
+            toast("Registration Successful!");
+
+            setTimeout(() => {
+              toast("Varification Email Sent!");
+            }, 1000);
+
+            setTimeout(() => {
+              navigate("/login");
+            }, 2500);
           });
         })
         .catch((error) => {
@@ -193,6 +233,7 @@ const Registration = () => {
   return (
     <>
       <Grid container spacing={2}>
+        <ToastContainer />
         <Grid item xs={6}>
           <div className="registration__left__wrapper">
             <div className="registration__left">
@@ -270,6 +311,23 @@ const Registration = () => {
                     onChange={handleForm}
                     value={formData.password}
                   />
+
+                  <LinearProgress
+                    sx={{
+                      width: "100%",
+                      position: "absolute",
+                      bottom: "38px",
+                      left: "0",
+                      borderRadius: "30px",
+                      background: "lightblue",
+                      "& .css-5xe99f-MuiLinearProgress-bar1": {
+                        backgroundColor: `${progressStepColor}`,
+                      },
+                    }}
+                    variant="determinate"
+                    value={progress}
+                  />
+
                   {show ? (
                     <AiFillEye
                       onClick={() => setShow(false)}
