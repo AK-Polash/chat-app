@@ -8,6 +8,7 @@ import AuthenticationLink from "../../components/AuthenticationLink";
 import CustomButton from "../../components/CustomButton";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Vortex } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
@@ -90,6 +91,8 @@ const LoginButton = styled(Button)({
 const Login = () => {
   const auth = getAuth();
   let [show, setShow] = useState(false);
+  let [disable, setDisable] = useState(false);
+  let [loader, setLoader] = useState(false);
   let navigate = useNavigate();
 
   let [loginFormData, setLoginFormData] = useState({
@@ -121,14 +124,19 @@ const Login = () => {
         loginFormData.loginEmail,
         loginFormData.loginPassword
       )
-        .then((userCredential) => {
+        .then((user) => {
           setLoginFormData({ loginEmail: "", loginPassword: "" });
-          // const user = userCredential.user;
+          setLoader(true);
+          setDisable(true);
           toast("Login Successful!");
 
           setTimeout(() => {
             toast("Welcome to Chat App!");
-          }, 1000);
+          }, 900);
+
+          setTimeout(() => {
+            setLoader(true);
+          }, 1700);
 
           setTimeout(() => {
             navigate("/home");
@@ -246,7 +254,27 @@ const Login = () => {
                   title="Login to Continue"
                   type="submit"
                   onClick={handleLoginSubmit}
+                  disabled={disable}
                 />
+
+                {loader && (
+                  <Vortex
+                    visible={true}
+                    height="80"
+                    width="80"
+                    ariaLabel="vortex-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="vortex-wrapper loader"
+                    colors={[
+                      "red",
+                      "green",
+                      "blue",
+                      "yellow",
+                      "orange",
+                      "purple",
+                    ]}
+                  />
+                )}
 
                 <AuthenticationLink
                   className="auth__link__area"
