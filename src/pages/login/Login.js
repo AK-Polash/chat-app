@@ -132,7 +132,7 @@ const Login = () => {
 
           setTimeout(() => {
             toast("Welcome to Chat App!");
-          }, 900);
+          }, 600);
 
           setTimeout(() => {
             setLoader(true);

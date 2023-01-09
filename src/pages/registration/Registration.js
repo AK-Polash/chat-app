@@ -222,7 +222,7 @@ const Registration = () => {
 
             setTimeout(() => {
               toast("Varification Email Sent!");
-            }, 900);
+            }, 600);
 
             setTimeout(() => {
               setLoader(false);
