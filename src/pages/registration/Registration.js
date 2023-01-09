@@ -15,6 +15,7 @@ import CustomButton from "../../components/CustomButton";
 import Alert from "@mui/material/Alert";
 import LinearProgress from "@mui/material/LinearProgress";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { Vortex } from "react-loader-spinner";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -103,6 +104,7 @@ const Registration = () => {
   let [disable, setDisable] = useState(false);
   let [progress, setProgress] = useState(0);
   let [progressStepColor, setProgressStepColor] = useState("#e74c3c");
+  let [loader, setLoader] = useState(false);
   let navigate = useNavigate();
 
   let [formData, setFormData] = useState({
@@ -117,9 +119,9 @@ const Registration = () => {
     password: "",
   });
 
-  // window.onClick(() =>
-  //   setErrorMsg({ ...errorMsg, email: "", fullName: "", password: "" })
-  // );
+  // window.addEventListener("click", () => {
+  //   setErrorMsg({ ...errorMsg, email: "", fullName: "", password: "" });
+  // });
 
   let handleForm = (e) => {
     let { name, value } = e.target;
@@ -209,16 +211,23 @@ const Registration = () => {
       createUserWithEmailAndPassword(auth, formData.email, formData.password)
         .then((user) => {
           setFormData({ ...formData, email: "", fullName: "", password: "" });
+          setDisable(true);
+          setLoader(true);
+
           sendEmailVerification(auth.currentUser).then(() => {
             toast("Registration Successful!");
 
             setTimeout(() => {
               toast("Varification Email Sent!");
-            }, 1000);
+            }, 900);
+
+            setTimeout(() => {
+              setLoader(false);
+            }, 1700);
 
             setTimeout(() => {
               navigate("/login");
-            }, 2500);
+            }, 2000);
           });
         })
         .catch((error) => {
@@ -234,6 +243,7 @@ const Registration = () => {
     <>
       <Grid container spacing={2}>
         <ToastContainer />
+
         <Grid item xs={6}>
           <div className="registration__left__wrapper">
             <div className="registration__left">
@@ -359,6 +369,25 @@ const Registration = () => {
                   onClick={handleSubmit}
                   disabled={disable}
                 />
+
+                {loader && (
+                  <Vortex
+                    visible={true}
+                    height="80"
+                    width="80"
+                    ariaLabel="vortex-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="vortex-wrapper loader"
+                    colors={[
+                      "red",
+                      "green",
+                      "blue",
+                      "yellow",
+                      "orange",
+                      "purple",
+                    ]}
+                  />
+                )}
 
                 <AuthenticationLink
                   className="auth__link__area"
