@@ -10,7 +10,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Vortex } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
@@ -90,6 +95,7 @@ const LoginButton = styled(Button)({
 
 const Login = () => {
   const auth = getAuth();
+  const provider = new GoogleAuthProvider();
   let [show, setShow] = useState(false);
   let [disable, setDisable] = useState(false);
   let [loader, setLoader] = useState(false);
@@ -167,6 +173,30 @@ const Login = () => {
     }
   };
 
+  let handleGoogle = () => {
+    signInWithPopup(auth, provider).then((result) => {
+      // // This gives you a Google Access Token. You can use it to access the Google API.
+      // const credential = GoogleAuthProvider.credentialFromResult(result);
+      // const token = credential.accessToken;
+      // // The signed-in user info.
+      // const user = result.user;
+
+      navigate("/home");
+
+      console.log("Google Done");
+    });
+    // .catch((error) => {
+    //   // Handle Errors here.
+    //   const errorCode = error.code;
+    //   const errorMessage = error.message;
+    //   // The email of the user's account used.
+    //   const email = error.customData.email;
+    //   // The AuthCredential type that was used.
+    //   const credential = GoogleAuthProvider.credentialFromError(error);
+    //   // ...
+    // });
+  };
+
   return (
     <>
       <Grid container spacing={2}>
@@ -185,6 +215,7 @@ const Login = () => {
                     <Link to="#">
                       <Image
                         className="google__img"
+                        onClick={handleGoogle}
                         imageSource="assets/google__img.png"
                         alt="google image"
                       />
