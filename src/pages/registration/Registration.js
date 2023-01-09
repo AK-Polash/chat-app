@@ -96,8 +96,15 @@ const CommonButton = styled(Button)({
 const Registration = () => {
   const auth = getAuth();
   let [show, setShow] = useState(false);
+  let [disable, setDisable] = useState(false);
 
   let [formData, setFormData] = useState({
+    email: "",
+    fullName: "",
+    password: "",
+  });
+
+  let [errorMsg, setErrorMsg] = useState({
     email: "",
     fullName: "",
     password: "",
@@ -108,22 +115,64 @@ const Registration = () => {
 
     setFormData({ ...formData, [name]: value });
 
-    setErrorMsg({ emailError: "", fullNameError: "", passwordError: "" });
+    setErrorMsg({ ...errorMsg, [name]: "" });
+
+    if (name === "password") {
+      let capitalPasswordRegex = /[A-Z]/;
+      let smallPasswordRegex = /[a-z]/;
+      let numberPasswordRegex = /[0-9]/;
+
+      if (!capitalPasswordRegex.test(value)) {
+        setErrorMsg({
+          ...errorMsg,
+          password: "At lest One Capital Letter Required",
+        });
+        setDisable(true);
+        return;
+      } else if (!smallPasswordRegex.test(value)) {
+        setErrorMsg({
+          ...errorMsg,
+          password: "At lest One Small Letter Required",
+        });
+        setDisable(true);
+        return;
+      } else if (!numberPasswordRegex.test(value)) {
+        setErrorMsg({
+          ...errorMsg,
+          password: "At lest One Number Required",
+        });
+        setDisable(true);
+        return;
+      } else if (value.length < 8) {
+        setErrorMsg({
+          ...errorMsg,
+          password: "At lest 8 Character Required",
+        });
+        setDisable(true);
+        return;
+      } else {
+        setDisable(false);
+      }
+    }
   };
 
-  let [errorMsg, setErrorMsg] = useState({
-    emailError: "",
-    fullNameError: "",
-    passwordError: "",
-  });
-
   let handleSubmit = () => {
+    let emailRegex =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    let userNameRegex =
+      /^([a-zA-Z0-9]+|[a-zA-Z0-9]+\s{1}[a-zA-Z0-9]{1,}|[a-zA-Z0-9]+\s{1}[a-zA-Z0-9]{3,}\s{1}[a-zA-Z0-9]{1,})$/g;
+
     if (!formData.email) {
-      setErrorMsg({ ...errorMsg, emailError: "Email Required" });
+      setErrorMsg({ ...errorMsg, email: "Email Required" });
+    } else if (!emailRegex.test(formData.email)) {
+      setErrorMsg({ ...errorMsg, email: "Valid Email Required" });
     } else if (!formData.fullName) {
-      setErrorMsg({ ...errorMsg, fullNameError: "Full Name Required" });
+      setErrorMsg({ ...errorMsg, fullName: "Full Name Required" });
+    } else if (!userNameRegex.test(formData.fullName)) {
+      setErrorMsg({ ...errorMsg, fullName: "Valid Name Required" });
     } else if (!formData.password) {
-      setErrorMsg({ ...errorMsg, passwordError: "Password Required" });
+      setErrorMsg({ ...errorMsg, password: "Password Required" });
     } else {
       createUserWithEmailAndPassword(auth, formData.email, formData.password)
         .then((user) => {
@@ -135,7 +184,7 @@ const Registration = () => {
         .catch((error) => {
           const errorCode = error.code;
           if (errorCode.includes("auth/email-already-in-use")) {
-            setErrorMsg({ ...errorMsg, emailError: "Email Already Exist" });
+            setErrorMsg({ ...errorMsg, email: "Email Already Exist" });
           }
         });
     }
@@ -174,13 +223,13 @@ const Registration = () => {
                     value={formData.email}
                   />
 
-                  {errorMsg.emailError && (
+                  {errorMsg.email && (
                     <Alert
                       className="error__alert__message"
                       variant="filled"
                       severity="error"
                     >
-                      {errorMsg.emailError}
+                      {errorMsg.email}
                     </Alert>
                   )}
                 </div>
@@ -198,13 +247,13 @@ const Registration = () => {
                     value={formData.fullName}
                   />
 
-                  {errorMsg.fullNameError && (
+                  {errorMsg.fullName && (
                     <Alert
                       className="error__alert__message"
                       variant="filled"
                       severity="error"
                     >
-                      {errorMsg.fullNameError}
+                      {errorMsg.fullName}
                     </Alert>
                   )}
                 </div>
@@ -233,13 +282,13 @@ const Registration = () => {
                     />
                   )}
 
-                  {errorMsg.passwordError && (
+                  {errorMsg.password && (
                     <Alert
                       className="error__alert__message"
                       variant="filled"
                       severity="error"
                     >
-                      {errorMsg.passwordError}
+                      {errorMsg.password}
                     </Alert>
                   )}
                 </div>
@@ -250,6 +299,7 @@ const Registration = () => {
                   title="Sign up"
                   type="submit"
                   onClick={handleSubmit}
+                  disabled={disable}
                 />
 
                 <AuthenticationLink
