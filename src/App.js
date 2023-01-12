@@ -11,8 +11,8 @@ import {
 
 let router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/">
-      <Route index element={<Registration />} />
+    <Route>
+      <Route path="/" element={<Registration />} />
       <Route path="/login" element={<Login />} />
       <Route path="/home" element={<Home />} />
     </Route>

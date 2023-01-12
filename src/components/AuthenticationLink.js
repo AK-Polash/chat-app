@@ -8,11 +8,12 @@ const AuthenticationLink = ({
   href,
   textClassName,
   linkClassName,
+  onClick,
 }) => {
   return (
     <p className={className}>
       <span className={textClassName}> {textTitle} </span>
-      <Link className={linkClassName} to={href}>
+      <Link className={linkClassName} to={href} onClick={onClick}>
         {linkTitle}
       </Link>
     </p>

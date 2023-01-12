@@ -15,13 +15,21 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  sendPasswordResetEmail,
 } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { activeUser } from "../../slices/userSlice";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
+import Backdrop from "@mui/material/Backdrop";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import Fade from "@mui/material/Fade";
+import Typography from "@mui/material/Typography";
 import "./login.css";
 
 const LoginTextField = styled(TextField)({
@@ -64,6 +72,46 @@ const LoginTextField = styled(TextField)({
   },
 });
 
+const ForgotPasswordTextField = styled(TextField)({
+  ".css-1c2i806-MuiFormLabel-root-MuiInputLabel-root": {
+    top: "10px",
+  },
+  "& .css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root": {
+    top: "17px",
+  },
+  "& .css-whebh7-MuiInputBase-root-MuiInput-root:before": {
+    borderBottom: "2px solid #CDCCDB",
+  },
+  "& .css-whebh7-MuiInputBase-root-MuiInput-root:hover:not(.Mui-disabled, .Mui-error):before":
+    {
+      borderBottom: "2px solid #dfe6e9",
+    },
+  "& .MuiFormLabel-root": {
+    fontFamily: "'Open Sans', sans-serif",
+    fontSize: "14px",
+    fontWeight: "400",
+    color: "#585D8E",
+  },
+  "& .MuiInputBase-root": {
+    height: "52px",
+    borderRadius: 10,
+    padding: "0 20px",
+  },
+  "& .MuiInputBase-input": {
+    fontFamily: "'Open Sans', sans-serif",
+    fontSize: "16px",
+    fontWeight: "600",
+    color: "#11175D",
+    textAlign: "center",
+  },
+  "& label.Mui-focused": {
+    color: "#585D8E",
+  },
+  "& .MuiInput-underline:after": {
+    borderBottomColor: "#B8B9CE",
+  },
+});
+
 const LoginButton = styled(Button)({
   color: "#fff",
   borderRadius: "8.71px",
@@ -93,22 +141,48 @@ const LoginButton = styled(Button)({
   },
 });
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
 const Login = () => {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+    setLoginErrMsg({ forgotPasswordErrMsg: "" });
+    {
+      loginFormData.forgotPassword &&
+        setLoginFormData({ ...loginFormData, forgotPassword: "" });
+    }
+  };
+  const handleClose = () => setOpen(false);
+
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
   let [show, setShow] = useState(false);
   let [disable, setDisable] = useState(false);
   let [loader, setLoader] = useState(false);
   let navigate = useNavigate();
+  let dispatch = useDispatch();
 
   let [loginFormData, setLoginFormData] = useState({
     loginEmail: "",
     loginPassword: "",
+    forgotPassword: "",
   });
 
   let [loginErrMsg, setLoginErrMsg] = useState({
     emailErrMsg: "",
     passwordErrMsg: "",
+    forgotPasswordErrMsg: "",
   });
 
   let handleLoginFormData = (e) => {
@@ -116,7 +190,12 @@ const Login = () => {
 
     setLoginFormData({ ...loginFormData, [name]: value });
 
-    setLoginErrMsg({ emailErrMsg: "", passwordErrMsg: "" });
+    setLoginErrMsg({
+      ...loginErrMsg,
+      emailErrMsg: "",
+      passwordErrMsg: "",
+      forgotPasswordErrMsg: "",
+    });
   };
 
   let handleLoginSubmit = () => {
@@ -131,11 +210,13 @@ const Login = () => {
         loginFormData.loginPassword
       )
         .then((userCredential) => {
-          let user = userCredential.user;
           setLoginFormData({ loginEmail: "", loginPassword: "" });
           setDisable(true);
 
-          if (user.emailVerified) {
+          dispatch(activeUser(userCredential.user));
+          localStorage.setItem("userInfo", JSON.stringify(userCredential.user));
+
+          if (userCredential.user.emailVerified) {
             toast("Login Successful!");
             setLoader(true);
 
@@ -160,7 +241,7 @@ const Login = () => {
           if (errorCode.includes("auth/user-not-found")) {
             setLoginErrMsg({
               ...loginErrMsg,
-              emailErrMsg: "Incorrect Email Address",
+              emailErrMsg: "User Not Found",
             });
           }
           if (errorCode.includes("auth/wrong-password")) {
@@ -195,6 +276,43 @@ const Login = () => {
     //   const credential = GoogleAuthProvider.credentialFromError(error);
     //   // ...
     // });
+  };
+
+  let handleForgotPassword = () => {
+    let emailRegex =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    if (!loginFormData.forgotPassword) {
+      setLoginErrMsg({
+        ...loginErrMsg,
+        forgotPasswordErrMsg: "Email Address Required",
+      });
+    } else if (!emailRegex.test(loginFormData.forgotPassword)) {
+      setLoginErrMsg({
+        ...loginErrMsg,
+        forgotPasswordErrMsg: "Enter a valid Email Address",
+      });
+    } else {
+      sendPasswordResetEmail(auth, loginFormData.forgotPassword)
+        .then(() => {
+          toast("Recovery Email Sent!");
+          setOpen(false);
+        })
+        .catch((error) => {
+          if (error.code.includes("auth/missing-email")) {
+            setLoginErrMsg({
+              ...loginErrMsg,
+              forgotPasswordErrMsg: "Missing Email",
+            });
+          }
+          if (error.code.includes("auth/user-not-found")) {
+            setLoginErrMsg({
+              ...loginErrMsg,
+              forgotPasswordErrMsg: "User Not Found",
+            });
+          }
+        });
+    }
   };
 
   return (
@@ -321,6 +439,71 @@ const Login = () => {
                   linkTitle="Sign Up"
                   linkClassName="auth__link"
                 />
+                <AuthenticationLink
+                  className="auth__link__area auth__link__forgot__password"
+                  href="/login"
+                  textTitle="Forgot Password ?"
+                  textClassName="auth__text"
+                  linkTitle="Click here"
+                  linkClassName="auth__link"
+                  onClick={handleOpen}
+                />
+
+                <Modal
+                  aria-labelledby="transition-modal-title"
+                  aria-describedby="transition-modal-description"
+                  open={open}
+                  onClose={handleClose}
+                  closeAfterTransition
+                  BackdropComponent={Backdrop}
+                  BackdropProps={{
+                    timeout: 200,
+                  }}
+                >
+                  <Fade in={open}>
+                    <Box sx={style}>
+                      <Typography
+                        id="transition-modal-title"
+                        variant="h6"
+                        component="h3"
+                        sx={{ marginBottom: "10px", fontSize: "24px" }}
+                      >
+                        Forgot Password
+                      </Typography>
+                      <div className="modal__main">
+                        <InputBox
+                          className="registration__input__item"
+                          label="Email Address"
+                          variant="standard"
+                          fieldName={ForgotPasswordTextField}
+                          type="email"
+                          size="normal"
+                          name="forgotPassword"
+                          onChange={handleLoginFormData}
+                          value={loginFormData.forgotPassword}
+                        />
+
+                        {loginErrMsg.forgotPasswordErrMsg && (
+                          <Alert
+                            className="error__alert__message  error__alert__forgot__password"
+                            variant="filled"
+                            severity="error"
+                          >
+                            {loginErrMsg.forgotPasswordErrMsg}
+                          </Alert>
+                        )}
+                        <CustomButton
+                          className="forgot__password__button"
+                          buttonName={LoginButton}
+                          title="Forgot Password"
+                          type="submit"
+                          onClick={handleForgotPassword}
+                          disabled={false}
+                        />
+                      </div>
+                    </Box>
+                  </Fade>
+                </Modal>
               </div>
             </div>
           </div>
