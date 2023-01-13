@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Heading from "../../components/Heading";
@@ -255,13 +255,15 @@ const Login = () => {
   };
 
   let handleGoogle = () => {
-    signInWithPopup(auth, provider).then((result) => {
+    signInWithPopup(auth, provider).then((userCredential) => {
       // // This gives you a Google Access Token. You can use it to access the Google API.
       // const credential = GoogleAuthProvider.credentialFromResult(result);
       // const token = credential.accessToken;
       // // The signed-in user info.
       // const user = result.user;
 
+      dispatch(activeUser(userCredential.user));
+      localStorage.setItem("userInfo", JSON.stringify(userCredential.user));
       navigate("/home");
 
       console.log("Google Done");
