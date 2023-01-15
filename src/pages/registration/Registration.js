@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../../components/Header";
 import Heading from "../../components/Heading";
 import InputBox from "../../components/InputBox";
@@ -22,6 +22,7 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import "./registration.css";
+import { useSelector } from "react-redux";
 
 const MyTextField = styled(TextField)({
   "& .css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root": {
@@ -107,6 +108,14 @@ const Registration = () => {
   let [progressPresence, setProgressPresence] = useState(false);
   let [loader, setLoader] = useState(false);
   let navigate = useNavigate();
+  let data = useSelector((state) => state);
+
+  useEffect(() => {
+    console.log(data);
+    if (data.userData.userInfo) {
+      navigate("/home");
+    }
+  }, []);
 
   let [formData, setFormData] = useState({
     email: "",
@@ -119,10 +128,6 @@ const Registration = () => {
     fullName: "",
     password: "",
   });
-
-  // window.addEventListener("click", () => {
-  //   setErrorMsg({ ...errorMsg, email: "", fullName: "", password: "" });
-  // });
 
   let handleForm = (e) => {
     let { name, value } = e.target;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Heading from "../../components/Heading";
@@ -17,7 +17,7 @@ import {
   signInWithPopup,
   sendPasswordResetEmail,
 } from "firebase/auth";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { activeUser } from "../../slices/userSlice";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Grid from "@mui/material/Grid";
@@ -172,6 +172,13 @@ const Login = () => {
   let [loader, setLoader] = useState(false);
   let navigate = useNavigate();
   let dispatch = useDispatch();
+  let data = useSelector((state) => state);
+
+  useEffect(() => {
+    if (data.userData.userInfo) {
+      navigate("/home");
+    }
+  }, []);
 
   let [loginFormData, setLoginFormData] = useState({
     loginEmail: "",
