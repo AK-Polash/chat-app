@@ -111,7 +111,6 @@ const Registration = () => {
   let data = useSelector((state) => state);
 
   useEffect(() => {
-    console.log(data);
     if (data.userData.userInfo) {
       navigate("/home");
     }

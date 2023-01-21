@@ -220,10 +220,13 @@ const Login = () => {
           setLoginFormData({ loginEmail: "", loginPassword: "" });
           setDisable(true);
 
-          dispatch(activeUser(userCredential.user));
-          localStorage.setItem("userInfo", JSON.stringify(userCredential.user));
-
           if (userCredential.user.emailVerified) {
+            dispatch(activeUser(userCredential.user));
+            localStorage.setItem(
+              "userInfo",
+              JSON.stringify(userCredential.user)
+            );
+
             toast("Login Successful!");
             setLoader(true);
 
