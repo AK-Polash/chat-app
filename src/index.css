@@ -37,3 +37,97 @@ a {
 /* ===========================================================================
                             All Common CSS 
 ============================================================================ */
+
+/* ===========================================================================
+                                Menu Start 
+============================================================================ */
+
+.menu__main {
+  width: 100%;
+  height: 95%;
+  background: #5f35f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-items: center;
+  row-gap: 50px;
+  border-radius: 15px;
+  padding: 38px 0;
+}
+.image__holder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+}
+.profile__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.menu__holder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.menu {
+  width: 73%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 30px;
+}
+.icon__holder {
+  width: 100%;
+  height: 65px;
+}
+.icon__holder a {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px 0 0 10px;
+  position: relative;
+}
+.icon__holder .active {
+  background-color: #fff;
+}
+.icon__holder .active::after {
+  background: #5f35f5;
+  content: "";
+  width: 20px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: -15px;
+  z-index: 2;
+  border-radius: 7px 0 0 7px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.icon__holder .icon {
+  color: #fff;
+  font-size: 40px;
+  cursor: pointer;
+}
+.icon__holder .active .icon {
+  color: #5f35f5;
+  font-size: 40px;
+  cursor: pointer;
+}
+
+/* .logout__holder {
+} */
+.logout__holder .icon {
+  color: #fff !important;
+  font-size: 40px;
+  cursor: pointer;
+}
+
+/* ===========================================================================
+                                    Menu End
+============================================================================ */

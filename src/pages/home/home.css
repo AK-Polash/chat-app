@@ -1,11 +1,6 @@
-.box__home {
-  background: #999;
+.main__home {
+  background: green;
   width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.heading__home {
-  color: #fff;
+  height: 95%;
+  border-radius: 15px;
 }

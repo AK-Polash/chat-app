@@ -1,38 +1,24 @@
-import React, { useEffect } from "react";
-import { getAuth, signOut } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { activeUser } from "../../slices/userSlice";
+import React from "react";
+import Grid from "@mui/material/Grid";
 import "./home.css";
 
 const Home = () => {
-  const auth = getAuth();
-  let navigate = useNavigate();
-  let dispatch = useDispatch();
-  let data = useSelector((state) => state);
-
-  useEffect(() => {
-    if (!data.userData.userInfo) {
-      navigate("/login");
-    }
-  }, []);
-
-  let handleLogOut = () => {
-    signOut(auth)
-      .then(() => {
-        dispatch(activeUser(null));
-        localStorage.removeItem("userInfo");
-        navigate("/login");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   return (
-    <div className="box__home">
-      <h1 className="heading__home">Home Page</h1>
-      <button onClick={handleLogOut}>Log Out</button>
+    <div className="main__home">
+      <Grid container spacing={2}>
+        <Grid item xs={4}>
+          <h2>Group List</h2>
+          <h2>Friend Request</h2>
+        </Grid>
+        <Grid item xs={3}>
+          <h2>Friends</h2>
+          <h2>My Groups</h2>
+        </Grid>
+        <Grid item xs={3}>
+          <h2>User List</h2>
+          <h2>Blocked User</h2>
+        </Grid>
+      </Grid>
     </div>
   );
 };
