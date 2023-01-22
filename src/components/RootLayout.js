@@ -18,8 +18,8 @@ const RootLayout = () => {
 
   useEffect(() => {
     if (!data.userData.userInfo) {
-      navigate("/login");
-    }
+      navigate("/login");``
+    } 
   }, []);
 
   let handleLogOut = () => {
@@ -59,7 +59,7 @@ const RootLayout = () => {
             <div className="menu__holder">
               <div className="menu">
                 <div className="icon__holder">
-                  <NavLink to="/home">
+                  <NavLink to="/">
                     <IoHomeOutline className="icon" />
                   </NavLink>
                 </div>

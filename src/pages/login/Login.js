@@ -176,7 +176,7 @@ const Login = () => {
 
   useEffect(() => {
     if (data.userData.userInfo) {
-      navigate("/home");
+      navigate("/");
     }
   }, []);
 
@@ -231,7 +231,7 @@ const Login = () => {
             setLoader(true);
 
             setTimeout(() => {
-              navigate("/home");
+              navigate("/");
             }, 2500);
           } else {
             toast("Varify Your Email To Login!");
@@ -270,7 +270,7 @@ const Login = () => {
         dispatch(activeUser(userCredential.user));
         localStorage.setItem("userInfo", JSON.stringify(userCredential.user));
 
-        navigate("/home");
+        navigate("/");
       })
       .catch((error) => {
         console.log(error);
@@ -432,7 +432,7 @@ const Login = () => {
 
                 <AuthenticationLink
                   className="auth__link__area"
-                  href="/"
+                  href="/signup"
                   textTitle="Don't have an account ?"
                   textClassName="auth__text"
                   linkTitle="Sign Up"

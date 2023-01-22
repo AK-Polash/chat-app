@@ -17,16 +17,16 @@ import NoMatch from "./components/NoMatch";
 let router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      <Route path="/" element={<Registration />} />
+      <Route path="signup" element={<Registration />} />
       <Route path="login" element={<Login />} />
+      <Route path="*" element={<NoMatch />} />
       <Route path="/" element={<RootLayout />}>
-        <Route path="home" element={<Home />} />
+        <Route index element={<Home />} />
         <Route path="message" element={<Message />} />
         <Route path="notification" element={<Notification />} />
         <Route path="settings" element={<Settings />} />
         <Route path="*" element={<NoMatch />} />
       </Route>
-      <Route path="*" element={<NoMatch />} />
     </Route>
   )
 );
