@@ -8,13 +8,21 @@ import {
   RouterProvider,
   Route,
 } from "react-router-dom";
+import RootLayout from "./components/RootLayout";
+import Message from "./pages/message/Message";
+import NoMatch from "./components/NoMatch";
 
 let router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path="/" element={<Registration />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/home" element={<Home />} />
+      <Route path="login" element={<Login />} />
+      <Route path="home" element={<RootLayout />}>
+        <Route index element={<Home />} />
+        <Route path="message" element={<Message />} />
+        <Route path="*" element={<NoMatch />} />
+      </Route>
+      <Route path="*" element={<NoMatch />} />
     </Route>
   )
 );
