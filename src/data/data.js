@@ -1,7 +1,10 @@
 let groupList = [
-  { name: "Friends Re-Union", lastMsg: "Whats up" },
+  { name: "Re-Union", lastMsg: "Whats up" },
   { name: "Friends Forever", lastMsg: "Hi all" },
   { name: "Crazy Cousins", lastMsg: "Hey there" },
+  { name: "Blog Portal", lastMsg: "hi everyone" },
+  { name: "Web Devs", lastMsg: "How are you..?" },
+  { name: "Graphics Designer", lastMsg: "Great job" },
 ];
 
 let friends = [
