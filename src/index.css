@@ -28,6 +28,11 @@ a {
   font-family: "Nunito", sans-serif;
   font-size: 32px;
 }
+
+::-webkit-scrollbar {
+  display: none;
+}
+
 /* all fonts{
   font-family: "Nunito", sans-serif;
   font-family: "Open Sans", sans-serif;
