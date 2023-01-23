@@ -1,10 +1,10 @@
 let groupList = [
-  { name: "Re-Union", lastMsg: "Whats up" },
-  { name: "Friends Forever", lastMsg: "Hi all" },
-  { name: "Crazy Cousins", lastMsg: "Hey there" },
-  { name: "Blog Portal", lastMsg: "hi everyone" },
-  { name: "Web Devs", lastMsg: "How are you..?" },
-  { name: "Graphics Designer", lastMsg: "Great job" },
+  { name: "Re-Union", lastMsg: "Whats up", buttonText: "Join" },
+  { name: "Friends Forever", lastMsg: "Hi all", buttonText: "Join" },
+  { name: "Crazy Cousins", lastMsg: "Hey there", buttonText: "Join" },
+  { name: "Blog Portal", lastMsg: "hi everyone", buttonText: "Join" },
+  { name: "Web Devs", lastMsg: "How are you..?", buttonText: "Join" },
+  { name: "Graphics Designer", lastMsg: "Great job", buttonText: "Join" },
 ];
 
 let friends = [
@@ -19,23 +19,23 @@ let friends = [
 ];
 
 let userList = [
-  { name: "Akash", lastSeen: "Today 12pm" },
-  { name: "Emon", lastSeen: "Yesterday 3pm" },
-  { name: "Arif", lastSeen: "Yestarday 9am" },
-  { name: "Shuvo", lastSeen: "Today 8pm" },
-  { name: "Akib", lastSeen: "Today 3pm" },
-  { name: "Sumit", lastSeen: "Yestarday 9am" },
-  { name: "Afjal", lastSeen: "Today 2am" },
+  { name: "Akash", lastSeen: "Today 12pm", buttonText: "+" },
+  { name: "Emon", lastSeen: "Yesterday 3pm", buttonText: "+" },
+  { name: "Arif", lastSeen: "Yestarday 9am", buttonText: "+" },
+  { name: "Shuvo", lastSeen: "Today 8pm", buttonText: "+" },
+  { name: "Akib", lastSeen: "Today 3pm", buttonText: "+" },
+  { name: "Sumit", lastSeen: "Yestarday 9am", buttonText: "+" },
+  { name: "Afjal", lastSeen: "Today 2am", buttonText: "+" },
 ];
 
 let friendRequest = [
-  { name: "Afridi", lastMsg: "Whats up" },
-  { name: "Raju", lastMsg: "Hi.." },
-  { name: "Rasel", lastMsg: "Hey there" },
-  { name: "Tareq", lastMsg: "Hello" },
-  { name: "Shuvom", lastMsg: "Great job" },
-  { name: "Irfan", lastMsg: "Hi buddy" },
-  { name: "Rifat", lastMsg: "Hey.." },
+  { name: "Afridi", lastMsg: "Whats up", buttonText: "Accept" },
+  { name: "Raju", lastMsg: "Hi..", buttonText: "Accept" },
+  { name: "Rasel", lastMsg: "Hey there", buttonText: "Accept" },
+  { name: "Tareq", lastMsg: "Hello", buttonText: "Accept" },
+  { name: "Shuvom", lastMsg: "Great job", buttonText: "Accept" },
+  { name: "Irfan", lastMsg: "Hi buddy", buttonText: "Accept" },
+  { name: "Rifat", lastMsg: "Hey..", buttonText: "Accept" },
 ];
 
 let myGroups = [
@@ -49,13 +49,13 @@ let myGroups = [
 ];
 
 let blockList = [
-  { name: "Akash", lastSeen: "Today 12pm" },
-  { name: "Emon", lastSeen: "Yesterday 3pm" },
-  { name: "Arif", lastSeen: "Yestarday 9am" },
-  { name: "Shuvo", lastSeen: "Yestarday 9am" },
-  { name: "Kabir", lastSeen: "Today 2am" },
-  { name: "Arif", lastSeen: "Today 6pm" },
-  { name: "Shuvo", lastSeen: "Yestarday 12pm" },
+  { name: "Akash", lastSeen: "Today 12pm", buttonText: "Unblock" },
+  { name: "Emon", lastSeen: "Yesterday 3pm", buttonText: "Unblock" },
+  { name: "Arif", lastSeen: "Yestarday 9am", buttonText: "Unblock" },
+  { name: "Shuvo", lastSeen: "Yestarday 9am", buttonText: "Unblock" },
+  { name: "Kabir", lastSeen: "Today 2am", buttonText: "Unblock" },
+  { name: "Arif", lastSeen: "Today 6pm", buttonText: "Unblock" },
+  { name: "Shuvo", lastSeen: "Yestarday 12pm", buttonText: "Unblock" },
 ];
 
 export { groupList, friends, userList, friendRequest, myGroups, blockList };

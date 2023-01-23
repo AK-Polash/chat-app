@@ -270,6 +270,8 @@ const Login = () => {
         dispatch(activeUser(userCredential.user));
         localStorage.setItem("userInfo", JSON.stringify(userCredential.user));
 
+        console.log(userCredential.user.displayName);
+
         navigate("/");
       })
       .catch((error) => {

@@ -20,6 +20,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  updateProfile,
 } from "firebase/auth";
 import "./registration.css";
 import { useSelector } from "react-redux";
@@ -216,25 +217,34 @@ const Registration = () => {
     } else {
       setProgressPresence(false);
       createUserWithEmailAndPassword(auth, formData.email, formData.password)
-        .then((user) => {
+        .then((userCredential) => {
           setFormData({ ...formData, email: "", fullName: "", password: "" });
           setDisable(true);
           setLoader(true);
 
           sendEmailVerification(auth.currentUser).then(() => {
-            toast("Registration Successful!");
+            updateProfile(auth.currentUser, {
+              displayName: formData.fullName,
+            })
+              .then(() => {
+                console.log(userCredential.user.displayName);
+                toast("Registration Successful!");
 
-            setTimeout(() => {
-              toast("Varification Email Sent!");
-            }, 600);
+                setTimeout(() => {
+                  toast("Varification Email Sent!");
+                }, 600);
 
-            setTimeout(() => {
-              setLoader(false);
-            }, 1800);
+                setTimeout(() => {
+                  setLoader(false);
+                }, 1800);
 
-            setTimeout(() => {
-              navigate("/login");
-            }, 2000);
+                setTimeout(() => {
+                  navigate("/login");
+                }, 2000);
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           });
         })
         .catch((error) => {

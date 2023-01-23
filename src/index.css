@@ -60,6 +60,21 @@ a {
   padding: 38px 0;
   box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 8px;
 }
+.user__holder {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 5px;
+}
+.user__name {
+  color: #f1f2f6;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+}
 .image__holder {
   width: 80px;
   height: 80px;

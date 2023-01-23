@@ -49,12 +49,17 @@ const RootLayout = () => {
           xs={1}
         >
           <div className="menu__main">
-            <div className="image__holder">
-              <Image
-                className="profile__img"
-                imageSource="assets/profile__img.png"
-                alt="Profile Img"
-              />
+            <div className="user__holder">
+              <div className="image__holder">
+                <Image
+                  className="profile__img"
+                  imageSource="assets/profile__img.png"
+                  alt="Profile Img"
+                />
+              </div>
+              <h4 className="user__name">
+                {data.userData.userInfo.displayName}
+              </h4>
             </div>
             <div className="menu__holder">
               <div className="menu">

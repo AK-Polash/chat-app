@@ -37,7 +37,7 @@ const SectionItem = ({ data, button, sectionHeadingTitle }) => {
                   </div>
                 </div>
 
-                <button className="user__btn"> Add </button>
+                <button className="user__btn"> {item.buttonText} </button>
               </div>
             ))}
           </>
