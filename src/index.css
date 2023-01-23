@@ -53,6 +53,7 @@ a {
   row-gap: 50px;
   border-radius: 15px;
   padding: 38px 0;
+  box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 8px;
 }
 .image__holder {
   width: 80px;

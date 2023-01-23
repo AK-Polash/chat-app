@@ -18,8 +18,8 @@ const RootLayout = () => {
 
   useEffect(() => {
     if (!data.userData.userInfo) {
-      navigate("/login");``
-    } 
+      navigate("/login");
+    }
   }, []);
 
   let handleLogOut = () => {
