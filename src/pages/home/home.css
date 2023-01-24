@@ -28,6 +28,7 @@
   position: sticky;
   top: 0;
   left: 0;
+  z-index: 5;
   padding: 15px 0;
 }
 .section__heading__title {
@@ -62,11 +63,25 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
+  position: relative;
+}
+.user__image__holder::after {
+  content: "";
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  background: limegreen;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
 }
 .user__image {
   width: 100%;
   object-fit: cover;
 }
+
 /* .user__text__holder {
 } */
 .user__heading {
