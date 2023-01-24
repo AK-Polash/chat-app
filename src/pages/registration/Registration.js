@@ -22,7 +22,7 @@ import {
   sendEmailVerification,
   updateProfile,
 } from "firebase/auth";
-import { getDatabase, ref, set, onValue, push } from "firebase/database";
+import { getDatabase, ref, set } from "firebase/database";
 import { useSelector } from "react-redux";
 import "./registration.css";
 
@@ -229,7 +229,6 @@ const Registration = () => {
               displayName: formData.fullName,
             })
               .then(() => {
-                console.log(userCredential.user.email);
                 set(ref(db, "users/" + userCredential.user.uid), {
                   username: userCredential.user.displayName,
                   email: userCredential.user.email,
