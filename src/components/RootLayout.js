@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Outlet, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { activeUser } from "../slices/userSlice";
@@ -9,8 +9,58 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import { AiOutlineMessage } from "react-icons/ai";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import Image from "./Image";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 530,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
+const defaultSrc =
+  "https://raw.githubusercontent.com/roadmanfong/react-cropper/master/example/img/child.jpg";
 
 const RootLayout = () => {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  // croper start
+  const [image, setImage] = useState(defaultSrc);
+  const [cropData, setCropData] = useState("#");
+  const [cropper, setCropper] = useState();
+
+  const onChange = (e) => {
+    e.preventDefault();
+    let files;
+    if (e.dataTransfer) {
+      files = e.dataTransfer.files;
+    } else if (e.target) {
+      files = e.target.files;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImage(reader.result);
+    };
+    reader.readAsDataURL(files[0]);
+  };
+
+  const getCropData = () => {
+    if (typeof cropper !== "undefined") {
+      setCropData(cropper.getCroppedCanvas().toDataURL());
+    }
+  };
+  // croper end
+
   const auth = getAuth();
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -52,6 +102,7 @@ const RootLayout = () => {
             <div className="user__holder">
               <div className="image__holder">
                 <Image
+                  onClick={handleOpen}
                   className="profile__img"
                   imageSource="assets/profile__img.png"
                   alt="Profile Img"
@@ -95,6 +146,56 @@ const RootLayout = () => {
                 />
               </div>
             </div>
+
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <div className="modal__heading">
+                  <p className="modal__title">Upload Image</p>
+                  <div className="image__holder">
+                    <div
+                      className="img-preview"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "50%",
+                        overflow: "hidden",
+                      }}
+                    ></div>
+                  </div>
+                </div>
+                <div className="modal__input__box">
+                  <input
+                    onChange={onChange}
+                    className="modal__input__field"
+                    type="file"
+                  />
+
+                  <Cropper
+                    style={{ height: 400, width: "100%" }}
+                    zoomTo={0.5}
+                    initialAspectRatio={1}
+                    preview=".img-preview"
+                    src={image}
+                    viewMode={1}
+                    minCropBoxHeight={10}
+                    minCropBoxWidth={10}
+                    background={false}
+                    responsive={true}
+                    autoCropArea={1}
+                    checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+                    onInitialized={(instance) => {
+                      setCropper(instance);
+                    }}
+                    guides={true}
+                  />
+                </div>
+              </Box>
+            </Modal>
           </div>
         </Grid>
         <Grid

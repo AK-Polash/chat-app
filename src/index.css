@@ -86,6 +86,7 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  cursor: pointer;
 }
 
 .menu__holder {
@@ -149,6 +150,30 @@ a {
   cursor: pointer;
 }
 
+/* ======================= */
+
+.modal__heading {
+  /* width: 200px; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  row-gap: 10px;
+  overflow: hidden;
+}
+.modal__title {
+  color: #000;
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  text-align: center;
+}
+.modal__input__box {
+}
+.modal__input__field {
+  margin: 10px 0;
+  cursor: pointer;
+}
 /* ===========================================================================
                                     Menu End
 ============================================================================ */
