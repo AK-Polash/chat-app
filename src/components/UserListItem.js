@@ -6,8 +6,8 @@ import { HiPlus } from "react-icons/hi";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
-    width: "15px",
-    height: "15px",
+    width: "10px",
+    height: "10px",
     borderRadius: "50%",
     backgroundColor: "#44b700",
     color: "#44b700",
