@@ -42,8 +42,6 @@
   cursor: pointer;
 }
 
-/* .section__inner {
-} */
 .section__users {
   display: flex;
   justify-content: space-between;
@@ -103,6 +101,10 @@
   cursor: pointer;
   border: none;
   border-radius: 4px;
+}
+.square__btn {
+  width: 30px;
+  height: 30px;
 }
 
 /* ===================================================================

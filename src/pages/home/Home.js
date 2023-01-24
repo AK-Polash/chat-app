@@ -1,61 +1,34 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
+import GroupList from "../../components/GroupList";
+import Friends from "../../components/Friends";
+import UserList from "../../components/UserList";
+import FriendRequest from "../../components/FriendRequest";
+import MyGroups from "../../components/MyGroups";
+import BlockList from "../../components/BlockList";
 import "./home.css";
-import SectionItem from "../../components/SectionItem";
-import {
-  groupList,
-  friends,
-  userList,
-  friendRequest,
-  myGroups,
-  blockList,
-} from "../../data/data";
 
 const Home = () => {
   return (
     <div className="main__home">
       <Grid container spacing={3} sx={{ height: "100%" }}>
         <Grid item xs={4}>
-          <SectionItem
-            button={true}
-            data={groupList}
-            sectionHeadingTitle="Group List"
-          />
+          <GroupList />
         </Grid>
         <Grid item xs={4}>
-          <SectionItem
-            button={false}
-            data={friends}
-            sectionHeadingTitle="Friends"
-          />
+          <Friends />
         </Grid>
         <Grid item xs={4}>
-          <SectionItem
-            button={true}
-            data={userList}
-            sectionHeadingTitle="User List"
-          />
+          <UserList />
         </Grid>
         <Grid item xs={4}>
-          <SectionItem
-            button={true}
-            data={friendRequest}
-            sectionHeadingTitle="Friend Request"
-          />
+          <FriendRequest />
         </Grid>
         <Grid item xs={4}>
-          <SectionItem
-            button={false}
-            data={myGroups}
-            sectionHeadingTitle="My Groups"
-          />
+          <MyGroups />
         </Grid>
         <Grid item xs={4}>
-          <SectionItem
-            button={true}
-            data={blockList}
-            sectionHeadingTitle="Block List"
-          />
+          <BlockList />
         </Grid>
       </Grid>
     </div>

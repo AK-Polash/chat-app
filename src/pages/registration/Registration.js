@@ -22,8 +22,9 @@ import {
   sendEmailVerification,
   updateProfile,
 } from "firebase/auth";
-import "./registration.css";
+import { getDatabase, ref, set, onValue, push } from "firebase/database";
 import { useSelector } from "react-redux";
+import "./registration.css";
 
 const MyTextField = styled(TextField)({
   "& .css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root": {
@@ -101,6 +102,7 @@ const CommonButton = styled(Button)({
 });
 
 const Registration = () => {
+  const db = getDatabase();
   const auth = getAuth();
   let [show, setShow] = useState(false);
   let [disable, setDisable] = useState(false);
@@ -227,20 +229,30 @@ const Registration = () => {
               displayName: formData.fullName,
             })
               .then(() => {
-                console.log(userCredential.user.displayName);
-                toast("Registration Successful!");
+                console.log(userCredential.user.email);
+                set(ref(db, "users/" + userCredential.user.uid), {
+                  username: userCredential.user.displayName,
+                  email: userCredential.user.email,
+                  // profile_picture : imageUrl
+                })
+                  .then(() => {
+                    toast("Registration Successful!");
 
-                setTimeout(() => {
-                  toast("Varification Email Sent!");
-                }, 600);
+                    setTimeout(() => {
+                      toast("Varification Email Sent!");
+                    }, 600);
 
-                setTimeout(() => {
-                  setLoader(false);
-                }, 1800);
+                    setTimeout(() => {
+                      setLoader(false);
+                    }, 1800);
 
-                setTimeout(() => {
-                  navigate("/login");
-                }, 2000);
+                    setTimeout(() => {
+                      navigate("/login");
+                    }, 2000);
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
               })
               .catch((error) => {
                 console.log(error);

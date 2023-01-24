@@ -65,27 +65,34 @@ const RootLayout = () => {
               <div className="menu">
                 <div className="icon__holder">
                   <NavLink to="/">
-                    <IoHomeOutline className="icon" />
+                    <IoHomeOutline className="icon" title="Home" />
                   </NavLink>
                 </div>
                 <div className="icon__holder">
                   <NavLink to="message">
-                    <AiOutlineMessage className="icon" />
+                    <AiOutlineMessage className="icon" title="Chat" />
                   </NavLink>
                 </div>
                 <div className="icon__holder">
                   <NavLink to="notification">
-                    <IoMdNotificationsOutline className="icon" />
+                    <IoMdNotificationsOutline
+                      className="icon"
+                      title="Notification"
+                    />
                   </NavLink>
                 </div>
                 <div className="icon__holder">
                   <NavLink to="settings">
-                    <IoSettingsOutline className="icon" />
+                    <IoSettingsOutline className="icon" title="Settings" />
                   </NavLink>
                 </div>
               </div>
               <div className="logout__holder">
-                <RiLogoutBoxRLine onClick={handleLogOut} className="icon" />
+                <RiLogoutBoxRLine
+                  onClick={handleLogOut}
+                  className="icon"
+                  title="Log Out"
+                />
               </div>
             </div>
           </div>
