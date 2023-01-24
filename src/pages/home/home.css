@@ -65,7 +65,7 @@
   border-radius: 50%;
   position: relative;
 }
-.user__image__holder::after {
+.user__image__holder.active__user::after {
   content: "";
   width: 15px;
   height: 15px;

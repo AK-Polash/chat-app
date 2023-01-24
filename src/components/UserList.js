@@ -26,11 +26,11 @@ const UserList = () => {
   return (
     <section className="section__main">
       <ContentHeading heading="User List" />
-      
+
       {users.map((item, index) => (
         <div className="section__users" key={index}>
           <div className="user__content">
-            <div className="user__image__holder">
+            <div className="user__image__holder active__user">
               <Image
                 imageSource="assets/user_3.png"
                 className="user__image"
