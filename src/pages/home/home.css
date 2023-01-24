@@ -53,6 +53,56 @@
 .section__users:last-child {
   border-bottom: none;
 }
+.user__left__side {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  column-gap: 6px;
+}
+.user__large__image__holder {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+}
+.user__small__image__holder {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.user__image {
+  width: 100%;
+}
+
+.user__heading__small {
+  color: #000000;
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.sub__heading__small {
+  color: #4d4d4d;
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+}
+.sub__heading__large {
+  color: rgba(77, 77, 77, 0.75);
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+}
+.user__heading__large {
+  color: #000000;
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+}
 .user__content {
   display: flex;
   justify-content: space-between;
@@ -63,20 +113,8 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  position: relative;
 }
-.user__image__holder.active__user::after {
-  content: "";
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  border: 3px solid #fff;
-  background: limegreen;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  z-index: 1;
-}
+
 .user__image {
   width: 100%;
   object-fit: cover;
@@ -84,21 +122,7 @@
 
 /* .user__text__holder {
 } */
-.user__heading {
-  color: #000000;
-  font-family: "Poppins";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 18px;
-}
-.user__sub__heading {
-  color: rgba(77, 77, 77, 0.75);
-  font-family: "Poppins";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 21px;
-}
+
 .user__sub__heading.last__seen {
   font-size: 10px;
 }
@@ -111,15 +135,24 @@
   font-family: "Poppins";
   font-style: normal;
   font-weight: 600;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 30px;
   cursor: pointer;
   border: none;
   border-radius: 4px;
 }
-.square__btn {
+.user__icon__btn {
   width: 30px;
   height: 30px;
+  color: #ffffff;
+  background: #5f35f5;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  font-size: 20px;
+}
+.user__btn.user__btn__one {
+  margin-right: 10px;
 }
 
 /* ===================================================================
