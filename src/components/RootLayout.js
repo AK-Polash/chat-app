@@ -130,12 +130,20 @@ const RootLayout = () => {
           <div className="menu__main">
             <div className="user__holder">
               <div className="image__holder">
-                <Image
-                  onClick={handleOpen}
-                  className="profile__img"
-                  imageSource={data.userData.userInfo.photoURL}
-                  alt="Profile Img"
-                />
+                {data.userData.userInfo.photoURL ? (
+                  <Image
+                    onClick={handleOpen}
+                    className="profile__img"
+                    imageSource={data.userData.userInfo.photoURL}
+                    alt="Profile Img"
+                  />
+                ) : (
+                  <Image
+                    className="profile__img"
+                    imageSource="assets/profile__img.png"
+                    alt="UserProfile Img"
+                  />
+                )}
               </div>
               <h4 className="user__name">
                 {data.userData.userInfo.displayName}
