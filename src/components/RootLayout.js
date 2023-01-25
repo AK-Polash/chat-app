@@ -2,8 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Outlet, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { activeUser } from "../slices/userSlice";
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, signOut, updateProfile } from "firebase/auth";
+import {
+  getStorage,
+  ref,
+  uploadString,
+  getDownloadURL,
+} from "firebase/storage";
 import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import Stack from "@mui/material/Stack";
 import { IoHomeOutline, IoSettingsOutline } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { AiOutlineMessage } from "react-icons/ai";
@@ -26,17 +36,19 @@ const style = {
   p: 4,
 };
 
-const defaultSrc =
-  "https://raw.githubusercontent.com/roadmanfong/react-cropper/master/example/img/child.jpg";
-
 const RootLayout = () => {
+  const auth = getAuth();
+  let navigate = useNavigate();
+  let dispatch = useDispatch();
+  let data = useSelector((state) => state);
+
+  // modal:
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   // croper start
-  const [image, setImage] = useState(defaultSrc);
-  const [cropData, setCropData] = useState("#");
+  const [image, setImage] = useState();
   const [cropper, setCropper] = useState();
 
   const onChange = (e) => {
@@ -56,15 +68,32 @@ const RootLayout = () => {
 
   const getCropData = () => {
     if (typeof cropper !== "undefined") {
-      setCropData(cropper.getCroppedCanvas().toDataURL());
+      // firebase "Upload from a String":
+      const storage = getStorage();
+      const storageRef = ref(
+        storage,
+        `profile-picture/${data.userData.userInfo.uid}`
+      );
+      // Data URL string
+      const message4 = cropper.getCroppedCanvas().toDataURL();
+      uploadString(storageRef, message4, "data_url").then((snapshot) => {
+        setOpen(false);
+        setImage("");
+
+        getDownloadURL(storageRef).then((downloadURL) => {
+          updateProfile(auth.currentUser, {
+            photoURL: downloadURL,
+          }).then(() => {
+            dispatch(activeUser(auth.currentUser));
+            localStorage.setItem("userInfo", JSON.stringify(auth.currentUser));
+
+            console.log("profile updated..!!");
+          });
+        });
+      });
     }
   };
   // croper end
-
-  const auth = getAuth();
-  let navigate = useNavigate();
-  let dispatch = useDispatch();
-  let data = useSelector((state) => state);
 
   useEffect(() => {
     if (!data.userData.userInfo) {
@@ -104,7 +133,7 @@ const RootLayout = () => {
                 <Image
                   onClick={handleOpen}
                   className="profile__img"
-                  imageSource="assets/profile__img.png"
+                  imageSource={data.userData.userInfo.photoURL}
                   alt="Profile Img"
                 />
               </div>
@@ -156,43 +185,74 @@ const RootLayout = () => {
               <Box sx={style}>
                 <div className="modal__heading">
                   <p className="modal__title">Upload Image</p>
-                  <div className="image__holder">
-                    <div
-                      className="img-preview"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        borderRadius: "50%",
-                        overflow: "hidden",
-                      }}
-                    ></div>
-                  </div>
+
+                  {image ? (
+                    <div className="img-preview"></div>
+                  ) : data.userData.userInfo.photoURL ? (
+                    <div className="image__holder">
+                      <Image
+                        className="profile__img"
+                        imageSource={data.userData.userInfo.photoURL}
+                        alt="UserProfile Img"
+                      />
+                    </div>
+                  ) : (
+                    <div className="image__holder">
+                      <Image
+                        className="profile__img"
+                        imageSource="assets/profile__img.png"
+                        alt="UserProfile Img"
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className="modal__input__box">
-                  <input
-                    onChange={onChange}
-                    className="modal__input__field"
-                    type="file"
-                  />
+                  <Stack direction="row" alignItems="center" spacing={2}>
+                    <Button
+                      onClick={getCropData}
+                      variant="contained"
+                      component="label"
+                      size="small"
+                    >
+                      Upload
+                    </Button>
 
-                  <Cropper
-                    style={{ height: 400, width: "100%" }}
-                    zoomTo={0.5}
-                    initialAspectRatio={1}
-                    preview=".img-preview"
-                    src={image}
-                    viewMode={1}
-                    minCropBoxHeight={10}
-                    minCropBoxWidth={10}
-                    background={false}
-                    responsive={true}
-                    autoCropArea={1}
-                    checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
-                    onInitialized={(instance) => {
-                      setCropper(instance);
-                    }}
-                    guides={true}
-                  />
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="label"
+                      title="Select Image"
+                    >
+                      <input
+                        onChange={onChange}
+                        hidden
+                        accept="image/*"
+                        type="file"
+                      />
+                      <PhotoCamera />
+                    </IconButton>
+                  </Stack>
+
+                  {image && (
+                    <Cropper
+                      style={{ height: 400, width: "100%" }}
+                      zoomTo={0.5}
+                      initialAspectRatio={1}
+                      preview=".img-preview"
+                      src={image}
+                      viewMode={1}
+                      minCropBoxHeight={10}
+                      minCropBoxWidth={10}
+                      background={false}
+                      responsive={true}
+                      autoCropArea={1}
+                      checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+                      onInitialized={(instance) => {
+                        setCropper(instance);
+                      }}
+                      guides={true}
+                    />
+                  )}
                 </div>
               </Box>
             </Modal>

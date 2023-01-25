@@ -82,9 +82,16 @@ a {
   display: flex;
   justify-content: center;
 }
+.img-preview {
+  width: 80px !important;
+  height: 80px !important;
+  border-radius: 50%;
+  overflow: hidden;
+}
 .profile__img {
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
 }
@@ -153,13 +160,11 @@ a {
 /* ======================= */
 
 .modal__heading {
-  /* width: 200px; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   row-gap: 10px;
-  overflow: hidden;
 }
 .modal__title {
   color: #000;
@@ -170,10 +175,7 @@ a {
 }
 .modal__input__box {
 }
-.modal__input__field {
-  margin: 10px 0;
-  cursor: pointer;
-}
+
 /* ===========================================================================
                                     Menu End
 ============================================================================ */
