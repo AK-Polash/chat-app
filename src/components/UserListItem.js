@@ -123,7 +123,10 @@ const UserListItem = (props) => {
         {props.button === "button" ? (
           <button className="user__btn"> {props.buttonText} </button>
         ) : props.button === "icon" ? (
-          <button className="user__icon__btn">
+          <button
+            onClick={props.handleAddFriendRequest}
+            className="user__icon__btn"
+          >
             <HiPlus />
           </button>
         ) : props.button === "dualButton" ? (
@@ -131,7 +134,7 @@ const UserListItem = (props) => {
             <button className="user__btn  user__btn__one">
               {props.buttonOneText}
             </button>
-            <button className="user__btn  user__btn__two">
+            <button onClick={props.buttonTwoOnclick} className="user__btn  user__btn__two">
               {props.buttonTwoText}
             </button>
           </>

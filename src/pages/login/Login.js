@@ -158,10 +158,9 @@ const Login = () => {
   const handleOpen = () => {
     setOpen(true);
     setLoginErrMsg({ forgotPasswordErrMsg: "" });
-    {
-      loginFormData.forgotPassword &&
-        setLoginFormData({ ...loginFormData, forgotPassword: "" });
-    }
+
+    loginFormData.forgotPassword &&
+      setLoginFormData({ ...loginFormData, forgotPassword: "" });
   };
   const handleClose = () => setOpen(false);
 
