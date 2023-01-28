@@ -83,12 +83,19 @@ const RootLayout = () => {
         getDownloadURL(storageRef).then((downloadURL) => {
           updateProfile(auth.currentUser, {
             photoURL: downloadURL,
-          }).then(() => {
-            dispatch(activeUser(auth.currentUser));
-            localStorage.setItem("userInfo", JSON.stringify(auth.currentUser));
+          })
+            .then(() => {
+              dispatch(activeUser(auth.currentUser));
+              localStorage.setItem(
+                "userInfo",
+                JSON.stringify(auth.currentUser)
+              );
 
-            console.log("profile updated..!!");
-          });
+              console.log("profile updated..!!");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         });
       });
     }
@@ -130,7 +137,7 @@ const RootLayout = () => {
           <div className="menu__main">
             <div className="user__holder">
               <div className="image__holder">
-                {data.userData.userInfo.photoURL ? (
+                {data.userData.userInfo && data.userData.userInfo.photoURL ? (
                   <Image
                     onClick={handleOpen}
                     className="profile__img"
@@ -146,7 +153,7 @@ const RootLayout = () => {
                 )}
               </div>
               <h4 className="user__name">
-                {data.userData.userInfo.displayName}
+                {data.userData.userInfo && data.userData.userInfo.displayName}
               </h4>
             </div>
             <div className="menu__holder">
@@ -196,7 +203,8 @@ const RootLayout = () => {
 
                   {image ? (
                     <div className="img-preview"></div>
-                  ) : data.userData.userInfo.photoURL ? (
+                  ) : data.userData.userInfo &&
+                    data.userData.userInfo.photoURL ? (
                     <div className="image__holder">
                       <Image
                         className="profile__img"
