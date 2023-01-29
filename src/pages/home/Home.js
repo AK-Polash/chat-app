@@ -47,7 +47,7 @@ const Home = () => {
       snapshot.forEach((item) => {
         // Note: amr(Current Logged in user) id er sathe jodi kuno receiver er id er mil pawa jay taholei amake kew request pathaise..
         if (item.val().receiverId === data.userData.userInfo.uid) {
-          arr.push(item.val());
+          arr.push({ ...item.val(), id: item.key });
         }
         arrTwo.push(item.val().senderId + item.val().receiverId);
         arrThree.push({ ...item.val(), id: item.key });
@@ -85,8 +85,13 @@ const Home = () => {
   let handleAcceptFriendRequest = () => {
     console.log("Accept Friend Request Done..!");
   };
-  let handleRejectFriendRequest = () => {
-    console.log("Reject Friend Request Done..!");
+
+  let handleRejectFriendRequest = (rejectItem) => {
+    friendRequests.map(() => {
+      remove(ref(db, "friendRequest/" + rejectItem.id)).then(() => {
+        toast("Rejected Friend Request..!");
+      });
+    });
   };
 
   return (
@@ -218,7 +223,7 @@ const Home = () => {
                     buttonOneText="Accept"
                     buttonOneOnclick={handleAcceptFriendRequest}
                     buttonTwoText="Reject"
-                    buttonTwoOnclick={handleRejectFriendRequest}
+                    buttonTwoOnclick={() => handleRejectFriendRequest(item)}
                   />
                 ))
               ) : (
