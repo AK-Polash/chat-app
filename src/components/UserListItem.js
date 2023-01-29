@@ -131,7 +131,7 @@ const UserListItem = (props) => {
           </button>
         ) : props.button === "dualButton" ? (
           <>
-            <button className="user__btn  user__btn__one">
+            <button onClick={props.buttonOneOnclick} className="user__btn  user__btn__one">
               {props.buttonOneText}
             </button>
             <button onClick={props.buttonTwoOnclick} className="user__btn  user__btn__two">

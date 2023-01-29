@@ -21,8 +21,10 @@ import { RiLogoutBoxRLine } from "react-icons/ri";
 import Image from "./Image";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import Avatar from "@mui/material/Avatar";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
+import { ToastContainer, toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -91,7 +93,7 @@ const RootLayout = () => {
                 JSON.stringify(auth.currentUser)
               );
 
-              console.log("profile updated..!!");
+              toast("Updated Profile Picture");
             })
             .catch((error) => {
               console.log(error);
@@ -123,6 +125,7 @@ const RootLayout = () => {
   return (
     <>
       <Grid container columnSpacing={2} sx={{ padding: "0 16px" }}>
+        <ToastContainer />
         <Grid
           sx={{
             width: "100%",
@@ -145,10 +148,10 @@ const RootLayout = () => {
                     alt="Profile Img"
                   />
                 ) : (
-                  <Image
+                  <Avatar
+                    onClick={handleOpen}
+                    sx={{ width: "100%", height: "100%" }}
                     className="profile__img"
-                    imageSource="assets/profile__img.png"
-                    alt="UserProfile Img"
                   />
                 )}
               </div>
@@ -207,17 +210,16 @@ const RootLayout = () => {
                     data.userData.userInfo.photoURL ? (
                     <div className="image__holder">
                       <Image
-                        className="profile__img"
+                        className="profile__img cursorLess__profile__img"
                         imageSource={data.userData.userInfo.photoURL}
                         alt="UserProfile Img"
                       />
                     </div>
                   ) : (
                     <div className="image__holder">
-                      <Image
+                      <Avatar
+                        sx={{ width: "100%", height: "100%" }}
                         className="profile__img"
-                        imageSource="assets/profile__img.png"
-                        alt="UserProfile Img"
                       />
                     </div>
                   )}

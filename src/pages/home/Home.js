@@ -13,6 +13,7 @@ import ContentHeading from "../../components/ContentHeading";
 import UserLists from "../../components/UserLists";
 import UserListItem from "../../components/UserListItem";
 import Alert from "@mui/material/Alert";
+import { ToastContainer, toast } from "react-toastify";
 import "./home.css";
 
 const Home = () => {
@@ -21,6 +22,7 @@ const Home = () => {
   let [users, setUsers] = useState([]);
   let [friendRequests, setFriendRequests] = useState([]);
   let [friendConnection, setFriendConnection] = useState([]);
+  let [friendConnectionKey, setFriendConnectionKey] = useState([]);
 
   useEffect(() => {
     // Reading Realtime User List (persons who has already completed Registration):
@@ -40,6 +42,7 @@ const Home = () => {
     onValue(friendRequestRef, (snapshot) => {
       let arr = [];
       let arrTwo = [];
+      let arrThree = [];
 
       snapshot.forEach((item) => {
         // Note: amr(Current Logged in user) id er sathe jodi kuno receiver er id er mil pawa jay taholei amake kew request pathaise..
@@ -47,17 +50,17 @@ const Home = () => {
           arr.push(item.val());
         }
         arrTwo.push(item.val().senderId + item.val().receiverId);
+        arrThree.push({ ...item.val(), id: item.key });
       });
 
       setFriendRequests(arr);
       setFriendConnection(arrTwo);
+      setFriendConnectionKey(arrThree);
     });
   }, []);
 
-  // let [buttonType, setButtonType] = useState(false);
+  // Send Friend Request Functionality:
   let handleAddFriend = (clickedUser) => {
-    // setButtonType(true);
-
     set(push(ref(db, "friendRequest/")), {
       senderName: data.userData.userInfo.displayName,
       senderId: data.userData.userInfo.uid,
@@ -65,24 +68,30 @@ const Home = () => {
       receiverId: clickedUser.id,
     });
 
-    console.log("Friend Request sent..!");
+    toast("Friend Request sent..!");
   };
 
+  // Cancel Send Friend Request Functionality:
   let handleCancel = (cancelItem) => {
-    const friendRequestRef = ref(db, "friendRequest/");
-    onValue(friendRequestRef, (snapshot) => {
-      snapshot.forEach((item) => {
-        if (cancelItem.id === item.val().receiverId) {
-          remove(ref(db, "friendRequest/" + item.key)).then(() => {
-            console.log("cancel hoise");
-          });
-        }
-      });
+    friendConnectionKey.map((item) => {
+      if (cancelItem.id === item.receiverId) {
+        remove(ref(db, "friendRequest/" + item.id)).then(() => {
+          toast("Canceled Friend Request..!");
+        });
+      }
     });
+  };
+
+  let handleAcceptFriendRequest = () => {
+    console.log("Accept Friend Request Done..!");
+  };
+  let handleRejectFriendRequest = () => {
+    console.log("Reject Friend Request Done..!");
   };
 
   return (
     <div className="main__home">
+      <ToastContainer />
       <Grid container spacing={3} sx={{ height: "100%" }}>
         {/* ================================== Group List START ==================================== */}
         <Grid item xs={4}>
@@ -135,13 +144,6 @@ const Home = () => {
             <UserLists>
               <UserListItem
                 imageAs="small"
-                // userAs="active"
-                heading="Asif Khan"
-                textAs="hi..!"
-                buttonText="Today, 8pm"
-              />
-              <UserListItem
-                imageAs="small"
                 userAs="active"
                 heading="Asif Khan"
                 textAs="hello..!"
@@ -152,13 +154,6 @@ const Home = () => {
                 // userAs="active"
                 heading="Asif Khan"
                 textAs="hey..!"
-                buttonText="Today, 8pm"
-              />
-              <UserListItem
-                imageAs="small"
-                userAs="active"
-                heading="Asif Khan"
-                textAs="hello..!"
                 buttonText="Today, 8pm"
               />
             </UserLists>
@@ -221,7 +216,9 @@ const Home = () => {
                     textAs="Hi buddy.."
                     button="dualButton"
                     buttonOneText="Accept"
+                    buttonOneOnclick={handleAcceptFriendRequest}
                     buttonTwoText="Reject"
+                    buttonTwoOnclick={handleRejectFriendRequest}
                   />
                 ))
               ) : (

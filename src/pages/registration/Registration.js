@@ -50,7 +50,7 @@ const MyTextField = styled(TextField)({
     fontSize: "20px",
     fontWeight: "600",
     color: "#11175D",
-    textAlign: "center",
+    // textAlign: "center",
   },
   "& label.Mui-focused": {
     color: "#585D8E",
