@@ -3,6 +3,7 @@ import ContentHeading from "./ContentHeading";
 import Lists from "./Lists";
 import ListItem from "./ListItem";
 import Grid from "@mui/material/Grid";
+import Alert from "@mui/material/Alert";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { useSelector } from "react-redux";
 
@@ -35,26 +36,32 @@ const Friends = () => {
         <ContentHeading heading="Friends" />
 
         <Lists>
-          {friends.map((item, index) =>
-            data.userData.userInfo.uid === item.receiverId ? (
-              <ListItem
-                key={index}
-                imageAs="small"
-                // userAs="active"
-                heading={item.senderName}
-                textAs="hello..!"
-                buttonText={item.date}
-              />
-            ) : (
-              <ListItem
-                key={index}
-                imageAs="small"
-                userAs="active"
-                heading={item.receiverName}
-                textAs="hello..!"
-                buttonText={item.date}
-              />
+          {friends.length > 0 ? (
+            friends.map((item, index) =>
+              data.userData.userInfo.uid === item.receiverId ? (
+                <ListItem
+                  key={index}
+                  imageAs="small"
+                  // userAs="active"
+                  heading={item.senderName}
+                  textAs="hello..!"
+                  buttonText={item.date}
+                />
+              ) : (
+                <ListItem
+                  key={index}
+                  imageAs="small"
+                  userAs="active"
+                  heading={item.receiverName}
+                  textAs="hello..!"
+                  buttonText={item.date}
+                />
+              )
             )
+          ) : (
+            <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
+              No Friends!
+            </Alert>
           )}
         </Lists>
       </section>
