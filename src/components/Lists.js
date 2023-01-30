@@ -1,7 +1,7 @@
 import React from "react";
 
-const UserLists = ({ children }) => {
+const Lists = ({ children }) => {
   return <div className=""> {children} </div>;
 };
 
-export default UserLists;
+export default Lists;

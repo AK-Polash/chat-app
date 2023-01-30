@@ -36,7 +36,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const UserListItem = (props) => {
+const ListItem = (props) => {
   return (
     <div className="section__users">
       <div className="user__left__side">
@@ -131,10 +131,16 @@ const UserListItem = (props) => {
           </button>
         ) : props.button === "dualButton" ? (
           <>
-            <button onClick={props.buttonOneOnclick} className="user__btn  user__btn__one">
+            <button
+              onClick={props.buttonOneOnclick}
+              className="user__btn  user__btn__one"
+            >
               {props.buttonOneText}
             </button>
-            <button onClick={props.buttonTwoOnclick} className="user__btn  user__btn__two">
+            <button
+              onClick={props.buttonTwoOnclick}
+              className="user__btn  user__btn__two"
+            >
               {props.buttonTwoText}
             </button>
           </>
@@ -146,4 +152,4 @@ const UserListItem = (props) => {
   );
 };
 
-export default UserListItem;
+export default ListItem;
