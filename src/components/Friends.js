@@ -60,7 +60,7 @@ const Friends = () => {
             )
           ) : (
             <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
-              No Friends!
+              No Friends..!
             </Alert>
           )}
         </Lists>

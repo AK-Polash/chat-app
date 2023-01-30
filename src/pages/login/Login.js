@@ -231,7 +231,7 @@ const Login = () => {
 
             setTimeout(() => {
               navigate("/");
-            }, 2500);
+            }, 2000);
           } else {
             toast("Varify Your Email To Login!");
 
