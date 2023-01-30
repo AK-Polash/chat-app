@@ -121,7 +121,7 @@ const ListItem = (props) => {
 
       <div className="user__right__side">
         {props.button === "button" ? (
-          <button className="user__btn"> {props.buttonText} </button>
+          <button onClick={props.handleClick} className="user__btn"> {props.buttonText} </button>
         ) : props.button === "icon" ? (
           <button
             onClick={props.handleAddFriendRequest}

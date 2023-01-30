@@ -4,7 +4,14 @@ import Lists from "./Lists";
 import ListItem from "./ListItem";
 import Grid from "@mui/material/Grid";
 import Alert from "@mui/material/Alert";
-import { getDatabase, ref, onValue } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  push,
+  remove,
+} from "firebase/database";
 import { useSelector } from "react-redux";
 
 const Friends = () => {
@@ -31,8 +38,34 @@ const Friends = () => {
   }, []);
 
   // Block Functionality:
-  let handleBlock = (blockItem) => {
-    console.log(blockItem);
+  let handleBlock = (item) => {
+    console.log(item);
+    // Based on Friend Request: I 'Received'/'Send' "Friend Request" ..?
+    data.userData.userInfo.uid === item.senderId
+      ? set(push(ref(db, "blockList/")), {
+          blockName: item.receiverName,
+          blockId: item.receiverId,
+          blockByName: item.senderName,
+          blockById: item.senderId,
+        })
+          .then(() => {
+            // remove(ref(db, "friends/" + item.id));
+          })
+          .catch((error) => {
+            console.log(error.code);
+          })
+      : set(push(ref(db, "blockList/")), {
+          blockName: item.senderName,
+          blockId: item.senderId,
+          blockByName: item.receiverName,
+          blockById: item.receiverId,
+        })
+          .then(() => {
+            // remove(ref(db, "friends/" + item.id));
+          })
+          .catch((error) => {
+            console.log(error.code);
+          });
   };
 
   return (
