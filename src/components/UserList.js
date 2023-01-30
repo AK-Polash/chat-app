@@ -13,6 +13,7 @@ import {
 } from "firebase/database";
 import { toast } from "react-toastify";
 import Grid from "@mui/material/Grid";
+import Alert from "@mui/material/Alert";
 
 const UserList = () => {
   const db = getDatabase();
@@ -77,29 +78,37 @@ const UserList = () => {
         <ContentHeading heading="User List" />
 
         <Lists>
-          {users.map((item) =>
-            friendConnection.includes(data.userData.userInfo.uid + item.id) ||
-            friendConnection.includes(item.id + data.userData.userInfo.uid) ? (
-              <ListItem
-                key={item.id}
-                imageAs="small"
-                heading={item.username}
-                textAs="Yestarday, 5am"
-                button="dualButton"
-                buttonOneText="Pending"
-                buttonTwoText="Cancel"
-                buttonTwoOnclick={() => handleCancel(item)}
-              />
-            ) : (
-              <ListItem
-                key={item.id}
-                imageAs="small"
-                heading={item.username}
-                textAs="Yestarday, 5am"
-                button="icon"
-                handleAddFriendRequest={() => handleAddFriend(item)}
-              />
+          {users.length > 0 ? (
+            users.map((item) =>
+              friendConnection.includes(data.userData.userInfo.uid + item.id) ||
+              friendConnection.includes(
+                item.id + data.userData.userInfo.uid
+              ) ? (
+                <ListItem
+                  key={item.id}
+                  imageAs="small"
+                  heading={item.username}
+                  textAs="Yestarday, 5am"
+                  button="dualButton"
+                  buttonOneText="Pending"
+                  buttonTwoText="Cancel"
+                  buttonTwoOnclick={() => handleCancel(item)}
+                />
+              ) : (
+                <ListItem
+                  key={item.id}
+                  imageAs="small"
+                  heading={item.username}
+                  textAs="Yestarday, 5am"
+                  button="icon"
+                  handleAddFriendRequest={() => handleAddFriend(item)}
+                />
+              )
             )
+          ) : (
+            <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
+              No User..!
+            </Alert>
           )}
         </Lists>
       </section>
