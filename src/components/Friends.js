@@ -30,6 +30,11 @@ const Friends = () => {
     });
   }, []);
 
+  // Block Functionality:
+  let handleBlock = (blockItem) => {
+    console.log(blockItem);
+  };
+
   return (
     <Grid item xs={4}>
       <section className="section__main">
@@ -45,7 +50,10 @@ const Friends = () => {
                   // userAs="active"
                   heading={item.senderName}
                   textAs="hello..!"
-                  buttonText={item.date}
+                  button="buttonAndText"
+                  contentText={item.date}
+                  buttonText="Block"
+                  buttonAndTextOnclick={() => handleBlock(item)}
                 />
               ) : (
                 <ListItem
@@ -53,8 +61,11 @@ const Friends = () => {
                   imageAs="small"
                   userAs="active"
                   heading={item.receiverName}
-                  textAs="hello..!"
-                  buttonText={item.date}
+                  textAs="hi..!"
+                  button="buttonAndText"
+                  contentText={item.date}
+                  buttonText="Block"
+                  buttonAndTextOnclick={() => handleBlock(item)}
                 />
               )
             )

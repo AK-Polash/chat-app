@@ -162,6 +162,13 @@
   margin-right: 10px;
 }
 
+.user__right__side {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 30px;
+}
+
 /* ===================================================================
                              Section End
 ==================================================================== */

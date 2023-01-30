@@ -144,6 +144,16 @@ const ListItem = (props) => {
               {props.buttonTwoText}
             </button>
           </>
+        ) : props.button === "buttonAndText" ? (
+          <>
+            <div className="sub__heading__small">
+              {props.contentText}
+            </div>
+
+            <button onClick={props.buttonAndTextOnclick} className="user__btn">
+              {props.buttonText}
+            </button>
+          </>
         ) : (
           <p className="sub__heading__small"> {props.buttonText} </p>
         )}
