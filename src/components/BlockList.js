@@ -46,18 +46,19 @@ const BlockList = () => {
 
   // Unblock Functionality:
   let handleUnBlock = (item) => {
-    console.log(item);
+    // senderName, senderId, receiverName, & receiverId are not True after Unblocking person...!!
+    set(push(ref(db, "friends/")), {
+      date: `${new Date().getDate()} - ${
+        new Date().getMonth() + 1
+      } - ${new Date().getFullYear()} `,
 
-    // set(push(ref(db, "friendRequest/")), {
-    //   date: `${new Date().getDate()} - ${
-    //     new Date().getMonth() + 1
-    //   } - ${new Date().getFullYear()} `,
-
-    //   senderName: data.userData.userInfo.displayName,
-    //   senderId: data.userData.userInfo.uid,
-    //   receiverName: clickedUser.username,
-    //   receiverId: clickedUser.id,
-    // });
+      senderName: item.blockName,
+      senderId: item.blockId,
+      receiverName: data.userData.userInfo.displayName,
+      receiverId: data.userData.userInfo.uid,
+    }).then(() => {
+      remove(ref(db, "blockList/" + item.id));
+    });
   };
 
   return (

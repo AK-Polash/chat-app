@@ -39,7 +39,6 @@ const Friends = () => {
 
   // Block Functionality:
   let handleBlock = (item) => {
-    console.log(item);
     // Based on Friend Request: I 'Received'/'Send' "Friend Request" ..?
     data.userData.userInfo.uid === item.senderId
       ? set(push(ref(db, "blockList/")), {
@@ -49,7 +48,7 @@ const Friends = () => {
           blockById: item.senderId,
         })
           .then(() => {
-            // remove(ref(db, "friends/" + item.id));
+            remove(ref(db, "friends/" + item.id));
           })
           .catch((error) => {
             console.log(error.code);
@@ -61,7 +60,7 @@ const Friends = () => {
           blockById: item.receiverId,
         })
           .then(() => {
-            // remove(ref(db, "friends/" + item.id));
+            remove(ref(db, "friends/" + item.id));
           })
           .catch((error) => {
             console.log(error.code);
