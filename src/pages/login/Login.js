@@ -219,30 +219,40 @@ const Login = () => {
           setLoginFormData({ loginEmail: "", loginPassword: "" });
           setDisable(true);
 
-          if (userCredential.user.emailVerified) {
-            dispatch(activeUser(userCredential.user));
-            localStorage.setItem(
-              "userInfo",
-              JSON.stringify(userCredential.user)
-            );
+          // if (userCredential.user.emailVerified) {
+          //   dispatch(activeUser(userCredential.user));
+          //   localStorage.setItem(
+          //     "userInfo",
+          //     JSON.stringify(userCredential.user)
+          //   );
 
-            toast("Login Successful!");
-            setLoader(true);
+          //   toast("Login Successful!");
+          //   setLoader(true);
 
-            setTimeout(() => {
-              navigate("/");
-            }, 2000);
-          } else {
-            toast("Varify Your Email To Login!");
+          //   setTimeout(() => {
+          //     navigate("/");
+          //   }, 2000);
+          // } else {
+          //   toast("Varify Your Email To Login!");
 
-            setTimeout(() => {
-              navigate(
-                window.location.replace(
-                  "https://mail.google.com/mail/u/0/#inbox"
-                )
-              );
-            }, 2000);
-          }
+          //   setTimeout(() => {
+          //     navigate(
+          //       window.location.replace(
+          //         "https://mail.google.com/mail/u/0/#inbox"
+          //       )
+          //     );
+          //   }, 2000);
+          // }
+
+          dispatch(activeUser(userCredential.user));
+          localStorage.setItem("userInfo", JSON.stringify(userCredential.user));
+
+          toast("Login Successful!");
+          setLoader(true);
+
+          setTimeout(() => {
+            navigate("/");
+          }, 6000);
         })
         .catch((error) => {
           const errorCode = error.code;
