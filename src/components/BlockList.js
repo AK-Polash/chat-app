@@ -13,7 +13,6 @@ import {
 } from "firebase/database";
 import { useSelector } from "react-redux";
 import Alert from "@mui/material/Alert";
-import { toast } from "react-toastify";
 
 const BlockList = () => {
   const db = getDatabase();
@@ -31,12 +30,18 @@ const BlockList = () => {
             id: item.key,
             blockName: item.val().blockName,
             blockId: item.val().blockId,
+            date: `${new Date().getDate()} - ${
+              new Date().getMonth() + 1
+            } - ${new Date().getFullYear()} `,
           });
         } else {
           blockListArr.push({
             id: item.key,
             blockByName: item.val().blockByName,
             blockById: item.val().blockById,
+            date: `${new Date().getDate()} - ${
+              new Date().getMonth() + 1
+            } - ${new Date().getFullYear()} `,
           });
         }
       });
@@ -74,7 +79,7 @@ const BlockList = () => {
                   key={item.id}
                   imageAs="small"
                   heading={item.blockByName}
-                  textAs="Yestarday, 5am"
+                  textAs={item.date}
                   button="button"
                   buttonText="Unblock"
                   handleClick={() => handleUnBlock(item)}
@@ -84,7 +89,7 @@ const BlockList = () => {
                   key={item.id}
                   imageAs="small"
                   heading={item.blockName}
-                  textAs="Yestarday, 5am"
+                  textAs={item.date}
                   button="button"
                   buttonText="Unblock"
                   handleClick={() => handleUnBlock(item)}
