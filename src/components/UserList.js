@@ -72,6 +72,26 @@ const UserList = () => {
     });
   };
 
+  let [receiverList, setReceiverList] = useState(false);
+  let [senderList, setSenderList] = useState(false);
+  // let [friendList, setFriendList] = useState(true);
+
+  useEffect(() => {
+    friendConnectionKey.map((item) => {
+      if (data.userData.userInfo.uid === item.receiverId) {
+        setReceiverList(true);
+      } else {
+        setReceiverList(false);
+      }
+
+      if (data.userData.userInfo.uid === item.senderId) {
+        setSenderList(true);
+      } else {
+        setSenderList(false);
+      }
+    });
+  }, [friendConnectionKey]);
+
   return (
     <Grid item xs={4}>
       <section className="section__main">
@@ -84,16 +104,40 @@ const UserList = () => {
               friendConnection.includes(
                 item.id + data.userData.userInfo.uid
               ) ? (
-                <ListItem
-                  key={item.id}
-                  imageAs="small"
-                  heading={item.username}
-                  textAs="Yestarday, 5am"
-                  button="dualButton"
-                  buttonOneText="Pending"
-                  buttonTwoText="Cancel"
-                  buttonTwoOnclick={() => handleCancel(item)}
-                />
+                <>
+                  {receiverList && (
+                    <ListItem
+                      key={item.id}
+                      imageAs="small"
+                      heading={item.username}
+                      textAs="Yestarday, 5am"
+                      button="button"
+                      buttonText="Pending"
+                    />
+                  )}
+
+                  {senderList ? (
+                    <ListItem
+                      key={item.id}
+                      imageAs="small"
+                      heading={item.username}
+                      textAs="Yestarday, 5am"
+                      button="button"
+                      buttonText="Pending"
+                    />
+                  ) : (
+                    <ListItem
+                      key={item.id}
+                      imageAs="small"
+                      heading={item.username}
+                      textAs="Yestarday, 5am"
+                      button="dualButton"
+                      buttonOneText="Pending"
+                      buttonTwoText="Cancel"
+                      buttonTwoOnclick={() => handleCancel(item)}
+                    />
+                  )}
+                </>
               ) : (
                 <ListItem
                   key={item.id}
