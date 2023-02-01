@@ -21,6 +21,7 @@ const UserList = () => {
   let [users, setUsers] = useState([]);
   let [friendConnection, setFriendConnection] = useState([]);
   let [friendConnectionKey, setFriendConnectionKey] = useState([]);
+  let [friends, setFriends] = useState([]);
 
   useEffect(() => {
     const usersRef = ref(db, "users/");
@@ -46,6 +47,17 @@ const UserList = () => {
 
       setFriendConnection(arrTwo);
       setFriendConnectionKey(arrThree);
+    });
+
+    const friendsRef = ref(db, "friends/");
+    onValue(friendsRef, (snapshot) => {
+      let friendsArr = [];
+
+      snapshot.forEach((item) => {
+        friendsArr.push(item.val().senderId + item.val().receiverId);
+      });
+
+      setFriends(friendsArr);
     });
   }, []);
 
@@ -80,10 +92,22 @@ const UserList = () => {
         <Lists>
           {users.length > 0 ? (
             users.map((item) =>
-              friendConnection.includes(data.userData.userInfo.uid + item.id) ||
-              friendConnection.includes(
-                item.id + data.userData.userInfo.uid
-              ) ? (
+              friends.includes(data.userData.userInfo.uid + item.id) ||
+              friends.includes(item.id + data.userData.userInfo.uid) ? (
+                <ListItem
+                  key={item.id}
+                  imageAs="small"
+                  heading={item.username}
+                  textAs="Today, 3pm"
+                  button="button"
+                  buttonText="Friend"
+                />
+              ) : friendConnection.includes(
+                  data.userData.userInfo.uid + item.id
+                ) ||
+                friendConnection.includes(
+                  item.id + data.userData.userInfo.uid
+                ) ? (
                 friendConnection.includes(
                   data.userData.userInfo.uid + item.id
                 ) ? (
