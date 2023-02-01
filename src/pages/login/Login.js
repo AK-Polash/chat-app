@@ -31,6 +31,7 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
 import "./login.css";
+import { getDatabase, ref, set } from "firebase/database";
 
 const LoginTextField = styled(TextField)({
   ".css-1c2i806-MuiFormLabel-root-MuiInputLabel-root": {
@@ -154,6 +155,7 @@ const style = {
 };
 
 const Login = () => {
+  const db = getDatabase();
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -276,6 +278,12 @@ const Login = () => {
   let handleGoogle = () => {
     signInWithPopup(auth, provider)
       .then((userCredential) => {
+        set(ref(db, "users/" + userCredential.user.uid), {
+          username: userCredential.user.displayName,
+          email: userCredential.user.email,
+          // profile_picture : imageUrl
+        });
+
         dispatch(activeUser(userCredential.user));
         localStorage.setItem("userInfo", JSON.stringify(userCredential.user));
 
