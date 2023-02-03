@@ -34,15 +34,6 @@ const BlockList = () => {
               new Date().getMonth() + 1
             } - ${new Date().getFullYear()} `,
           });
-        } else {
-          blockListArr.push({
-            id: item.key,
-            blockByName: item.val().blockByName,
-            blockById: item.val().blockById,
-            date: `${new Date().getDate()} - ${
-              new Date().getMonth() + 1
-            } - ${new Date().getFullYear()} `,
-          });
         }
       });
       setBlockList(blockListArr);
@@ -51,7 +42,7 @@ const BlockList = () => {
 
   // Unblock Functionality:
   let handleUnBlock = (item) => {
-    // senderName, senderId, receiverName, & receiverId are not True after Unblocking person...!!
+    // senderName, senderId, receiverName, & receiverId are not Always True after Unblocking person...!!
     set(push(ref(db, "friends/")), {
       date: `${new Date().getDate()} - ${
         new Date().getMonth() + 1
@@ -73,29 +64,17 @@ const BlockList = () => {
 
         <Lists>
           {blockList.length > 0 ? (
-            blockList.map((item) =>
-              item.blockByName ? (
-                <ListItem
-                  key={item.id}
-                  imageAs="small"
-                  heading={item.blockByName}
-                  textAs={item.date}
-                  button="button"
-                  buttonText="Unblock"
-                  handleClick={() => handleUnBlock(item)}
-                />
-              ) : (
-                <ListItem
-                  key={item.id}
-                  imageAs="small"
-                  heading={item.blockName}
-                  textAs={item.date}
-                  button="button"
-                  buttonText="Unblock"
-                  handleClick={() => handleUnBlock(item)}
-                />
-              )
-            )
+            blockList.map((item) => (
+              <ListItem
+                key={item.id}
+                imageAs="small"
+                heading={item.blockName}
+                textAs={item.date}
+                button="button"
+                buttonText="Unblock"
+                handleClick={() => handleUnBlock(item)}
+              />
+            ))
           ) : (
             <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
               Empty Block List..!

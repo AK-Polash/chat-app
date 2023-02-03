@@ -22,6 +22,7 @@ const UserList = () => {
   let [friendConnection, setFriendConnection] = useState([]);
   let [friendConnectionKey, setFriendConnectionKey] = useState([]);
   let [friends, setFriends] = useState([]);
+  let [blockList, setBlockList] = useState([]);
 
   useEffect(() => {
     const usersRef = ref(db, "users/");
@@ -32,6 +33,7 @@ const UserList = () => {
           arr.push({ ...item.val(), id: item.key });
         }
       });
+
       setUsers(arr);
     });
 
@@ -39,7 +41,6 @@ const UserList = () => {
     onValue(friendRequestRef, (snapshot) => {
       let arrTwo = [];
       let arrThree = [];
-
       snapshot.forEach((item) => {
         arrTwo.push(item.val().senderId + item.val().receiverId);
         arrThree.push({ ...item.val(), id: item.key });
@@ -52,12 +53,21 @@ const UserList = () => {
     const friendsRef = ref(db, "friends/");
     onValue(friendsRef, (snapshot) => {
       let friendsArr = [];
-
       snapshot.forEach((item) => {
         friendsArr.push(item.val().senderId + item.val().receiverId);
       });
 
       setFriends(friendsArr);
+    });
+
+    const blockListRef = ref(db, "blockList/");
+    onValue(blockListRef, (snapshot) => {
+      let blockListArr = [];
+      snapshot.forEach((item) => {
+        blockListArr.push(item.val().blockById + item.val().blockId);
+      });
+
+      setBlockList(blockListArr);
     });
   }, []);
 
@@ -101,6 +111,23 @@ const UserList = () => {
                   textAs="Today, 3pm"
                   button="button"
                   buttonText="Friend"
+                />
+              ) : blockList.includes(data.userData.userInfo.uid + item.id) ? (
+                <ListItem
+                  key={item.id}
+                  imageAs="small"
+                  heading={item.username}
+                  textAs="Today, 3pm"
+                  button="button"
+                  buttonText="Blocked"
+                />
+              ) : blockList.includes(item.id + data.userData.userInfo.uid) ? (
+                <ListItem
+                  key={item.id}
+                  imageAs="small"
+                  heading={item.username}
+                  textAs="Today, 3pm"
+                  buttonText="Blocked By"
                 />
               ) : friendConnection.includes(
                   data.userData.userInfo.uid + item.id
