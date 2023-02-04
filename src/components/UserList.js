@@ -78,9 +78,9 @@ const UserList = () => {
       senderId: data.userData.userInfo.uid,
       receiverName: clickedUser.username,
       receiverId: clickedUser.id,
+    }).then(() => {
+      toast("Friend Request sent..!");
     });
-
-    toast("Friend Request sent..!");
   };
 
   // Cancel Send Friend Request Functionality:
@@ -127,7 +127,7 @@ const UserList = () => {
                   imageAs="small"
                   heading={item.username}
                   textAs="Today, 3pm"
-                  buttonText="Blocked By"
+                  buttonText="You Blocked By"
                 />
               ) : friendConnection.includes(
                   data.userData.userInfo.uid + item.id
