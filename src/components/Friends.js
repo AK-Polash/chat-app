@@ -44,8 +44,10 @@ const Friends = () => {
       ? set(push(ref(db, "blockList/")), {
           blockName: item.receiverName,
           blockId: item.receiverId,
+          blockPhoto: item.receiverPhoto,
           blockByName: item.senderName,
           blockById: item.senderId,
+          blockByPhoto: item.senderPhoto,
         })
           .then(() => {
             remove(ref(db, "friends/" + item.id));
@@ -56,8 +58,10 @@ const Friends = () => {
       : set(push(ref(db, "blockList/")), {
           blockName: item.senderName,
           blockId: item.senderId,
+          blockPhoto: item.senderPhoto,
           blockByName: item.receiverName,
           blockById: item.receiverId,
+          blockByPhoto: item.receiverPhoto,
         })
           .then(() => {
             remove(ref(db, "friends/" + item.id));
@@ -79,6 +83,7 @@ const Friends = () => {
                 <ListItem
                   key={index}
                   imageAs="small"
+                  photoURL={item.senderPhoto}
                   // userAs="active"
                   heading={item.senderName}
                   textAs="hello..!"
@@ -91,6 +96,7 @@ const Friends = () => {
                 <ListItem
                   key={index}
                   imageAs="small"
+                  photoURL={item.receiverPhoto}
                   userAs="active"
                   heading={item.receiverName}
                   textAs="hi..!"

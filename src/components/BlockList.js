@@ -30,6 +30,7 @@ const BlockList = () => {
             id: item.key,
             blockName: item.val().blockName,
             blockId: item.val().blockId,
+            blockPhoto: item.val().blockPhoto,
             date: `${new Date().getDate()} - ${
               new Date().getMonth() + 1
             } - ${new Date().getFullYear()} `,
@@ -50,8 +51,10 @@ const BlockList = () => {
 
       senderName: item.blockName,
       senderId: item.blockId,
+      senderPhoto: item.blockPhoto,
       receiverName: data.userData.userInfo.displayName,
       receiverId: data.userData.userInfo.uid,
+      receiverPhoto: data.userData.userInfo.photoURL,
     }).then(() => {
       remove(ref(db, "blockList/" + item.id));
     });
@@ -68,6 +71,7 @@ const BlockList = () => {
               <ListItem
                 key={item.id}
                 imageAs="small"
+                photoURL={item.blockPhoto}
                 heading={item.blockName}
                 textAs={item.date}
                 button="button"

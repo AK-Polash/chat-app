@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "./Image";
 import { styled } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
 import { HiPlus } from "react-icons/hi";
+import { ColorRing } from "react-loader-spinner";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -49,7 +50,7 @@ const ListItem = (props) => {
               variant="dot"
             >
               <Image
-                imageSource="assets/group_2.png"
+                imageSource={props.photoURL}
                 className="user__image"
                 alt="user"
               />
@@ -60,7 +61,7 @@ const ListItem = (props) => {
             {props.imageAs === "large" && (
               <div className="user__large__image__holder">
                 <Image
-                  imageSource="assets/group_1.png"
+                  imageSource={props.photoURL}
                   className="user__image"
                   alt="user"
                 />
@@ -79,7 +80,7 @@ const ListItem = (props) => {
               variant="dot"
             >
               <Image
-                imageSource="assets/group_2.png"
+                imageSource={props.photoURL}
                 className="user__image"
                 alt="user"
               />
@@ -90,7 +91,7 @@ const ListItem = (props) => {
             {props.imageAs === "small" && (
               <div className="user__small__image__holder">
                 <Image
-                  imageSource="assets/group_1.png"
+                  imageSource={props.photoURL}
                   className="user__image"
                   alt="user"
                 />
@@ -121,7 +122,9 @@ const ListItem = (props) => {
 
       <div className="user__right__side">
         {props.button === "button" ? (
-          <button onClick={props.handleClick} className="user__btn"> {props.buttonText} </button>
+          <button onClick={props.handleClick} className="user__btn">
+            {props.buttonText}
+          </button>
         ) : props.button === "icon" ? (
           <button
             onClick={props.handleAddFriendRequest}
@@ -146,9 +149,7 @@ const ListItem = (props) => {
           </>
         ) : props.button === "buttonAndText" ? (
           <>
-            <div className="sub__heading__small">
-              {props.contentText}
-            </div>
+            <div className="sub__heading__small">{props.contentText}</div>
 
             <button onClick={props.buttonAndTextOnclick} className="user__btn">
               {props.buttonText}

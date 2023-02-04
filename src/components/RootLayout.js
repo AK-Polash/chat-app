@@ -9,6 +9,7 @@ import {
   uploadString,
   getDownloadURL,
 } from "firebase/storage";
+import { getDatabase, update, ref as databaseRef } from "firebase/database";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
@@ -39,6 +40,7 @@ const style = {
 };
 
 const RootLayout = () => {
+  let db = getDatabase();
   const auth = getAuth();
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -87,6 +89,10 @@ const RootLayout = () => {
             photoURL: downloadURL,
           })
             .then(() => {
+              update(databaseRef(db, "users/" + data.userData.userInfo.uid), {
+                photoURL: downloadURL,
+              });
+
               dispatch(activeUser(auth.currentUser));
               localStorage.setItem(
                 "userInfo",

@@ -23,6 +23,7 @@ const UserList = () => {
   let [friendConnectionKey, setFriendConnectionKey] = useState([]);
   let [friends, setFriends] = useState([]);
   let [blockList, setBlockList] = useState([]);
+  let [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const usersRef = ref(db, "users/");
@@ -76,8 +77,10 @@ const UserList = () => {
     set(push(ref(db, "friendRequest/")), {
       senderName: data.userData.userInfo.displayName,
       senderId: data.userData.userInfo.uid,
+      senderPhoto: data.userData.userInfo.photoURL,
       receiverName: clickedUser.username,
       receiverId: clickedUser.id,
+      receiverPhoto: clickedUser.photoURL,
     }).then(() => {
       toast("Friend Request sent..!");
     });
@@ -107,6 +110,7 @@ const UserList = () => {
                 <ListItem
                   key={item.id}
                   imageAs="small"
+                  photoURL={item.photoURL}
                   heading={item.username}
                   textAs="Today, 3pm"
                   button="button"
@@ -116,6 +120,7 @@ const UserList = () => {
                 <ListItem
                   key={item.id}
                   imageAs="small"
+                  photoURL={item.photoURL}
                   heading={item.username}
                   textAs="Today, 3pm"
                   button="button"
@@ -125,6 +130,7 @@ const UserList = () => {
                 <ListItem
                   key={item.id}
                   imageAs="small"
+                  photoURL={item.photoURL}
                   heading={item.username}
                   textAs="Today, 3pm"
                   buttonText="You Blocked By"
@@ -141,6 +147,7 @@ const UserList = () => {
                   <ListItem
                     key={item.id}
                     imageAs="small"
+                    photoURL={item.photoURL}
                     heading={item.username}
                     textAs="Yestarday, 5am"
                     button="dualButton"
@@ -152,6 +159,7 @@ const UserList = () => {
                   <ListItem
                     key={item.id}
                     imageAs="small"
+                    photoURL={item.photoURL}
                     heading={item.username}
                     textAs="Yestarday, 5am"
                     button="button"
@@ -162,6 +170,7 @@ const UserList = () => {
                 <ListItem
                   key={item.id}
                   imageAs="small"
+                  photoURL={item.photoURL}
                   heading={item.username}
                   textAs="Yestarday, 5am"
                   button="icon"

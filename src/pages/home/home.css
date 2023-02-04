@@ -67,10 +67,12 @@
 .user__small__image__holder {
   width: 50px;
   height: 50px;
-  border-radius: 50%;
+  border-radius: 50% !important;
 }
 .user__image {
   width: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .user__heading__small {
@@ -122,11 +124,6 @@
   border-radius: 50%;
 }
 
-.user__image {
-  width: 100%;
-  object-fit: cover;
-}
-
 /* .user__text__holder {
 } */
 
@@ -168,7 +165,6 @@
   justify-content: space-between;
   column-gap: 15px;
 }
-
 
 /* ===================================================================
                              Section End

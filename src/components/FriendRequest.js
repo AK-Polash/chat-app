@@ -66,6 +66,7 @@ const FriendRequest = () => {
               <ListItem
                 key={index}
                 imageAs="large"
+                photoURL={item.senderPhoto}
                 heading={item.senderName}
                 headingAs="h4"
                 textAs="Hi buddy.."

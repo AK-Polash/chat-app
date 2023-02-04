@@ -254,7 +254,7 @@ const Login = () => {
 
           setTimeout(() => {
             navigate("/");
-          }, 6000);
+          }, 2000);
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -281,14 +281,11 @@ const Login = () => {
         set(ref(db, "users/" + userCredential.user.uid), {
           username: userCredential.user.displayName,
           email: userCredential.user.email,
-          // profile_picture : imageUrl
+          photoURL: userCredential.user.photoURL,
         });
 
         dispatch(activeUser(userCredential.user));
         localStorage.setItem("userInfo", JSON.stringify(userCredential.user));
-
-        console.log(userCredential.user.displayName);
-
         navigate("/");
       })
       .catch((error) => {
