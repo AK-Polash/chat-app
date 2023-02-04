@@ -3,6 +3,7 @@ import Image from "./Image";
 import { styled } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
 import { HiPlus } from "react-icons/hi";
+import Avatar from "@mui/material/Avatar";
 import { ColorRing } from "react-loader-spinner";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -49,22 +50,36 @@ const ListItem = (props) => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"
             >
-              <Image
-                imageSource={props.photoURL}
-                className="user__image"
-                alt="user"
-              />
+              {props.photoURL ? (
+                <Image
+                  imageSource={props.photoURL}
+                  className="user__image"
+                  alt="user"
+                />
+              ) : (
+                <Avatar
+                  sx={{ width: "100%", height: "100%" }}
+                  className="profile__img"
+                />
+              )}
             </StyledBadge>
           </div>
         ) : (
           <>
             {props.imageAs === "large" && (
               <div className="user__large__image__holder">
-                <Image
-                  imageSource={props.photoURL}
-                  className="user__image"
-                  alt="user"
-                />
+                {props.photoURL ? (
+                  <Image
+                    imageSource={props.photoURL}
+                    className="user__image"
+                    alt="user"
+                  />
+                ) : (
+                  <Avatar
+                    sx={{ width: "100%", height: "100%" }}
+                    className="profile__img"
+                  />
+                )}
               </div>
             )}
           </>
@@ -79,22 +94,36 @@ const ListItem = (props) => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"
             >
-              <Image
-                imageSource={props.photoURL}
-                className="user__image"
-                alt="user"
-              />
+              {props.photoURL ? (
+                <Image
+                  imageSource={props.photoURL}
+                  className="user__image"
+                  alt="user"
+                />
+              ) : (
+                <Avatar
+                  sx={{ width: "100%", height: "100%" }}
+                  className="profile__img"
+                />
+              )}
             </StyledBadge>
           </div>
         ) : (
           <>
             {props.imageAs === "small" && (
               <div className="user__small__image__holder">
-                <Image
-                  imageSource={props.photoURL}
-                  className="user__image"
-                  alt="user"
-                />
+                {props.photoURL ? (
+                  <Image
+                    imageSource={props.photoURL}
+                    className="user__image"
+                    alt="user"
+                  />
+                ) : (
+                  <Avatar
+                    sx={{ width: "100%", height: "100%" }}
+                    className="profile__img"
+                  />
+                )}
               </div>
             )}
           </>

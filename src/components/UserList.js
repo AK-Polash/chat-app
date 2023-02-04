@@ -74,6 +74,7 @@ const UserList = () => {
 
   // Send Friend Request Functionality:
   let handleAddFriend = (clickedUser) => {
+    // eikhane sender + receiver er photoURL null thakle Friend Request Send hoy na...!!
     set(push(ref(db, "friendRequest/")), {
       senderName: data.userData.userInfo.displayName,
       senderId: data.userData.userInfo.uid,
