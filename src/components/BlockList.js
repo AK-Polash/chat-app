@@ -51,10 +51,12 @@ const BlockList = () => {
 
       senderName: item.blockName,
       senderId: item.blockId,
-      senderPhoto: item.blockPhoto,
+      senderPhoto: item.blockPhoto ? item.blockPhoto : "",
       receiverName: data.userData.userInfo.displayName,
       receiverId: data.userData.userInfo.uid,
-      receiverPhoto: data.userData.userInfo.photoURL,
+      receiverPhoto: data.userData.userInfo.photoURL
+        ? data.userData.userInfo.photoURL
+        : "",
     }).then(() => {
       remove(ref(db, "blockList/" + item.id));
     });

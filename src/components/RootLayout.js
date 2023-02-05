@@ -26,6 +26,7 @@ import Avatar from "@mui/material/Avatar";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { ToastContainer, toast } from "react-toastify";
+import { ColorRing } from "react-loader-spinner";
 
 const style = {
   position: "absolute",
@@ -50,12 +51,15 @@ const RootLayout = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  let [loader, setLoader] = useState(false);
+  let [show, setShow] = useState(false);
 
   // croper start
   const [image, setImage] = useState();
   const [cropper, setCropper] = useState();
 
   const onChange = (e) => {
+    setShow(true);
     e.preventDefault();
     let files;
     if (e.dataTransfer) {
@@ -71,6 +75,8 @@ const RootLayout = () => {
   };
 
   const getCropData = () => {
+    setLoader(true);
+
     if (typeof cropper !== "undefined") {
       // firebase "Upload from a String":
       const storage = getStorage();
@@ -83,6 +89,8 @@ const RootLayout = () => {
       uploadString(storageRef, message4, "data_url").then((snapshot) => {
         setOpen(false);
         setImage("");
+        setLoader(false);
+        setShow(false);
 
         getDownloadURL(storageRef).then((downloadURL) => {
           updateProfile(auth.currentUser, {
@@ -91,7 +99,13 @@ const RootLayout = () => {
             .then(() => {
               update(databaseRef(db, "users/" + data.userData.userInfo.uid), {
                 photoURL: downloadURL,
-              });
+              })
+                // .then(() => {
+                //   console.log("animation dite hobe..!");
+                // })
+                // .catch((error) => {
+                //   console.log(error);
+                // });
 
               dispatch(activeUser(auth.currentUser));
               localStorage.setItem(
@@ -232,29 +246,49 @@ const RootLayout = () => {
                 </div>
                 <div className="modal__input__box">
                   <Stack direction="row" alignItems="center" spacing={2}>
-                    <Button
-                      onClick={getCropData}
-                      variant="contained"
-                      component="label"
-                      size="small"
-                    >
-                      Upload
-                    </Button>
-
-                    <IconButton
-                      color="primary"
-                      aria-label="upload picture"
-                      component="label"
-                      title="Select Image"
-                    >
-                      <input
-                        onChange={onChange}
-                        hidden
-                        accept="image/*"
-                        type="file"
-                      />
-                      <PhotoCamera />
-                    </IconButton>
+                    {show ? (
+                      loader ? (
+                        <ColorRing
+                          visible={true}
+                          height="42"
+                          width="42"
+                          ariaLabel="blocks-loading"
+                          wrapperStyle={{}}
+                          wrapperClass="blocks-wrapper"
+                          colors={[
+                            "#e15b64",
+                            "#f47e60",
+                            "#f8b26a",
+                            "#abbd81",
+                            "#849b87",
+                          ]}
+                        />
+                      ) : (
+                        <Button
+                          onClick={getCropData}
+                          variant="contained"
+                          component="label"
+                          size="small"
+                        >
+                          Upload
+                        </Button>
+                      )
+                    ) : (
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="label"
+                        title="Select Image"
+                      >
+                        <input
+                          onChange={onChange}
+                          hidden
+                          accept="image/*"
+                          type="file"
+                        />
+                        <PhotoCamera />
+                      </IconButton>
+                    )}
                   </Stack>
 
                   {image && (

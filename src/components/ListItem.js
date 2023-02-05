@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "./Image";
 import { styled } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
 import { HiPlus } from "react-icons/hi";
 import Avatar from "@mui/material/Avatar";
-import { ColorRing } from "react-loader-spinner";
+// import { ColorRing } from "react-loader-spinner";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -46,8 +46,12 @@ const ListItem = (props) => {
         {props.imageAs === "large" && props.userAs === "active" ? (
           <div className="user__large__image__holder">
             <StyledBadge
+              sx={{ width: "100%", height: "100%" }}
               overlap="circular"
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
               variant="dot"
             >
               {props.photoURL ? (
@@ -90,6 +94,7 @@ const ListItem = (props) => {
         {props.imageAs === "small" && props.userAs === "active" ? (
           <div className="user__small__image__holder">
             <StyledBadge
+              sx={{ width: "100%", height: "100%" }}
               overlap="circular"
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"

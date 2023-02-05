@@ -78,10 +78,12 @@ const UserList = () => {
     set(push(ref(db, "friendRequest/")), {
       senderName: data.userData.userInfo.displayName,
       senderId: data.userData.userInfo.uid,
-      senderPhoto: data.userData.userInfo.photoURL,
+      senderPhoto: data.userData.userInfo.photoURL
+        ? data.userData.userInfo.photoURL
+        : "",
       receiverName: clickedUser.username,
       receiverId: clickedUser.id,
-      receiverPhoto: clickedUser.photoURL,
+      receiverPhoto: clickedUser.photoURL ? clickedUser.photoURL : "",
     }).then(() => {
       toast("Friend Request sent..!");
     });
