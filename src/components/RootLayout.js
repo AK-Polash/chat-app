@@ -9,20 +9,27 @@ import {
   uploadString,
   getDownloadURL,
 } from "firebase/storage";
-import { getDatabase, update, ref as databaseRef } from "firebase/database";
-import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
+import {
+  getDatabase,
+  update,
+  ref as databaseRef,
+  onValue,
+} from "firebase/database";
+import {
+  Grid,
+  Button,
+  IconButton,
+  Stack,
+  Box,
+  Modal,
+  Avatar,
+} from "@mui/material/";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import Stack from "@mui/material/Stack";
 import { IoHomeOutline, IoSettingsOutline } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { AiOutlineMessage } from "react-icons/ai";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import Image from "./Image";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import Avatar from "@mui/material/Avatar";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -100,12 +107,12 @@ const RootLayout = () => {
               update(databaseRef(db, "users/" + data.userData.userInfo.uid), {
                 photoURL: downloadURL,
               })
-                // .then(() => {
-                //   console.log("animation dite hobe..!");
-                // })
-                // .catch((error) => {
-                //   console.log(error);
-                // });
+                .then(() => {
+                  console.log("animation dite hobe..!");
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
 
               dispatch(activeUser(auth.currentUser));
               localStorage.setItem(

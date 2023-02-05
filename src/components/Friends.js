@@ -84,7 +84,7 @@ const Friends = () => {
                   key={index}
                   imageAs="small"
                   photoURL={item.senderPhoto}
-                  // userAs="active"
+                  userAs="active"
                   heading={item.senderName}
                   textAs="hello..!"
                   button="buttonAndText"
