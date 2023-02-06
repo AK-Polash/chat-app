@@ -53,6 +53,7 @@ const RootLayout = () => {
   let navigate = useNavigate();
   let dispatch = useDispatch();
   let data = useSelector((state) => state);
+  let [friendReq, setFriendReq] = useState([]);
 
   // modal:
   const [open, setOpen] = useState(false);
@@ -64,6 +65,21 @@ const RootLayout = () => {
   // croper start
   const [image, setImage] = useState();
   const [cropper, setCropper] = useState();
+
+  useEffect(() => {
+    const friendRequestRef = databaseRef(db, "friendRequest/");
+    onValue(friendRequestRef, (snapshot) => {
+      let senderArr = [];
+
+      snapshot.forEach((item) => {
+        if (data.userData.userInfo.uid === item.val().senderId) {
+          senderArr.push({ ...item.val(), id: item.key });
+        }
+      });
+
+      setFriendReq(senderArr);
+    });
+  }, []);
 
   const onChange = (e) => {
     setShow(true);
@@ -108,7 +124,20 @@ const RootLayout = () => {
                 photoURL: downloadURL,
               })
                 .then(() => {
-                  console.log("animation dite hobe..!");
+                  // "Updated" photoURL added on the "Friend Request" Area of Home page
+                  friendReq.map((item) => {
+                    update(databaseRef(db, "friendRequest/" + item.id), {
+                      senderPhoto: downloadURL,
+                    })
+                      .then(() => {
+                        console.log(
+                          "Photo updated on 'Friend Request' Area of Home page..!"
+                        );
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+                  });
                 })
                 .catch((error) => {
                   console.log(error);
