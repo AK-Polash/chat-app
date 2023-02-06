@@ -14,11 +14,13 @@ import {
   remove,
 } from "firebase/database";
 import { toast } from "react-toastify";
+import { ColorRing } from "react-loader-spinner";
 
 const FriendRequest = () => {
   const db = getDatabase();
   let data = useSelector((state) => state);
   let [friendRequests, setFriendRequests] = useState([]);
+  let [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const friendRequestRef = ref(db, "friendRequest/");
@@ -37,6 +39,8 @@ const FriendRequest = () => {
   }, []);
 
   let handleAcceptFriendRequest = (friendReq) => {
+    setLoader(true);
+
     set(push(ref(db, "friends")), {
       ...friendReq,
       date: `${new Date().getDate()} - ${
@@ -45,13 +49,17 @@ const FriendRequest = () => {
     }).then(() => {
       remove(ref(db, "friendRequest/" + friendReq.id)).then(() => {
         toast("New Friend Added!");
+        setLoader(false);
       });
     });
   };
 
   let handleRejectFriendRequest = (friendReq) => {
+    setLoader(true);
+
     remove(ref(db, "friendRequest/" + friendReq.id)).then(() => {
       toast("Rejected Friend Request..!");
+      setLoader(false);
     });
   };
 
@@ -75,6 +83,7 @@ const FriendRequest = () => {
                 buttonOneOnclick={() => handleAcceptFriendRequest(item)}
                 buttonTwoText="Reject"
                 buttonTwoOnclick={() => handleRejectFriendRequest(item)}
+                loader={loader}
               />
             ))
           ) : (

@@ -18,6 +18,7 @@ const Friends = () => {
   const db = getDatabase();
   let data = useSelector((state) => state);
   let [friends, setFriends] = useState([]);
+  let [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const friendsRef = ref(db, "friends/");
@@ -39,6 +40,9 @@ const Friends = () => {
 
   // Block Functionality:
   let handleBlock = (item) => {
+    // if(data.userData.userInfo.uid === item.senderId){}
+    setLoader(true);
+
     // Based on Friend Request: I 'Received'/'Send' "Friend Request" ..?
     data.userData.userInfo.uid === item.senderId
       ? set(push(ref(db, "blockList/")), {
@@ -51,6 +55,7 @@ const Friends = () => {
         })
           .then(() => {
             remove(ref(db, "friends/" + item.id));
+            setLoader(false);
           })
           .catch((error) => {
             console.log(error.code);
@@ -65,6 +70,7 @@ const Friends = () => {
         })
           .then(() => {
             remove(ref(db, "friends/" + item.id));
+            setLoader(false);
           })
           .catch((error) => {
             console.log(error.code);
@@ -99,6 +105,7 @@ const Friends = () => {
                   buttonTwoText="Unfriend"
                   buttonOneOnClick={() => handleBlock(item)}
                   buttonTwoOnClick={() => handleUnfriend(item)}
+                  loader={loader}
                 />
               ) : (
                 <ListItem
@@ -114,6 +121,7 @@ const Friends = () => {
                   buttonTwoText="Unfriend"
                   buttonOneOnClick={() => handleBlock(item)}
                   buttonTwoOnClick={() => handleUnfriend(item)}
+                  loader={loader}
                 />
               )
             )

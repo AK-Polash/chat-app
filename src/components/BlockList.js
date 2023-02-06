@@ -18,6 +18,7 @@ const BlockList = () => {
   const db = getDatabase();
   let data = useSelector((state) => state);
   let [blockList, setBlockList] = useState([]);
+  let [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const blockListRef = ref(db, "blockList/");
@@ -43,6 +44,8 @@ const BlockList = () => {
 
   // Unblock Functionality:
   let handleUnBlock = (item) => {
+    setLoader(true)
+
     // senderName, senderId, receiverName, & receiverId are not Always True after Unblocking person...!!
     set(push(ref(db, "friends/")), {
       date: `${new Date().getDate()} - ${
@@ -59,6 +62,7 @@ const BlockList = () => {
         : "",
     }).then(() => {
       remove(ref(db, "blockList/" + item.id));
+      setLoader(false)
     });
   };
 
@@ -79,6 +83,7 @@ const BlockList = () => {
                 button="button"
                 buttonText="Unblock"
                 handleClick={() => handleUnBlock(item)}
+                loader={loader}
               />
             ))
           ) : (

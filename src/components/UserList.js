@@ -22,7 +22,7 @@ const UserList = () => {
   let [friendConnectionKey, setFriendConnectionKey] = useState([]);
   let [friends, setFriends] = useState([]);
   let [blockList, setBlockList] = useState([]);
-  // let [loader, setLoader] = useState(false);
+  let [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const usersRef = ref(db, "users/");
@@ -73,6 +73,8 @@ const UserList = () => {
 
   // Send Friend Request Functionality:
   let handleAddFriend = (clickedUser) => {
+    setLoader(true);
+
     // eikhane sender + receiver er photoURL null thakle Friend Request Send hoy na...!!
     set(push(ref(db, "friendRequest/")), {
       senderName: data.userData.userInfo.displayName,
@@ -85,15 +87,19 @@ const UserList = () => {
       receiverPhoto: clickedUser.photoURL ? clickedUser.photoURL : "",
     }).then(() => {
       toast("Friend Request sent..!");
+      setLoader(false);
     });
   };
 
   // Cancel Send Friend Request Functionality:
   let handleCancel = (cancelItem) => {
+    setLoader(true);
+
     friendConnectionKey.map((item) => {
       if (cancelItem.id === item.receiverId) {
         remove(ref(db, "friendRequest/" + item.id)).then(() => {
           toast("Canceled Friend Request..!");
+          setLoader(false);
         });
       }
     });
@@ -156,6 +162,7 @@ const UserList = () => {
                     buttonOneText="Pending"
                     buttonTwoText="Cancel"
                     buttonTwoOnclick={() => handleCancel(item)}
+                    loader={loader}
                   />
                 ) : (
                   <ListItem
@@ -177,6 +184,7 @@ const UserList = () => {
                   textAs="Yestarday, 5am"
                   button="icon"
                   handleAddFriendRequest={() => handleAddFriend(item)}
+                  loader={loader}
                 />
               )
             )

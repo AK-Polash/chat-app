@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
 import { HiPlus } from "react-icons/hi";
 import Avatar from "@mui/material/Avatar";
-// import { ColorRing } from "react-loader-spinner";
+import { ColorRing } from "react-loader-spinner";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -156,42 +156,94 @@ const ListItem = (props) => {
 
       <div className="user__right__side">
         {props.button === "button" ? (
-          <button onClick={props.handleClick} className="user__btn">
-            {props.buttonText}
-          </button>
+          props.loader ? (
+            <ColorRing
+              visible={true}
+              height="42"
+              width="42"
+              ariaLabel="blocks-loading"
+              wrapperStyle={{}}
+              wrapperClass="blocks-wrapper"
+              colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+            />
+          ) : (
+            <button onClick={props.handleClick} className="user__btn">
+              {props.buttonText}
+            </button>
+          )
         ) : props.button === "icon" ? (
-          <button
-            onClick={props.handleAddFriendRequest}
-            className="user__icon__btn"
-          >
-            <HiPlus />
-          </button>
+          props.loader ? (
+            <ColorRing
+              visible={true}
+              height="42"
+              width="42"
+              ariaLabel="blocks-loading"
+              wrapperStyle={{}}
+              wrapperClass="blocks-wrapper"
+              colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+            />
+          ) : (
+            <button
+              onClick={props.handleAddFriendRequest}
+              className="user__icon__btn"
+            >
+              <HiPlus />
+            </button>
+          )
         ) : props.button === "dualButton" ? (
           <>
-            <button
-              onClick={props.buttonOneOnclick}
-              className="user__btn  user__btn__one"
-            >
-              {props.buttonOneText}
-            </button>
-            <button
-              onClick={props.buttonTwoOnclick}
-              className="user__btn  user__btn__two"
-            >
-              {props.buttonTwoText}
-            </button>
+            {props.loader ? (
+              <ColorRing
+                visible={true}
+                height="42"
+                width="42"
+                ariaLabel="blocks-loading"
+                wrapperStyle={{}}
+                wrapperClass="blocks-wrapper"
+                colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+              />
+            ) : (
+              <>
+                <button
+                  onClick={props.buttonOneOnclick}
+                  className="user__btn  user__btn__one"
+                >
+                  {props.buttonOneText}
+                </button>
+                <button
+                  onClick={props.buttonTwoOnclick}
+                  className="user__btn  user__btn__two"
+                >
+                  {props.buttonTwoText}
+                </button>
+              </>
+            )}
           </>
         ) : props.button === "buttonAndText" ? (
           <>
             <div className="sub__heading__small">{props.contentText}</div>
 
-            <button onClick={props.buttonOneOnClick} className="user__btn">
-              {props.buttonOneText}
-            </button>
+            {props.loader ? (
+              <ColorRing
+                visible={true}
+                height="42"
+                width="42"
+                ariaLabel="blocks-loading"
+                wrapperStyle={{}}
+                wrapperClass="blocks-wrapper"
+                colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+              />
+            ) : (
+              <>
+                <button onClick={props.buttonOneOnClick} className="user__btn">
+                  {props.buttonOneText}
+                </button>
 
-            <button onClick={props.buttonTwoOnClick} className="user__btn">
-              {props.buttonTwoText}
-            </button>
+                <button onClick={props.buttonTwoOnClick} className="user__btn">
+                  {props.buttonTwoText}
+                </button>
+              </>
+            )}
           </>
         ) : (
           <p className="sub__heading__small"> {props.buttonText} </p>
