@@ -54,6 +54,7 @@ const RootLayout = () => {
   let dispatch = useDispatch();
   let data = useSelector((state) => state);
   let [friendReq, setFriendReq] = useState([]);
+  let [friends, setFriends] = useState([]);
 
   // modal:
   const [open, setOpen] = useState(false);
@@ -78,6 +79,22 @@ const RootLayout = () => {
       });
 
       setFriendReq(senderArr);
+    });
+
+    const friendsRef = databaseRef(db, "friends/");
+    onValue(friendsRef, (snapshot) => {
+      let friendsArr = [];
+
+      snapshot.forEach((item) => {
+        if (
+          data.userData.userInfo.uid === item.val().senderId ||
+          data.userData.userInfo.uid === item.val().receiverId
+        ) {
+          friendsArr.push({ ...item.val(), id: item.key });
+        }
+      });
+
+      setFriends(friendsArr);
     });
   }, []);
 
@@ -124,7 +141,7 @@ const RootLayout = () => {
                 photoURL: downloadURL,
               })
                 .then(() => {
-                  // "Updated" photoURL added on the "Friend Request" Area of Home page
+                  // "Updated" photoURL added on the "Friend Request" Area
                   friendReq.map((item) => {
                     update(databaseRef(db, "friendRequest/" + item.id), {
                       senderPhoto: downloadURL,
@@ -137,6 +154,23 @@ const RootLayout = () => {
                       .catch((error) => {
                         console.log(error);
                       });
+                  });
+
+                  // "Updated" photoURL added on the "Friends" Area
+                  friends.map((item) => {
+                    if (data.userData.userInfo.uid === item.senderId) {
+                      update(databaseRef(db, "friends/" + item.id), {
+                        senderPhoto: downloadURL,
+                      }).then(() => {
+                        console.log("Sender photo updated");
+                      });
+                    } else if (data.userData.userInfo.uid === item.receiverId) {
+                      update(databaseRef(db, "friends/" + item.id), {
+                        receiverPhoto: downloadURL,
+                      }).then(() => {
+                        console.log("Receiver photo updated");
+                      });
+                    }
                   });
                 })
                 .catch((error) => {
