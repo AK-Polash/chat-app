@@ -77,8 +77,10 @@ const Friends = () => {
   };
 
   let handleUnfriend = (friendItem) => {
+    setLoader(true);
     remove(ref(db, "friends/" + friendItem.id)).then(() => {
       toast("Unfriend Successful..!");
+      setLoader(false);
     });
   };
 
