@@ -12,8 +12,7 @@ import {
   remove,
 } from "firebase/database";
 import { toast } from "react-toastify";
-import Grid from "@mui/material/Grid";
-import Alert from "@mui/material/Alert";
+import { Grid, Alert } from "@mui/material/";
 
 const UserList = () => {
   const db = getDatabase();
@@ -23,7 +22,7 @@ const UserList = () => {
   let [friendConnectionKey, setFriendConnectionKey] = useState([]);
   let [friends, setFriends] = useState([]);
   let [blockList, setBlockList] = useState([]);
-  let [loader, setLoader] = useState(false);
+  // let [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const usersRef = ref(db, "users/");

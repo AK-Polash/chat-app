@@ -185,8 +185,12 @@ const ListItem = (props) => {
           <>
             <div className="sub__heading__small">{props.contentText}</div>
 
-            <button onClick={props.buttonAndTextOnclick} className="user__btn">
-              {props.buttonText}
+            <button onClick={props.buttonOneOnClick} className="user__btn">
+              {props.buttonOneText}
+            </button>
+
+            <button onClick={props.buttonTwoOnClick} className="user__btn">
+              {props.buttonTwoText}
             </button>
           </>
         ) : (

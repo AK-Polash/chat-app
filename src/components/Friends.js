@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import ContentHeading from "./ContentHeading";
 import Lists from "./Lists";
 import ListItem from "./ListItem";
-import Grid from "@mui/material/Grid";
-import Alert from "@mui/material/Alert";
+import { Grid, Alert } from "@mui/material/";
 import {
   getDatabase,
   ref,
@@ -13,6 +12,7 @@ import {
   remove,
 } from "firebase/database";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const Friends = () => {
   const db = getDatabase();
@@ -71,6 +71,12 @@ const Friends = () => {
           });
   };
 
+  let handleUnfriend = (friendItem) => {
+    remove(ref(db, "friends/" + friendItem.id)).then(() => {
+      toast("Unfriend Successful..!");
+    });
+  };
+
   return (
     <Grid item xs={4}>
       <section className="section__main">
@@ -89,8 +95,10 @@ const Friends = () => {
                   textAs="hello..!"
                   button="buttonAndText"
                   contentText={item.date}
-                  buttonText="Block"
-                  buttonAndTextOnclick={() => handleBlock(item)}
+                  buttonOneText="Block"
+                  buttonTwoText="Unfriend"
+                  buttonOneOnClick={() => handleBlock(item)}
+                  buttonTwoOnClick={() => handleUnfriend(item)}
                 />
               ) : (
                 <ListItem
@@ -102,8 +110,10 @@ const Friends = () => {
                   textAs="hi..!"
                   button="buttonAndText"
                   contentText={item.date}
-                  buttonText="Block"
-                  buttonAndTextOnclick={() => handleBlock(item)}
+                  buttonOneText="Block"
+                  buttonTwoText="Unfriend"
+                  buttonOneOnClick={() => handleBlock(item)}
+                  buttonTwoOnClick={() => handleUnfriend(item)}
                 />
               )
             )
