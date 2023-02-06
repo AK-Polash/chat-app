@@ -338,8 +338,8 @@ const RootLayout = () => {
                 </div>
                 <div className="modal__input__box">
                   <Stack direction="row" alignItems="center" spacing={2}>
-                    {show ? (
-                      loader ? (
+                    {show &&
+                      (loader ? (
                         <ColorRing
                           visible={true}
                           height="42"
@@ -364,23 +364,21 @@ const RootLayout = () => {
                         >
                           Upload
                         </Button>
-                      )
-                    ) : (
-                      <IconButton
-                        color="primary"
-                        aria-label="upload picture"
-                        component="label"
-                        title="Select Image"
-                      >
-                        <input
-                          onChange={onChange}
-                          hidden
-                          accept="image/*"
-                          type="file"
-                        />
-                        <PhotoCamera />
-                      </IconButton>
-                    )}
+                      ))}
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="label"
+                      title="Select Image"
+                    >
+                      <input
+                        onChange={onChange}
+                        hidden
+                        accept="image/*"
+                        type="file"
+                      />
+                      <PhotoCamera />
+                    </IconButton>
                   </Stack>
 
                   {image && (
