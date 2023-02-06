@@ -40,7 +40,6 @@ const Friends = () => {
 
   // Block Functionality:
   let handleBlock = (item) => {
-    // if(data.userData.userInfo.uid === item.senderId){}
     setLoader(true);
 
     // Based on Friend Request: I 'Received'/'Send' "Friend Request" ..?
