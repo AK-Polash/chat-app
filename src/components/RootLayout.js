@@ -166,15 +166,7 @@ const RootLayout = () => {
                   friendReq.map((item) => {
                     update(databaseRef(db, "friendRequest/" + item.id), {
                       senderPhoto: downloadURL,
-                    })
-                      .then(() => {
-                        console.log(
-                          "Photo updated on 'Friend Request' Area of Home page..!"
-                        );
-                      })
-                      .catch((error) => {
-                        console.log(error);
-                      });
+                    });
                   });
 
                   // "Updated" photoURL added on the "Friends" Area
@@ -182,14 +174,10 @@ const RootLayout = () => {
                     if (data.userData.userInfo.uid === item.senderId) {
                       update(databaseRef(db, "friends/" + item.id), {
                         senderPhoto: downloadURL,
-                      }).then(() => {
-                        console.log("Sender photo updated");
                       });
                     } else if (data.userData.userInfo.uid === item.receiverId) {
                       update(databaseRef(db, "friends/" + item.id), {
                         receiverPhoto: downloadURL,
-                      }).then(() => {
-                        console.log("Receiver photo updated");
                       });
                     }
                   });
@@ -199,14 +187,10 @@ const RootLayout = () => {
                     if (data.userData.userInfo.uid === item.blockById) {
                       update(databaseRef(db, "blockList/" + item.id), {
                         blockByPhoto: downloadURL,
-                      }).then(() => {
-                        console.log("Block By photo updated");
                       });
                     } else if (data.userData.userInfo.uid === item.blockId) {
                       update(databaseRef(db, "blockList/" + item.id), {
                         blockPhoto: downloadURL,
-                      }).then(() => {
-                        console.log("Block photo updated");
                       });
                     }
                   });
