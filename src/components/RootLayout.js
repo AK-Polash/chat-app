@@ -55,6 +55,7 @@ const RootLayout = () => {
   let data = useSelector((state) => state);
   let [friendReq, setFriendReq] = useState([]);
   let [friends, setFriends] = useState([]);
+  let [blockList, setBlockList] = useState([]);
 
   // modal:
   const [open, setOpen] = useState(false);
@@ -95,6 +96,26 @@ const RootLayout = () => {
       });
 
       setFriends(friendsArr);
+    });
+
+    const blockListRef = databaseRef(db, "blockList/");
+    onValue(blockListRef, (snapshot) => {
+      let blockListArr = [];
+
+      snapshot.forEach((item) => {
+        if (data.userData.userInfo.uid === item.val().blockById) {
+          blockListArr.push({
+            id: item.key,
+            blockName: item.val().blockName,
+            blockId: item.val().blockId,
+            blockPhoto: item.val().blockPhoto,
+            date: `${new Date().getDate()} - ${
+              new Date().getMonth() + 1
+            } - ${new Date().getFullYear()} `,
+          });
+        }
+      });
+      setBlockList(blockListArr);
     });
   }, []);
 
@@ -169,6 +190,23 @@ const RootLayout = () => {
                         receiverPhoto: downloadURL,
                       }).then(() => {
                         console.log("Receiver photo updated");
+                      });
+                    }
+                  });
+
+                  // "Updated" photoURL added on the "Block List" Area
+                  blockList.map((item) => {
+                    if (data.userData.userInfo.uid === item.blockById) {
+                      update(databaseRef(db, "blockList/" + item.id), {
+                        blockByPhoto: downloadURL,
+                      }).then(() => {
+                        console.log("Block By photo updated");
+                      });
+                    } else if (data.userData.userInfo.uid === item.blockId) {
+                      update(databaseRef(db, "blockList/" + item.id), {
+                        blockPhoto: downloadURL,
+                      }).then(() => {
+                        console.log("Block photo updated");
                       });
                     }
                   });
