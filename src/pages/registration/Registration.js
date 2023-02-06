@@ -7,13 +7,15 @@ import AuthenticationLink from "../../components/AuthenticationLink";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Grid from "@mui/material/Grid";
-import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
+import {
+  Grid,
+  Button,
+  TextField,
+  Alert,
+  LinearProgress,
+  styled,
+} from "@mui/material/";
 import CustomButton from "../../components/CustomButton";
-import Alert from "@mui/material/Alert";
-import LinearProgress from "@mui/material/LinearProgress";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { Vortex } from "react-loader-spinner";
 import {

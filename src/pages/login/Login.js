@@ -17,21 +17,23 @@ import {
   signInWithPopup,
   sendPasswordResetEmail,
 } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
 import { activeUser } from "../../slices/userSlice";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Alert from "@mui/material/Alert";
-import Backdrop from "@mui/material/Backdrop";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import Fade from "@mui/material/Fade";
-import Typography from "@mui/material/Typography";
+import {
+  Button,
+  TextField,
+  Alert,
+  Backdrop,
+  Box,
+  Modal,
+  Fade,
+  Typography,
+} from "@mui/material/";
 import "./login.css";
-import { getDatabase, ref, set } from "firebase/database";
 
 const LoginTextField = styled(TextField)({
   ".css-1c2i806-MuiFormLabel-root-MuiInputLabel-root": {
