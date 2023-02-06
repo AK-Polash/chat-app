@@ -44,7 +44,7 @@ const BlockList = () => {
 
   // Unblock Functionality:
   let handleUnBlock = (item) => {
-    setLoader(true)
+    setLoader(true);
 
     // senderName, senderId, receiverName, & receiverId are not Always True after Unblocking person...!!
     set(push(ref(db, "friends/")), {
@@ -62,7 +62,7 @@ const BlockList = () => {
         : "",
     }).then(() => {
       remove(ref(db, "blockList/" + item.id));
-      setLoader(false)
+      setLoader(false);
     });
   };
 
