@@ -34,6 +34,7 @@ import { HiPlus } from "react-icons/hi";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { useSelector, useDispatch } from "react-redux";
+import { ColorRing } from "react-loader-spinner";
 
 const style = {
   position: "absolute",
@@ -72,6 +73,9 @@ const GroupList = () => {
   let db = getDatabase();
   let data = useSelector((state) => state);
   let dispatch = useDispatch();
+  let [loader, setLoader] = useState(false);
+  let [disable, setDisable] = useState(false);
+  // let [showPreview, setShowPreview] = useState(false);
 
   // Modal:
   const [open, setOpen] = useState(false);
@@ -101,37 +105,44 @@ const GroupList = () => {
   const getCropData = () => {
     // setLoader(true);
 
-    if (typeof cropper !== "undefined") {
-      // firebase "Upload from a String":
-      const storage = getStorage();
-      const storageRef = ref(
-        storage,
-        `group-picture/${data.userData.userInfo.uid}`
-      );
-      // Data URL string
-      const message4 = cropper.getCroppedCanvas().toDataURL();
-      uploadString(storageRef, message4, "data_url").then((snapshot) => {
-        // setLoader(false);
-        // setShow(false);
+    let groupNameRegex =
+      /^([a-zA-Z0-9]+|[a-zA-Z0-9]+\s{1}[a-zA-Z0-9]{1,}|[a-zA-Z0-9]+\s{1}[a-zA-Z0-9]{3,}\s{1}[a-zA-Z0-9]{1,})$/g;
 
-        getDownloadURL(storageRef).then((downloadURL) => {
-          let groupNameRegex =
-            /^([a-zA-Z0-9]+|[a-zA-Z0-9]+\s{1}[a-zA-Z0-9]{1,}|[a-zA-Z0-9]+\s{1}[a-zA-Z0-9]{3,}\s{1}[a-zA-Z0-9]{1,})$/g;
+    let groupTagRegex =
+      /^([a-zA-Z0-9]+|[a-zA-Z0-9]+\s{1}[a-zA-Z0-9]{1,}|[a-zA-Z0-9]+\s{1}[a-zA-Z0-9]{3,}\s{1}[a-zA-Z0-9]{1,})$/g;
 
-          let groupTagRegex =
-            /^([a-zA-Z0-9]+|[a-zA-Z0-9]+\s{1}[a-zA-Z0-9]{1,}|[a-zA-Z0-9]+\s{1}[a-zA-Z0-9]{3,}\s{1}[a-zA-Z0-9]{1,})$/g;
+    if (!groupFormData.groupName) {
+      setErrorMsg({ ...errorMsg, groupName: "Group Name Required" });
+    } else if (!groupNameRegex.test(groupFormData.groupName)) {
+      setErrorMsg({ ...errorMsg, groupName: "Enter valid Group Name" });
+    } else if (!groupFormData.groupTag) {
+      setErrorMsg({ ...errorMsg, groupTag: "Group Tag Required" });
+    } else if (!groupTagRegex.test(groupFormData.groupTag)) {
+      setErrorMsg({ ...errorMsg, groupTag: "Enter valid Group Tag" });
+    } else if (!cropper) {
+      setErrorMsg({ ...errorMsg, groupTag: "Choose an Image" });
+    } else {
+      setErrorMsg({ ...errorMsg, groupName: "", groupTag: "" });
 
-          if (!groupFormData.groupName) {
-            setErrorMsg({ ...errorMsg, groupName: "Group Name Required" });
-          } else if (!groupNameRegex.test(groupFormData.groupName)) {
-            setErrorMsg({ ...errorMsg, groupName: "Enter valid Group Name" });
-          } else if (!groupFormData.groupTag) {
-            setErrorMsg({ ...errorMsg, groupTag: "Group Tag Required" });
-          } else if (!groupTagRegex.test(groupFormData.groupTag)) {
-            setErrorMsg({ ...errorMsg, groupTag: "Enter valid Group Tag" });
-          } else if (!downloadURL) {
-            setErrorMsg({ ...errorMsg, groupTag: "Enter Group Image" });
-          } else {
+      if (typeof cropper !== "undefined") {
+        setLoader(true);
+        setDisable(true);
+
+        setGroupFormData({
+          ...groupFormData,
+          groupName: "",
+          groupTag: "",
+        });
+
+        const storage = getStorage();
+        const storageRef = ref(
+          storage,
+          `group-picture/${data.userData.userInfo.uid}`
+        );
+
+        const message4 = cropper.getCroppedCanvas().toDataURL();
+        uploadString(storageRef, message4, "data_url").then((snapshot) => {
+          getDownloadURL(storageRef).then((downloadURL) => {
             set(push(databaseRef(db, "groups/")), {
               groupPhotoURL: downloadURL,
               groupName: groupFormData.groupName,
@@ -141,12 +152,14 @@ const GroupList = () => {
             }).then(() => {
               setOpen(false);
               setImage("");
-            });
+              setLoader(false);
+              setDisable(false);
 
-            console.log("Group Created..!");
-          }
+              console.log("Group Created..!");
+            });
+          });
         });
-      });
+      }
     }
   };
   // croper end
@@ -279,24 +292,50 @@ const GroupList = () => {
                 </div>
 
                 <TextField
+                  disabled={disable}
                   onChange={handleForm}
                   label="Group Name"
                   variant="standard"
                   name="groupName"
+                  value={groupFormData.groupName}
                   required
                 />
 
                 <TextField
+                  disabled={disable}
                   onChange={handleForm}
                   label="Tagline"
                   variant="standard"
                   name="groupTag"
+                  value={groupFormData.groupTag}
                   required
                 />
 
-                <Button onClick={getCropData} type="submit" variant="contained">
-                  Create Group
-                </Button>
+                {loader ? (
+                  <ColorRing
+                    visible={true}
+                    height="42"
+                    width="42"
+                    ariaLabel="blocks-loading"
+                    wrapperStyle={{ alignSelf: "center" }}
+                    wrapperClass="blocks-wrapper"
+                    colors={[
+                      "#e15b64",
+                      "#f47e60",
+                      "#f8b26a",
+                      "#abbd81",
+                      "#849b87",
+                    ]}
+                  />
+                ) : (
+                  <Button
+                    onClick={getCropData}
+                    type="submit"
+                    variant="contained"
+                  >
+                    Create Group
+                  </Button>
+                )}
               </Box>
             </Fade>
           </Modal>
