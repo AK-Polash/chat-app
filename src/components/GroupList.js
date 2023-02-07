@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ContentHeading from "./ContentHeading";
 import Lists from "./Lists";
 import ListItem from "./ListItem";
@@ -14,6 +14,7 @@ import {
   push,
   ref as databaseRef,
   onValue,
+  remove,
   update,
 } from "firebase/database";
 import {
@@ -68,10 +69,14 @@ const GroupList = () => {
     setErrorMsg({ ...errorMsg, [name]: "" });
   };
 
+  // all variables:
   let db = getDatabase();
   let data = useSelector((state) => state);
   let [loader, setLoader] = useState(false);
   let [disable, setDisable] = useState(false);
+  let [groups, setGroups] = useState([]);
+  let [groupRequestConnection, setGroupRequestConnection] = useState([]);
+  let [groupRequestConnectionKey, setGroupRequestConnectionKey] = useState([]);
 
   // Modal:
   const [open, setOpen] = useState(false);
@@ -143,6 +148,9 @@ const GroupList = () => {
               groupTag: groupFormData.groupTag,
               adminId: data.userData.userInfo.uid,
               adminName: data.userData.userInfo.displayName,
+              // date: `${new Date().getDate()} - ${
+              //   new Date().getMonth() + 1
+              // } - ${new Date().getFullYear()} `,
             })
               .then(() => {
                 setOpen(false);
@@ -162,6 +170,69 @@ const GroupList = () => {
   };
   // croper end
 
+  useEffect(() => {
+    const groupRef = databaseRef(db, "groups/");
+    onValue(groupRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((item) => {
+        if (data.userData.userInfo.uid !== item.val().adminId) {
+          arr.push({ ...item.val(), id: item.key });
+        }
+      });
+
+      setGroups(arr);
+    });
+  }, []);
+
+  useEffect(() => {
+    const groupJoinRequestRef = databaseRef(db, "groupJoinRequest/");
+    onValue(groupJoinRequestRef, (snapshot) => {
+      let arr = [];
+      let arrTwo = [];
+
+      snapshot.forEach((item) => {
+        arr.push(item.val().senderId + item.val().groupId);
+        arrTwo.push({ ...item.val(), id: item.key });
+      });
+
+      setGroupRequestConnection(arr);
+      setGroupRequestConnectionKey(arrTwo);
+    });
+  }, []);
+
+  // ke jon dibe, kun group e join dibe
+  let handleGroupJoin = (adId, adName, gId, gName, gPhoto, gTag) => {
+    setLoader(true);
+
+    set(push(databaseRef(db, "groupJoinRequest")), {
+      adminId: adId,
+      adminName: adName,
+      groupId: gId,
+      groupName: gName,
+      groupPhoto: gPhoto,
+      groupTag: gTag,
+      senderId: data.userData.userInfo.uid,
+      senderName: data.userData.userInfo.displayName,
+      senderPhoto: data.userData.userInfo.photoURL
+        ? data.userData.userInfo.photoURL
+        : "",
+    }).then(() => {
+      setLoader(false);
+    });
+  };
+
+  let handleCancelGroupJoin = (groupItem) => {
+    setLoader(true);
+
+    groupRequestConnectionKey.map((item) => {
+      if (item.groupId === groupItem.id) {
+        remove(databaseRef(db, "groupJoinRequest/" + item.id)).then(() => {
+          setLoader(false);
+        });
+      }
+    });
+  };
+
   return (
     <Grid item xs={4}>
       <section className="section__main">
@@ -176,14 +247,53 @@ const GroupList = () => {
             <HiPlus />
           </button>
 
-          <ListItem
-            imageAs="large"
-            heading="Friends Forever"
-            headingAs="h4"
-            textAs="Hi all..!"
-            button="button"
-            buttonText="Join"
-          />
+          {groups.length > 0 ? (
+            groups.map((item, index) =>
+              groupRequestConnection.includes(
+                data.userData.userInfo.uid + item.id
+              ) ? (
+                <ListItem
+                  key={index}
+                  imageAs="large"
+                  photoURL={item.groupPhotoURL}
+                  heading={item.groupName}
+                  headingAs="h4"
+                  textAs={item.groupTag}
+                  button="dualButton"
+                  buttonOneText="Pending"
+                  buttonTwoText="Cancel"
+                  buttonTwoOnclick={() => handleCancelGroupJoin(item)}
+                  loader={loader}
+                />
+              ) : (
+                <ListItem
+                  key={index}
+                  imageAs="large"
+                  photoURL={item.groupPhotoURL}
+                  heading={item.groupName}
+                  headingAs="h4"
+                  textAs={item.groupTag}
+                  button="button"
+                  handleClick={() =>
+                    handleGroupJoin(
+                      item.adminId,
+                      item.adminName,
+                      item.id,
+                      item.groupName,
+                      item.groupPhotoURL,
+                      item.groupTag
+                    )
+                  }
+                  buttonText="Join"
+                  loader={loader}
+                />
+              )
+            )
+          ) : (
+            <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
+              Empty Group List..!
+            </Alert>
+          )}
         </Lists>
 
         <div>
