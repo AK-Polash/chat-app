@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import ContentHeading from "./ContentHeading";
 import Lists from "./Lists";
 import ListItem from "./ListItem";
-import Image from "./Image";
 import {
   getStorage,
   ref,
@@ -66,16 +65,13 @@ const GroupList = () => {
     let { name, value } = e.target;
 
     setGroupFormData({ ...groupFormData, [name]: value });
-
     setErrorMsg({ ...errorMsg, [name]: "" });
   };
 
   let db = getDatabase();
   let data = useSelector((state) => state);
-  let dispatch = useDispatch();
   let [loader, setLoader] = useState(false);
   let [disable, setDisable] = useState(false);
-  // let [showPreview, setShowPreview] = useState(false);
 
   // Modal:
   const [open, setOpen] = useState(false);
@@ -103,8 +99,6 @@ const GroupList = () => {
   };
 
   const getCropData = () => {
-    // setLoader(true);
-
     let groupNameRegex =
       /^([a-zA-Z0-9]+|[a-zA-Z0-9]+\s{1}[a-zA-Z0-9]{1,}|[a-zA-Z0-9]+\s{1}[a-zA-Z0-9]{3,}\s{1}[a-zA-Z0-9]{1,})$/g;
 
@@ -149,14 +143,18 @@ const GroupList = () => {
               groupTag: groupFormData.groupTag,
               adminId: data.userData.userInfo.uid,
               adminName: data.userData.userInfo.displayName,
-            }).then(() => {
-              setOpen(false);
-              setImage("");
-              setLoader(false);
-              setDisable(false);
+            })
+              .then(() => {
+                setOpen(false);
+                setImage("");
+                setLoader(false);
+                setDisable(false);
 
-              console.log("Group Created..!");
-            });
+                console.log("Group Created..!");
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           });
         });
       }
