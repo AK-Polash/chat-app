@@ -95,6 +95,7 @@ a {
   border-radius: 50%;
   display: flex;
   justify-content: center;
+  align-self: center;
 }
 .img-preview {
   width: 80px !important;
@@ -192,6 +193,9 @@ a {
 .modal__input__box {
 }
 
+.image__holder__relative {
+  position: relative;
+}
 /* ===========================================================================
                                     Menu End
 ============================================================================ */
