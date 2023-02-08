@@ -22,6 +22,7 @@ import {
   remove,
 } from "firebase/database";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -40,11 +41,14 @@ const MyGroups = () => {
   let data = useSelector((state) => state);
   let [groups, setGroups] = useState([]);
   let [groupRequest, setGroupRequest] = useState([]);
+  let [groupMembers, setGroupMembers] = useState([]);
   let [loader, setLoader] = useState(false);
 
   // Modals:
   const [open, setOpen] = useState(false);
+  const [openInfo, setOpenInfo] = useState(false);
   const handleClose = () => setOpen(false);
+  const handleCloseInfo = () => setOpenInfo(false);
 
   useEffect(() => {
     const groupRef = databaseRef(db, "groups/");
@@ -62,7 +66,19 @@ const MyGroups = () => {
   }, []);
 
   let handleGroupInfo = (infoItem) => {
-    // console.log(infoItem);
+    setOpenInfo(true);
+
+    const groupMembersRef = databaseRef(db, "groupMembers/");
+    onValue(groupMembersRef, (snapshot) => {
+      let arr = [];
+
+      snapshot.forEach((item) => {
+        if (infoItem.id === item.val().groupId) {
+          arr.push({ ...item.val(), groupMembersId: item.key });
+        }
+      });
+      setGroupMembers(arr);
+    });
   };
 
   let handleGroupRequest = (requestItem) => {
@@ -85,14 +101,58 @@ const MyGroups = () => {
     setLoader(true);
 
     remove(databaseRef(db, "groups/" + deleteItem.id)).then(() => {
-      console.log("delete done");
+      toast("Group deleted");
       setLoader(false);
     });
   };
 
-  let handleAcceptGroupReq = (acceptItem) => {};
+  let handleAcceptGroupReq = (acceptItem) => {
+    setLoader(true);
 
-  let handleRejectGroupReq = (rejectItem) => {};
+    remove(
+      databaseRef(db, "groupJoinRequest/" + acceptItem.groupRequestId)
+    ).then(() => {
+      set(push(databaseRef(db, "groupMembers/")), {
+        groupAdminName: acceptItem.adminName,
+        groupAdminId: acceptItem.adminId,
+        groupName: acceptItem.groupName,
+        groupId: acceptItem.groupId,
+        groupPhoto: acceptItem.groupPhoto ? acceptItem.groupPhoto : "",
+        memberName: acceptItem.senderName,
+        memberId: acceptItem.senderId,
+        memberPhoto: acceptItem.senderPhoto ? acceptItem.senderPhoto : "",
+      }).then(() => {
+        toast("Accepted group Request");
+        setLoader(false);
+      });
+    });
+  };
+
+  let handleRejectGroupReq = (rejectItem) => {
+    setLoader(true);
+
+    remove(
+      databaseRef(db, "groupJoinRequest/" + rejectItem.groupRequestId)
+    ).then(() => {
+      toast("Rejected group Request");
+      setLoader(false);
+    });
+  };
+
+  let handleRemoveGroupMember = (removeMemberItem) => {
+    setLoader(true);
+
+    groupMembers.map((item) => {
+      if (removeMemberItem.memberId === item.memberId) {
+        remove(databaseRef(db, "groupMembers/" + item.groupMembersId)).then(
+          () => {
+            toast("Member Removed from this group..!");
+            setLoader(false);
+          }
+        );
+      }
+    });
+  };
 
   return (
     <Grid item xs={4}>
@@ -126,7 +186,7 @@ const MyGroups = () => {
           )}
         </Lists>
 
-        {/* ================================ Modal start ===================================== */}
+        {/* ================================ Group Request Modal start ===================================== */}
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
@@ -164,6 +224,7 @@ const MyGroups = () => {
                       buttonTwoText="reject"
                       buttonTwoOnclick={() => handleRejectGroupReq(item)}
                       userAs="active"
+                      loader={loader}
                     />
                   ))
                 ) : (
@@ -180,7 +241,64 @@ const MyGroups = () => {
             </Box>
           </Fade>
         </Modal>
-        {/* ================================ Modal end ===================================== */}
+        {/* ================================ Group Request Modal end ===================================== */}
+
+        {/* ================================ Group Info Modal start ===================================== */}
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={openInfo}
+          onClose={handleCloseInfo}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openInfo}>
+            <Box sx={style}>
+              <Typography
+                id="transition-modal-title"
+                variant="h6"
+                component="h2"
+              >
+                Group Members
+              </Typography>
+
+              {/* ================================ List start ===================================== */}
+              <Lists>
+                {groupMembers.length > 0 ? (
+                  groupMembers.map((item) => (
+                    <ListItem
+                      key={item.groupMembersId}
+                      imageAs="small"
+                      photoURL={item.memberPhoto}
+                      heading={item.memberName}
+                      textAs="wants to join your group"
+                      button="dualButton"
+                      buttonOneText="member"
+                      // buttonOneOnclick={() => }
+                      buttonTwoText="kick"
+                      buttonTwoOnclick={() => handleRemoveGroupMember(item)}
+                      userAs="active"
+                      loader={loader}
+                    />
+                  ))
+                ) : (
+                  <Alert
+                    sx={{ marginTop: "20px" }}
+                    variant="filled"
+                    severity="info"
+                  >
+                    No Group Member..!
+                  </Alert>
+                )}
+              </Lists>
+              {/* ================================ List end ===================================== */}
+            </Box>
+          </Fade>
+        </Modal>
+        {/* ================================ Group Info Modal end ===================================== */}
       </section>
     </Grid>
   );
