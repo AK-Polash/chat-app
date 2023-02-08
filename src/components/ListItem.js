@@ -206,13 +206,13 @@ const ListItem = (props) => {
               <>
                 <button
                   onClick={props.buttonOneOnclick}
-                  className="user__btn  user__btn__one"
+                  className="user__btn"
                 >
                   {props.buttonOneText}
                 </button>
                 <button
                   onClick={props.buttonTwoOnclick}
-                  className="user__btn  user__btn__two"
+                  className="user__btn"
                 >
                   {props.buttonTwoText}
                 </button>

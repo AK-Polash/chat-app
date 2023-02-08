@@ -236,17 +236,18 @@ const GroupList = () => {
   return (
     <Grid item xs={4}>
       <section className="section__main">
-        <ContentHeading heading="Group List" />
-
-        <Lists>
+        <div className="section__heading  less__padding">
+          <h2 className="section__heading__title"> Group List </h2>
           <button
             onClick={handleOpen}
             className="create__group__button"
             title="Create Group"
           >
-            <HiPlus />
+            <HiPlus className="button__icon" />
           </button>
+        </div>
 
+        <Lists>
           {groups.length > 0 ? (
             groups.map((item, index) =>
               groupRequestConnection.includes(

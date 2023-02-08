@@ -31,6 +31,9 @@
   z-index: 5;
   padding: 15px 0;
 }
+.section__heading.less__padding {
+  padding: 3px 0;
+}
 .section__heading__title {
   color: #000;
   font-family: "Poppins", sans-serif;
@@ -156,9 +159,6 @@
   border-radius: 4px;
   font-size: 20px;
 }
-.user__btn.user__btn__one {
-  margin-right: 10px;
-}
 
 .user__right__side {
   display: flex;
@@ -175,8 +175,8 @@
   align-self: flex-end;
 }
 .create__group__button {
-  width: 45px;
-  height: 45px;
+  width: 38px;
+  height: 38px;
   color: #ffffff;
   background: #5f35f5;
   cursor: pointer;
@@ -187,6 +187,9 @@
   justify-content: center;
   align-items: center;
   margin: 8px 0;
+}
+.button__icon {
+  font-size: 24px;
 }
 .create__group__heading {
   color: #000;
