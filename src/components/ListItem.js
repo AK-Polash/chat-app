@@ -3,6 +3,8 @@ import Image from "./Image";
 import { styled } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
 import { HiPlus } from "react-icons/hi";
+import { IoInformationCircleSharp } from "react-icons/io5";
+import { MdDelete, MdGroupAdd } from "react-icons/md";
 import Avatar from "@mui/material/Avatar";
 import { ColorRing } from "react-loader-spinner";
 
@@ -204,16 +206,10 @@ const ListItem = (props) => {
               />
             ) : (
               <>
-                <button
-                  onClick={props.buttonOneOnclick}
-                  className="user__btn"
-                >
+                <button onClick={props.buttonOneOnclick} className="user__btn">
                   {props.buttonOneText}
                 </button>
-                <button
-                  onClick={props.buttonTwoOnclick}
-                  className="user__btn"
-                >
+                <button onClick={props.buttonTwoOnclick} className="user__btn">
                   {props.buttonTwoText}
                 </button>
               </>
@@ -245,6 +241,43 @@ const ListItem = (props) => {
               </>
             )}
           </>
+        ) : props.button === "tripleButton" ? (
+          props.loader ? (
+            <ColorRing
+              visible={true}
+              height="42"
+              width="42"
+              ariaLabel="blocks-loading"
+              wrapperStyle={{}}
+              wrapperClass="blocks-wrapper"
+              colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+            />
+          ) : (
+            <>
+              <button
+                onClick={props.buttonOneOnClick}
+                className="user__icon__btn"
+                title={props.buttonOneText}
+              >
+                <IoInformationCircleSharp className="button__icon" />
+              </button>
+              <button
+                onClick={props.buttonTwoOnClick}
+                className="user__icon__btn"
+                title={props.buttonTwoText}
+              >
+                <MdGroupAdd className="button__icon" />
+              </button>
+
+              <button
+                onClick={props.buttonThreeOnClick}
+                className="user__icon__btn"
+                title={props.buttonThreeText}
+              >
+                <MdDelete className="button__icon" />
+              </button>
+            </>
+          )
         ) : (
           <p className="sub__heading__small"> {props.buttonText} </p>
         )}

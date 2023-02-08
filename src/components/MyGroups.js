@@ -19,6 +19,7 @@ import {
   ref as databaseRef,
   onValue,
   update,
+  remove,
 } from "firebase/database";
 import { useSelector } from "react-redux";
 
@@ -39,6 +40,7 @@ const MyGroups = () => {
   let data = useSelector((state) => state);
   let [groups, setGroups] = useState([]);
   let [groupRequest, setGroupRequest] = useState([]);
+  let [loader, setLoader] = useState(false);
 
   // Modals:
   const [open, setOpen] = useState(false);
@@ -60,7 +62,7 @@ const MyGroups = () => {
   }, []);
 
   let handleGroupInfo = (infoItem) => {
-    console.log(infoItem);
+    // console.log(infoItem);
   };
 
   let handleGroupRequest = (requestItem) => {
@@ -76,6 +78,15 @@ const MyGroups = () => {
         }
       });
       setGroupRequest(arr);
+    });
+  };
+
+  let handleGroupDelete = (deleteItem) => {
+    setLoader(true);
+
+    remove(databaseRef(db, "groups/" + deleteItem.id)).then(() => {
+      console.log("delete done");
+      setLoader(false);
     });
   };
 
@@ -97,12 +108,15 @@ const MyGroups = () => {
                 photoURL={item.groupPhotoURL}
                 heading={item.groupName}
                 textAs={item.groupTag}
-                button="dualButton"
-                buttonOneText="Info"
-                buttonOneOnclick={() => handleGroupInfo(item)}
-                buttonTwoText="Request"
-                buttonTwoOnclick={() => handleGroupRequest(item)}
+                button="tripleButton"
+                buttonOneText="Information"
+                buttonOneOnClick={() => handleGroupInfo(item)}
+                buttonTwoText="Requests"
+                buttonTwoOnClick={() => handleGroupRequest(item)}
+                buttonThreeText="Delete"
+                buttonThreeOnClick={() => handleGroupDelete(item)}
                 userAs="active"
+                loader={loader}
               />
             ))
           ) : (

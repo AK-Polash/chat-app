@@ -150,14 +150,18 @@
   border-radius: 4px;
 }
 .user__icon__btn {
-  width: 30px;
-  height: 30px;
+  width: 33px;
+  height: 33px;
   color: #ffffff;
   background: #5f35f5;
   cursor: pointer;
   border: none;
   border-radius: 4px;
   font-size: 20px;
+}
+
+.button__icon {
+  font-size: 24px;
 }
 
 .user__right__side {
