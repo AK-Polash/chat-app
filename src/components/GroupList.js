@@ -77,6 +77,7 @@ const GroupList = () => {
   let [groups, setGroups] = useState([]);
   let [groupRequestConnection, setGroupRequestConnection] = useState([]);
   let [groupRequestConnectionKey, setGroupRequestConnectionKey] = useState([]);
+  let [groupMemberConnection, setGroupMemberConnection] = useState([]);
 
   // Modal:
   const [open, setOpen] = useState(false);
@@ -200,6 +201,19 @@ const GroupList = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const groupMembersRef = databaseRef(db, "groupMembers/");
+    onValue(groupMembersRef, (snapshot) => {
+      let arr = [];
+
+      snapshot.forEach((item) => {
+        arr.push(item.val().memberId + item.val().groupId);
+      });
+
+      setGroupMemberConnection(arr);
+    });
+  }, []);
+
   // ke jon dibe, kun group e join dibe
   let handleGroupJoin = (adId, adName, gId, gName, gPhoto, gTag) => {
     setLoader(true);
@@ -248,6 +262,7 @@ const GroupList = () => {
         </div>
 
         <Lists>
+          {/* sender Id + Group Id */}
           {groups.length > 0 ? (
             groups.map((item, index) =>
               groupRequestConnection.includes(
@@ -264,6 +279,20 @@ const GroupList = () => {
                   buttonOneText="Pending"
                   buttonTwoText="Cancel"
                   buttonTwoOnclick={() => handleCancelGroupJoin(item)}
+                  loader={loader}
+                />
+              ) : groupMemberConnection.includes(
+                  data.userData.userInfo.uid + item.id
+                ) ? (
+                <ListItem
+                  key={index}
+                  imageAs="large"
+                  photoURL={item.groupPhotoURL}
+                  heading={item.groupName}
+                  headingAs="h4"
+                  textAs={item.groupTag}
+                  button="button"
+                  buttonText="Member"
                   loader={loader}
                 />
               ) : (
