@@ -78,6 +78,7 @@ const GroupList = () => {
   let [groupRequestConnection, setGroupRequestConnection] = useState([]);
   let [groupRequestConnectionKey, setGroupRequestConnectionKey] = useState([]);
   let [groupMemberConnection, setGroupMemberConnection] = useState([]);
+  let [groupMembersKey, setGroupMembersKey] = useState([]);
 
   // Modal:
   const [open, setOpen] = useState(false);
@@ -205,12 +206,15 @@ const GroupList = () => {
     const groupMembersRef = databaseRef(db, "groupMembers/");
     onValue(groupMembersRef, (snapshot) => {
       let arr = [];
+      let arrTwo = [];
 
       snapshot.forEach((item) => {
         arr.push(item.val().memberId + item.val().groupId);
+        arrTwo.push({ ...item.val(), groupMembersId: item.key });
       });
 
       setGroupMemberConnection(arr);
+      setGroupMembersKey(arrTwo);
     });
   }, []);
 
@@ -243,6 +247,23 @@ const GroupList = () => {
         remove(databaseRef(db, "groupJoinRequest/" + item.id)).then(() => {
           setLoader(false);
         });
+      }
+    });
+  };
+
+  let handleLeaveGroup = (leaveItem) => {
+    setLoader(true);
+
+    groupMembersKey.map((item) => {
+      if (
+        leaveItem.id === item.groupId &&
+        item.memberId === data.userData.userInfo.uid
+      ) {
+        remove(databaseRef(db, "groupMembers/" + item.groupMembersId)).then(
+          () => {
+            setLoader(false);
+          }
+        );
       }
     });
   };
@@ -291,8 +312,10 @@ const GroupList = () => {
                   heading={item.groupName}
                   headingAs="h4"
                   textAs={item.groupTag}
-                  button="button"
-                  buttonText="Member"
+                  button="dualButton"
+                  buttonOneText="Member"
+                  buttonTwoText="Leave"
+                  buttonTwoOnclick={() => handleLeaveGroup(item)}
                   loader={loader}
                 />
               ) : (
