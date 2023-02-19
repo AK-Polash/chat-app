@@ -42,6 +42,7 @@ const MyGroups = () => {
   let [groups, setGroups] = useState([]);
   let [groupRequest, setGroupRequest] = useState([]);
   let [groupMembers, setGroupMembers] = useState([]);
+  let [groupM, setGroupM] = useState([]);
   let [loader, setLoader] = useState(false);
 
   // Modals:
@@ -62,6 +63,21 @@ const MyGroups = () => {
       });
 
       setGroups(arr);
+    });
+  }, []);
+
+  useEffect(() => {
+    const groupMembersRef = databaseRef(db, "groupMembers/");
+    onValue(groupMembersRef, (snapshot) => {
+      let arr = [];
+
+      snapshot.forEach((item) => {
+        if (data.userData.userInfo.uid === item.val().memberId) {
+          arr.push({ ...item.val(), id: item.key });
+        }
+      });
+
+      setGroupM(arr);
     });
   }, []);
 
@@ -116,6 +132,7 @@ const MyGroups = () => {
         groupAdminName: acceptItem.adminName,
         groupAdminId: acceptItem.adminId,
         groupName: acceptItem.groupName,
+        groupTag: acceptItem.groupTag,
         groupId: acceptItem.groupId,
         groupPhoto: acceptItem.groupPhoto ? acceptItem.groupPhoto : "",
         memberName: acceptItem.senderName,
@@ -154,6 +171,21 @@ const MyGroups = () => {
     });
   };
 
+  let handleLeaveGroup = (leaveItem) => {
+    setLoader(true);
+
+    groupM.map((item) => {
+      if (
+        leaveItem.id === item.id &&
+        data.userData.userInfo.uid === item.memberId
+      ) {
+        remove(databaseRef(db, "groupMembers/" + item.id)).then(() => {
+          setLoader(false);
+        });
+      }
+    });
+  };
+
   return (
     <Grid item xs={4}>
       <section className="section__main">
@@ -161,24 +193,43 @@ const MyGroups = () => {
 
         <Lists>
           {groups.length > 0 ? (
-            groups.map((item) => (
-              <ListItem
-                key={item.id}
-                imageAs="small"
-                photoURL={item.groupPhotoURL}
-                heading={item.groupName}
-                textAs={item.groupTag}
-                button="tripleButton"
-                buttonOneText="Information"
-                buttonOneOnClick={() => handleGroupInfo(item)}
-                buttonTwoText="Requests"
-                buttonTwoOnClick={() => handleGroupRequest(item)}
-                buttonThreeText="Delete"
-                buttonThreeOnClick={() => handleGroupDelete(item)}
-                userAs="active"
-                loader={loader}
-              />
-            ))
+            <>
+              {groups.map((item) => (
+                <ListItem
+                  key={item.id}
+                  imageAs="small"
+                  photoURL={item.groupPhotoURL}
+                  heading={item.groupName}
+                  textAs={item.groupTag}
+                  button="tripleButton"
+                  buttonOneText="Information"
+                  buttonOneOnClick={() => handleGroupInfo(item)}
+                  buttonTwoText="Requests"
+                  buttonTwoOnClick={() => handleGroupRequest(item)}
+                  buttonThreeText="Delete"
+                  buttonThreeOnClick={() => handleGroupDelete(item)}
+                  userAs="active"
+                  loader={loader}
+                />
+              ))}
+
+              {groupM.map((item) => (
+                <ListItem
+                  key={item.id}
+                  imageAs="small"
+                  photoURL={item.groupPhoto}
+                  heading={item.groupName}
+                  textAs={item.groupTag}
+                  button="dualButton"
+                  buttonOneText="Info"
+                  // buttonOneOnClick={() => handleGroupInfo(item)}
+                  buttonTwoText="Leave"
+                  buttonTwoOnclick={() => handleLeaveGroup(item)}
+                  userAs="active"
+                  loader={loader}
+                />
+              ))}
+            </>
           ) : (
             <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
               Empty Group List..!
