@@ -43,13 +43,17 @@ const MyGroups = () => {
   let [groupRequest, setGroupRequest] = useState([]);
   let [groupMembers, setGroupMembers] = useState([]);
   let [groupM, setGroupM] = useState([]);
+  let [groupMembersAsMembebr, setGroupMembersAsMembebr] = useState([]);
+  let [memberList, setMemberList] = useState([]);
   let [loader, setLoader] = useState(false);
 
   // Modals:
   const [open, setOpen] = useState(false);
   const [openInfo, setOpenInfo] = useState(false);
+  const [openInfoAsMember, setOpenInfoAsMember] = useState(false);
   const handleClose = () => setOpen(false);
   const handleCloseInfo = () => setOpenInfo(false);
+  const handleCloseInfoAsMember = () => setOpenInfoAsMember(false);
 
   useEffect(() => {
     const groupRef = databaseRef(db, "groups/");
@@ -70,14 +74,18 @@ const MyGroups = () => {
     const groupMembersRef = databaseRef(db, "groupMembers/");
     onValue(groupMembersRef, (snapshot) => {
       let arr = [];
+      let arrTwo = [];
 
       snapshot.forEach((item) => {
         if (data.userData.userInfo.uid === item.val().memberId) {
           arr.push({ ...item.val(), id: item.key });
         }
+
+        arrTwo.push({ ...item.val(), groupMembersId: item.key });
       });
 
       setGroupM(arr);
+      setGroupMembersAsMembebr(arrTwo);
     });
   }, []);
 
@@ -186,13 +194,25 @@ const MyGroups = () => {
     });
   };
 
+  let handleGroupInfoAsMember = (infoItem) => {
+    setOpenInfoAsMember(true);
+    let arr = [];
+
+    groupMembersAsMembebr.map((item) => {
+      if (infoItem.groupId === item.groupId) {
+        arr.push(item);
+      }
+    });
+    setMemberList(arr);
+  };
+
   return (
     <Grid item xs={4}>
       <section className="section__main">
         <ContentHeading heading="My Groups" />
 
         <Lists>
-          {groups.length > 0 ? (
+          {groups.length > 0 || groupM.length > 0 ? (
             <>
               {groups.map((item) => (
                 <ListItem
@@ -222,7 +242,7 @@ const MyGroups = () => {
                   textAs={item.groupTag}
                   button="dualButton"
                   buttonOneText="Info"
-                  // buttonOneOnClick={() => handleGroupInfo(item)}
+                  buttonOneOnclick={() => handleGroupInfoAsMember(item)}
                   buttonTwoText="Leave"
                   buttonTwoOnclick={() => handleLeaveGroup(item)}
                   userAs="active"
@@ -328,7 +348,6 @@ const MyGroups = () => {
                       textAs="wants to join your group"
                       button="dualButton"
                       buttonOneText="member"
-                      // buttonOneOnclick={() => }
                       buttonTwoText="kick"
                       buttonTwoOnclick={() => handleRemoveGroupMember(item)}
                       userAs="active"
@@ -350,6 +369,79 @@ const MyGroups = () => {
           </Fade>
         </Modal>
         {/* ================================ Group Info Modal end ===================================== */}
+
+        {/* ================================ Group Info as Membebr Modal start ===================================== */}
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={openInfoAsMember}
+          onClose={handleCloseInfoAsMember}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openInfoAsMember}>
+            <Box sx={style}>
+              <Typography
+                id="transition-modal-title"
+                variant="h6"
+                component="h2"
+              >
+                Group Members as Member
+              </Typography>
+
+              {/* ================================ List start ===================================== */}
+              <Lists>
+                {memberList.length > 0 ? (
+                  <>
+                    {memberList.map((item) => (
+                      <ListItem
+                        key={item.groupMembersId}
+                        imageAs="small"
+                        photoURL={item.memberPhoto}
+                        heading={item.memberName}
+                        textAs="wants to join your group"
+                        button="button"
+                        buttonText="member"
+                        userAs="active"
+                        loader={loader}
+                      />
+                    ))}
+
+                    {/* {memberList.map(
+                      (item, index) =>
+                        item.groupAdminName && (
+                          <ListItem
+                            key={index + 1000}
+                            imageAs="small"
+                            photoURL={item.groupPhoto}
+                            heading={item.groupAdminName}
+                            textAs="Admin of the group"
+                            button="button"
+                            buttonText="Admin"
+                            userAs="active"
+                            loader={loader}
+                          />
+                        )
+                    )} */}
+                  </>
+                ) : (
+                  <Alert
+                    sx={{ marginTop: "20px" }}
+                    variant="filled"
+                    severity="info"
+                  >
+                    No Group Member..!
+                  </Alert>
+                )}
+              </Lists>
+              {/* ================================ List end ===================================== */}
+            </Box>
+          </Fade>
+        </Modal>
+        {/* ================================ Group Info as Membebr Modal end ===================================== */}
       </section>
     </Grid>
   );
