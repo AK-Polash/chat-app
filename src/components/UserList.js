@@ -118,84 +118,72 @@ const UserList = () => {
   };
 
   return (
-    <Grid item xs={4}>
-      <section className="section__main">
-        {/* <ContentHeading heading="User List" /> */}
-        <div className="section__heading">
-          <h2 className="section__heading__title"> User List </h2>
-          <TextField
-            onChange={handleSearch}
-            size="small"
-            label="Search"
-            variant="outlined"
-          />
-        </div>
+    <section className="section__main">
+      {/* <ContentHeading heading="User List" /> */}
+      <div className="section__heading">
+        <h2 className="section__heading__title"> User List </h2>
+        <TextField
+          onChange={handleSearch}
+          size="small"
+          label="Search"
+          variant="outlined"
+        />
+      </div>
 
-        <Lists>
-          {searchArr.length > 0 ? (
-            searchArr.map((item) =>
-              friends.includes(data.userData.userInfo.uid + item.id) ||
-              friends.includes(item.id + data.userData.userInfo.uid) ? (
+      <Lists>
+        {searchArr.length > 0 ? (
+          searchArr.map((item) =>
+            friends.includes(data.userData.userInfo.uid + item.id) ||
+            friends.includes(item.id + data.userData.userInfo.uid) ? (
+              <ListItem
+                key={item.id}
+                imageAs="small"
+                photoURL={item.photoURL}
+                heading={item.username}
+                textAs="Today, 3pm"
+                button="button"
+                buttonText="Friend"
+              />
+            ) : blockList.includes(data.userData.userInfo.uid + item.id) ? (
+              <ListItem
+                key={item.id}
+                imageAs="small"
+                photoURL={item.photoURL}
+                heading={item.username}
+                textAs="Today, 3pm"
+                button="button"
+                buttonText="Blocked"
+              />
+            ) : blockList.includes(item.id + data.userData.userInfo.uid) ? (
+              <ListItem
+                key={item.id}
+                imageAs="small"
+                photoURL={item.photoURL}
+                heading={item.username}
+                textAs="Today, 3pm"
+                buttonText="You Blocked By"
+              />
+            ) : friendConnection.includes(
+                data.userData.userInfo.uid + item.id
+              ) ||
+              friendConnection.includes(
+                item.id + data.userData.userInfo.uid
+              ) ? (
+              friendConnection.includes(
+                data.userData.userInfo.uid + item.id
+              ) ? (
                 <ListItem
                   key={item.id}
                   imageAs="small"
                   photoURL={item.photoURL}
                   heading={item.username}
-                  textAs="Today, 3pm"
-                  button="button"
-                  buttonText="Friend"
+                  textAs="Yestarday, 5am"
+                  button="dualButton"
+                  buttonOneText="Pending"
+                  buttonTwoText="Cancel"
+                  buttonTwoOnclick={() => handleCancel(item)}
+                  loader={loader}
                 />
-              ) : blockList.includes(data.userData.userInfo.uid + item.id) ? (
-                <ListItem
-                  key={item.id}
-                  imageAs="small"
-                  photoURL={item.photoURL}
-                  heading={item.username}
-                  textAs="Today, 3pm"
-                  button="button"
-                  buttonText="Blocked"
-                />
-              ) : blockList.includes(item.id + data.userData.userInfo.uid) ? (
-                <ListItem
-                  key={item.id}
-                  imageAs="small"
-                  photoURL={item.photoURL}
-                  heading={item.username}
-                  textAs="Today, 3pm"
-                  buttonText="You Blocked By"
-                />
-              ) : friendConnection.includes(
-                  data.userData.userInfo.uid + item.id
-                ) ||
-                friendConnection.includes(
-                  item.id + data.userData.userInfo.uid
-                ) ? (
-                friendConnection.includes(
-                  data.userData.userInfo.uid + item.id
-                ) ? (
-                  <ListItem
-                    key={item.id}
-                    imageAs="small"
-                    photoURL={item.photoURL}
-                    heading={item.username}
-                    textAs="Yestarday, 5am"
-                    button="dualButton"
-                    buttonOneText="Pending"
-                    buttonTwoText="Cancel"
-                    buttonTwoOnclick={() => handleCancel(item)}
-                    loader={loader}
-                  />
-                ) : (
-                  <ListItem
-                    key={item.id}
-                    imageAs="small"
-                    photoURL={item.photoURL}
-                    heading={item.username}
-                    textAs="Yestarday, 5am"
-                    button="button"
-                    buttonText="Pending"
-                  />
-                )
               ) : (
                 <ListItem
                   key={item.id}
@@ -203,76 +191,76 @@ const UserList = () => {
                   photoURL={item.photoURL}
                   heading={item.username}
                   textAs="Yestarday, 5am"
-                  button="icon"
-                  handleAddFriendRequest={() => handleAddFriend(item)}
-                  loader={loader}
+                  button="button"
+                  buttonText="Pending"
                 />
               )
+            ) : (
+              <ListItem
+                key={item.id}
+                imageAs="small"
+                photoURL={item.photoURL}
+                heading={item.username}
+                textAs="Yestarday, 5am"
+                button="icon"
+                handleAddFriendRequest={() => handleAddFriend(item)}
+                loader={loader}
+              />
             )
-          ) : users.length > 0 ? (
-            users.map((item) =>
-              friends.includes(data.userData.userInfo.uid + item.id) ||
-              friends.includes(item.id + data.userData.userInfo.uid) ? (
+          )
+        ) : users.length > 0 ? (
+          users.map((item) =>
+            friends.includes(data.userData.userInfo.uid + item.id) ||
+            friends.includes(item.id + data.userData.userInfo.uid) ? (
+              <ListItem
+                key={item.id}
+                imageAs="small"
+                photoURL={item.photoURL}
+                heading={item.username}
+                textAs="Today, 3pm"
+                button="button"
+                buttonText="Friend"
+              />
+            ) : blockList.includes(data.userData.userInfo.uid + item.id) ? (
+              <ListItem
+                key={item.id}
+                imageAs="small"
+                photoURL={item.photoURL}
+                heading={item.username}
+                textAs="Today, 3pm"
+                button="button"
+                buttonText="Blocked"
+              />
+            ) : blockList.includes(item.id + data.userData.userInfo.uid) ? (
+              <ListItem
+                key={item.id}
+                imageAs="small"
+                photoURL={item.photoURL}
+                heading={item.username}
+                textAs="Today, 3pm"
+                buttonText="You Blocked By"
+              />
+            ) : friendConnection.includes(
+                data.userData.userInfo.uid + item.id
+              ) ||
+              friendConnection.includes(
+                item.id + data.userData.userInfo.uid
+              ) ? (
+              friendConnection.includes(
+                data.userData.userInfo.uid + item.id
+              ) ? (
                 <ListItem
                   key={item.id}
                   imageAs="small"
                   photoURL={item.photoURL}
                   heading={item.username}
-                  textAs="Today, 3pm"
-                  button="button"
-                  buttonText="Friend"
+                  textAs="Yestarday, 5am"
+                  button="dualButton"
+                  buttonOneText="Pending"
+                  buttonTwoText="Cancel"
+                  buttonTwoOnclick={() => handleCancel(item)}
+                  loader={loader}
                 />
-              ) : blockList.includes(data.userData.userInfo.uid + item.id) ? (
-                <ListItem
-                  key={item.id}
-                  imageAs="small"
-                  photoURL={item.photoURL}
-                  heading={item.username}
-                  textAs="Today, 3pm"
-                  button="button"
-                  buttonText="Blocked"
-                />
-              ) : blockList.includes(item.id + data.userData.userInfo.uid) ? (
-                <ListItem
-                  key={item.id}
-                  imageAs="small"
-                  photoURL={item.photoURL}
-                  heading={item.username}
-                  textAs="Today, 3pm"
-                  buttonText="You Blocked By"
-                />
-              ) : friendConnection.includes(
-                  data.userData.userInfo.uid + item.id
-                ) ||
-                friendConnection.includes(
-                  item.id + data.userData.userInfo.uid
-                ) ? (
-                friendConnection.includes(
-                  data.userData.userInfo.uid + item.id
-                ) ? (
-                  <ListItem
-                    key={item.id}
-                    imageAs="small"
-                    photoURL={item.photoURL}
-                    heading={item.username}
-                    textAs="Yestarday, 5am"
-                    button="dualButton"
-                    buttonOneText="Pending"
-                    buttonTwoText="Cancel"
-                    buttonTwoOnclick={() => handleCancel(item)}
-                    loader={loader}
-                  />
-                ) : (
-                  <ListItem
-                    key={item.id}
-                    imageAs="small"
-                    photoURL={item.photoURL}
-                    heading={item.username}
-                    textAs="Yestarday, 5am"
-                    button="button"
-                    buttonText="Pending"
-                  />
-                )
               ) : (
                 <ListItem
                   key={item.id}
@@ -280,20 +268,30 @@ const UserList = () => {
                   photoURL={item.photoURL}
                   heading={item.username}
                   textAs="Yestarday, 5am"
-                  button="icon"
-                  handleAddFriendRequest={() => handleAddFriend(item)}
-                  loader={loader}
+                  button="button"
+                  buttonText="Pending"
                 />
               )
+            ) : (
+              <ListItem
+                key={item.id}
+                imageAs="small"
+                photoURL={item.photoURL}
+                heading={item.username}
+                textAs="Yestarday, 5am"
+                button="icon"
+                handleAddFriendRequest={() => handleAddFriend(item)}
+                loader={loader}
+              />
             )
-          ) : (
-            <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
-              No User..!
-            </Alert>
-          )}
-        </Lists>
-      </section>
-    </Grid>
+          )
+        ) : (
+          <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
+            No User..!
+          </Alert>
+        )}
+      </Lists>
+    </section>
   );
 };
 

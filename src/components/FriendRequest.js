@@ -64,36 +64,34 @@ const FriendRequest = () => {
   };
 
   return (
-    <Grid item xs={4}>
-      <section className="section__main">
-        <ContentHeading heading="Friend Request" />
+    <section className="section__main">
+      <ContentHeading heading="Friend Request" />
 
-        <Lists>
-          {friendRequests.length > 0 ? (
-            friendRequests.map((item, index) => (
-              <ListItem
-                key={index}
-                imageAs="large"
-                photoURL={item.senderPhoto}
-                heading={item.senderName}
-                headingAs="h4"
-                textAs="Hi buddy.."
-                button="dualButton"
-                buttonOneText="Accept"
-                buttonOneOnclick={() => handleAcceptFriendRequest(item)}
-                buttonTwoText="Reject"
-                buttonTwoOnclick={() => handleRejectFriendRequest(item)}
-                loader={loader}
-              />
-            ))
-          ) : (
-            <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
-              No Friend Request!
-            </Alert>
-          )}
-        </Lists>
-      </section>
-    </Grid>
+      <Lists>
+        {friendRequests.length > 0 ? (
+          friendRequests.map((item, index) => (
+            <ListItem
+              key={index}
+              imageAs="large"
+              photoURL={item.senderPhoto}
+              heading={item.senderName}
+              headingAs="h4"
+              textAs="Hi buddy.."
+              button="dualButton"
+              buttonOneText="Accept"
+              buttonOneOnclick={() => handleAcceptFriendRequest(item)}
+              buttonTwoText="Reject"
+              buttonTwoOnclick={() => handleRejectFriendRequest(item)}
+              loader={loader}
+            />
+          ))
+        ) : (
+          <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
+            No Friend Request!
+          </Alert>
+        )}
+      </Lists>
+    </section>
   );
 };
 

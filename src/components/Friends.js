@@ -85,55 +85,53 @@ const Friends = () => {
   };
 
   return (
-    <Grid item xs={4}>
-      <section className="section__main">
-        <ContentHeading heading="Friends" />
+    <section className="section__main">
+      <ContentHeading heading="Friends" />
 
-        <Lists>
-          {friends.length > 0 ? (
-            friends.map((item, index) =>
-              data.userData.userInfo.uid === item.receiverId ? (
-                <ListItem
-                  key={index}
-                  imageAs="small"
-                  photoURL={item.senderPhoto}
-                  userAs="active"
-                  heading={item.senderName}
-                  textAs="hello..!"
-                  button="buttonAndText"
-                  contentText={item.date}
-                  buttonOneText="Block"
-                  buttonTwoText="Unfriend"
-                  buttonOneOnClick={() => handleBlock(item)}
-                  buttonTwoOnClick={() => handleUnfriend(item)}
-                  loader={loader}
-                />
-              ) : (
-                <ListItem
-                  key={index}
-                  imageAs="small"
-                  photoURL={item.receiverPhoto}
-                  userAs="active"
-                  heading={item.receiverName}
-                  textAs="hi..!"
-                  button="buttonAndText"
-                  contentText={item.date}
-                  buttonOneText="Block"
-                  buttonTwoText="Unfriend"
-                  buttonOneOnClick={() => handleBlock(item)}
-                  buttonTwoOnClick={() => handleUnfriend(item)}
-                  loader={loader}
-                />
-              )
+      <Lists>
+        {friends.length > 0 ? (
+          friends.map((item, index) =>
+            data.userData.userInfo.uid === item.receiverId ? (
+              <ListItem
+                key={index}
+                imageAs="small"
+                photoURL={item.senderPhoto}
+                userAs="active"
+                heading={item.senderName}
+                textAs="hello..!"
+                button="buttonAndText"
+                contentText={item.date}
+                buttonOneText="Block"
+                buttonTwoText="Unfriend"
+                buttonOneOnClick={() => handleBlock(item)}
+                buttonTwoOnClick={() => handleUnfriend(item)}
+                loader={loader}
+              />
+            ) : (
+              <ListItem
+                key={index}
+                imageAs="small"
+                photoURL={item.receiverPhoto}
+                userAs="active"
+                heading={item.receiverName}
+                textAs="hi..!"
+                button="buttonAndText"
+                contentText={item.date}
+                buttonOneText="Block"
+                buttonTwoText="Unfriend"
+                buttonOneOnClick={() => handleBlock(item)}
+                buttonTwoOnClick={() => handleUnfriend(item)}
+                loader={loader}
+              />
             )
-          ) : (
-            <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
-              No Friends..!
-            </Alert>
-          )}
-        </Lists>
-      </section>
-    </Grid>
+          )
+        ) : (
+          <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
+            No Friends..!
+          </Alert>
+        )}
+      </Lists>
+    </section>
   );
 };
 

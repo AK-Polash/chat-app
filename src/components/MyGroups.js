@@ -207,210 +207,197 @@ const MyGroups = () => {
   };
 
   return (
-    <Grid item xs={4}>
-      <section className="section__main">
-        <ContentHeading heading="My Groups" />
+    <section className="section__main">
+      <ContentHeading heading="My Groups" />
 
-        <Lists>
-          {groups.length > 0 || groupM.length > 0 ? (
-            <>
-              {groups.map((item) => (
-                <ListItem
-                  key={item.id}
-                  imageAs="small"
-                  photoURL={item.groupPhotoURL}
-                  heading={item.groupName}
-                  textAs={item.groupTag}
-                  button="tripleButton"
-                  buttonOneText="Information"
-                  buttonOneOnClick={() => handleGroupInfo(item)}
-                  buttonTwoText="Requests"
-                  buttonTwoOnClick={() => handleGroupRequest(item)}
-                  buttonThreeText="Delete"
-                  buttonThreeOnClick={() => handleGroupDelete(item)}
-                  userAs="active"
-                  loader={loader}
-                />
-              ))}
+      <Lists>
+        {groups.length > 0 || groupM.length > 0 ? (
+          <>
+            {groups.map((item) => (
+              <ListItem
+                key={item.id}
+                imageAs="small"
+                photoURL={item.groupPhotoURL}
+                heading={item.groupName}
+                textAs={item.groupTag}
+                button="tripleButton"
+                buttonOneText="Information"
+                buttonOneOnClick={() => handleGroupInfo(item)}
+                buttonTwoText="Requests"
+                buttonTwoOnClick={() => handleGroupRequest(item)}
+                buttonThreeText="Delete"
+                buttonThreeOnClick={() => handleGroupDelete(item)}
+                userAs="active"
+                loader={loader}
+              />
+            ))}
 
-              {groupM.map((item) => (
-                <ListItem
-                  key={item.id}
-                  imageAs="small"
-                  photoURL={item.groupPhoto}
-                  heading={item.groupName}
-                  textAs={item.groupTag}
-                  button="dualButton"
-                  buttonOneText="Info"
-                  buttonOneOnclick={() => handleGroupInfoAsMember(item)}
-                  buttonTwoText="Leave"
-                  buttonTwoOnclick={() => handleLeaveGroup(item)}
-                  userAs="active"
-                  loader={loader}
-                />
-              ))}
-            </>
-          ) : (
-            <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
-              Empty Group List..!
-            </Alert>
-          )}
-        </Lists>
+            {groupM.map((item) => (
+              <ListItem
+                key={item.id}
+                imageAs="small"
+                photoURL={item.groupPhoto}
+                heading={item.groupName}
+                textAs={item.groupTag}
+                button="dualButton"
+                buttonOneText="Info"
+                buttonOneOnclick={() => handleGroupInfoAsMember(item)}
+                buttonTwoText="Leave"
+                buttonTwoOnclick={() => handleLeaveGroup(item)}
+                userAs="active"
+                loader={loader}
+              />
+            ))}
+          </>
+        ) : (
+          <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
+            Empty Group List..!
+          </Alert>
+        )}
+      </Lists>
 
-        {/* ================================ Group Request Modal start ===================================== */}
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={open}
-          onClose={handleClose}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={open}>
-            <Box sx={style}>
-              <Typography
-                id="transition-modal-title"
-                variant="h6"
-                component="h2"
-              >
-                Group Requests
-              </Typography>
+      {/* ================================ Group Request Modal start ===================================== */}
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <Box sx={style}>
+            <Typography id="transition-modal-title" variant="h6" component="h2">
+              Group Requests
+            </Typography>
 
-              {/* ================================ List start ===================================== */}
-              <Lists>
-                {groupRequest.length > 0 ? (
-                  groupRequest.map((item) => (
-                    <ListItem
-                      key={item.groupRequestId}
-                      imageAs="small"
-                      photoURL={item.senderPhoto}
-                      heading={item.senderName}
-                      textAs="wants to join your group"
-                      button="dualButton"
-                      buttonOneText="accept"
-                      buttonOneOnclick={() => handleAcceptGroupReq(item)}
-                      buttonTwoText="reject"
-                      buttonTwoOnclick={() => handleRejectGroupReq(item)}
-                      userAs="active"
-                      loader={loader}
-                    />
-                  ))
-                ) : (
-                  <Alert
-                    sx={{ marginTop: "20px" }}
-                    variant="filled"
-                    severity="info"
-                  >
-                    No Group Request..!
-                  </Alert>
-                )}
-              </Lists>
-              {/* ================================ List end ===================================== */}
-            </Box>
-          </Fade>
-        </Modal>
-        {/* ================================ Group Request Modal end ===================================== */}
+            {/* ================================ List start ===================================== */}
+            <Lists>
+              {groupRequest.length > 0 ? (
+                groupRequest.map((item) => (
+                  <ListItem
+                    key={item.groupRequestId}
+                    imageAs="small"
+                    photoURL={item.senderPhoto}
+                    heading={item.senderName}
+                    textAs="wants to join your group"
+                    button="dualButton"
+                    buttonOneText="accept"
+                    buttonOneOnclick={() => handleAcceptGroupReq(item)}
+                    buttonTwoText="reject"
+                    buttonTwoOnclick={() => handleRejectGroupReq(item)}
+                    userAs="active"
+                    loader={loader}
+                  />
+                ))
+              ) : (
+                <Alert
+                  sx={{ marginTop: "20px" }}
+                  variant="filled"
+                  severity="info"
+                >
+                  No Group Request..!
+                </Alert>
+              )}
+            </Lists>
+            {/* ================================ List end ===================================== */}
+          </Box>
+        </Fade>
+      </Modal>
+      {/* ================================ Group Request Modal end ===================================== */}
 
-        {/* ================================ Group Info Modal start ===================================== */}
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={openInfo}
-          onClose={handleCloseInfo}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={openInfo}>
-            <Box sx={style}>
-              <Typography
-                id="transition-modal-title"
-                variant="h6"
-                component="h2"
-              >
-                Group Members
-              </Typography>
+      {/* ================================ Group Info Modal start ===================================== */}
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openInfo}
+        onClose={handleCloseInfo}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={openInfo}>
+          <Box sx={style}>
+            <Typography id="transition-modal-title" variant="h6" component="h2">
+              Group Members
+            </Typography>
 
-              {/* ================================ List start ===================================== */}
-              <Lists>
-                {groupMembers.length > 0 ? (
-                  groupMembers.map((item) => (
+            {/* ================================ List start ===================================== */}
+            <Lists>
+              {groupMembers.length > 0 ? (
+                groupMembers.map((item) => (
+                  <ListItem
+                    key={item.groupMembersId}
+                    imageAs="small"
+                    photoURL={item.memberPhoto}
+                    heading={item.memberName}
+                    textAs="wants to join your group"
+                    button="dualButton"
+                    buttonOneText="member"
+                    buttonTwoText="kick"
+                    buttonTwoOnclick={() => handleRemoveGroupMember(item)}
+                    userAs="active"
+                    loader={loader}
+                  />
+                ))
+              ) : (
+                <Alert
+                  sx={{ marginTop: "20px" }}
+                  variant="filled"
+                  severity="info"
+                >
+                  No Group Member..!
+                </Alert>
+              )}
+            </Lists>
+            {/* ================================ List end ===================================== */}
+          </Box>
+        </Fade>
+      </Modal>
+      {/* ================================ Group Info Modal end ===================================== */}
+
+      {/* ================================ Group Info as Membebr Modal start ===================================== */}
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openInfoAsMember}
+        onClose={handleCloseInfoAsMember}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={openInfoAsMember}>
+          <Box sx={style}>
+            <Typography id="transition-modal-title" variant="h6" component="h2">
+              Group Members as Member
+            </Typography>
+
+            {/* ================================ List start ===================================== */}
+            <Lists>
+              {memberList.length > 0 ? (
+                <>
+                  {memberList.map((item) => (
                     <ListItem
                       key={item.groupMembersId}
                       imageAs="small"
                       photoURL={item.memberPhoto}
                       heading={item.memberName}
                       textAs="wants to join your group"
-                      button="dualButton"
-                      buttonOneText="member"
-                      buttonTwoText="kick"
-                      buttonTwoOnclick={() => handleRemoveGroupMember(item)}
+                      button="button"
+                      buttonText="member"
                       userAs="active"
                       loader={loader}
                     />
-                  ))
-                ) : (
-                  <Alert
-                    sx={{ marginTop: "20px" }}
-                    variant="filled"
-                    severity="info"
-                  >
-                    No Group Member..!
-                  </Alert>
-                )}
-              </Lists>
-              {/* ================================ List end ===================================== */}
-            </Box>
-          </Fade>
-        </Modal>
-        {/* ================================ Group Info Modal end ===================================== */}
+                  ))}
 
-        {/* ================================ Group Info as Membebr Modal start ===================================== */}
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={openInfoAsMember}
-          onClose={handleCloseInfoAsMember}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={openInfoAsMember}>
-            <Box sx={style}>
-              <Typography
-                id="transition-modal-title"
-                variant="h6"
-                component="h2"
-              >
-                Group Members as Member
-              </Typography>
-
-              {/* ================================ List start ===================================== */}
-              <Lists>
-                {memberList.length > 0 ? (
-                  <>
-                    {memberList.map((item) => (
-                      <ListItem
-                        key={item.groupMembersId}
-                        imageAs="small"
-                        photoURL={item.memberPhoto}
-                        heading={item.memberName}
-                        textAs="wants to join your group"
-                        button="button"
-                        buttonText="member"
-                        userAs="active"
-                        loader={loader}
-                      />
-                    ))}
-
-                    {/* {memberList.map(
+                  {/* {memberList.map(
                       (item, index) =>
                         item.groupAdminName && (
                           <ListItem
@@ -426,24 +413,23 @@ const MyGroups = () => {
                           />
                         )
                     )} */}
-                  </>
-                ) : (
-                  <Alert
-                    sx={{ marginTop: "20px" }}
-                    variant="filled"
-                    severity="info"
-                  >
-                    No Group Member..!
-                  </Alert>
-                )}
-              </Lists>
-              {/* ================================ List end ===================================== */}
-            </Box>
-          </Fade>
-        </Modal>
-        {/* ================================ Group Info as Membebr Modal end ===================================== */}
-      </section>
-    </Grid>
+                </>
+              ) : (
+                <Alert
+                  sx={{ marginTop: "20px" }}
+                  variant="filled"
+                  severity="info"
+                >
+                  No Group Member..!
+                </Alert>
+              )}
+            </Lists>
+            {/* ================================ List end ===================================== */}
+          </Box>
+        </Fade>
+      </Modal>
+      {/* ================================ Group Info as Membebr Modal end ===================================== */}
+    </section>
   );
 };
 

@@ -14,17 +14,29 @@ const Home = () => {
     <div className="main__home">
       <ToastContainer />
       <Grid container spacing={3} sx={{ height: "100%" }}>
-        <GroupList />
+        <Grid item xs={4}>
+          <GroupList />
+        </Grid>
 
-        <Friends />
+        <Grid item xs={4}>
+          <Friends />
+        </Grid>
 
-        <UserList />
+        <Grid item xs={4}>
+          <UserList />
+        </Grid>
 
-        <FriendRequest />
+        <Grid item xs={4}>
+          <FriendRequest />
+        </Grid>
 
-        <MyGroups />
+        <Grid item xs={4}>
+          <MyGroups />
+        </Grid>
 
-        <BlockList />
+        <Grid item xs={4}>
+          <BlockList />
+        </Grid>
       </Grid>
     </div>
   );

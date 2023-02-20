@@ -248,238 +248,232 @@ const GroupList = () => {
   };
 
   return (
-    <Grid item xs={4}>
-      <section className="section__main">
-        <div className="section__heading  less__padding">
-          <h2 className="section__heading__title"> Group List </h2>
-          <button
-            onClick={handleOpen}
-            className="create__group__button"
-            title="Create Group"
-          >
-            <HiPlus className="button__icon" />
-          </button>
-        </div>
+    <section className="section__main">
+      <div className="section__heading  less__padding">
+        <h2 className="section__heading__title"> Group List </h2>
+        <button
+          onClick={handleOpen}
+          className="create__group__button"
+          title="Create Group"
+        >
+          <HiPlus className="button__icon" />
+        </button>
+      </div>
 
-        <Lists>
-          {/* sender Id + Group Id */}
-          {groups.length > 0 ? (
-            groups.map((item, index) =>
-              groupRequestConnection.includes(
+      <Lists>
+        {/* sender Id + Group Id */}
+        {groups.length > 0 ? (
+          groups.map((item, index) =>
+            groupRequestConnection.includes(
+              data.userData.userInfo.uid + item.id
+            ) ? (
+              <ListItem
+                key={index}
+                imageAs="large"
+                photoURL={item.groupPhotoURL}
+                heading={item.groupName}
+                headingAs="h4"
+                textAs={item.groupTag}
+                button="dualButton"
+                buttonOneText="Pending"
+                buttonTwoText="Cancel"
+                buttonTwoOnclick={() => handleCancelGroupJoin(item)}
+                loader={loader}
+              />
+            ) : groupMemberConnection.includes(
                 data.userData.userInfo.uid + item.id
               ) ? (
-                <ListItem
-                  key={index}
-                  imageAs="large"
-                  photoURL={item.groupPhotoURL}
-                  heading={item.groupName}
-                  headingAs="h4"
-                  textAs={item.groupTag}
-                  button="dualButton"
-                  buttonOneText="Pending"
-                  buttonTwoText="Cancel"
-                  buttonTwoOnclick={() => handleCancelGroupJoin(item)}
-                  loader={loader}
-                />
-              ) : groupMemberConnection.includes(
-                  data.userData.userInfo.uid + item.id
-                ) ? (
-                <ListItem
-                  key={index}
-                  imageAs="large"
-                  photoURL={item.groupPhotoURL}
-                  heading={item.groupName}
-                  headingAs="h4"
-                  textAs={item.groupTag}
-                  button="button"
-                  buttonText="Member"
-                  loader={loader}
+              <ListItem
+                key={index}
+                imageAs="large"
+                photoURL={item.groupPhotoURL}
+                heading={item.groupName}
+                headingAs="h4"
+                textAs={item.groupTag}
+                button="button"
+                buttonText="Member"
+                loader={loader}
+              />
+            ) : (
+              <ListItem
+                key={index}
+                imageAs="large"
+                photoURL={item.groupPhotoURL}
+                heading={item.groupName}
+                headingAs="h4"
+                textAs={item.groupTag}
+                button="button"
+                handleClick={() =>
+                  handleGroupJoin(
+                    item.adminId,
+                    item.adminName,
+                    item.id,
+                    item.groupName,
+                    item.groupPhotoURL,
+                    item.groupTag
+                  )
+                }
+                buttonText="Join"
+                loader={loader}
+              />
+            )
+          )
+        ) : (
+          <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
+            Empty Group List..!
+          </Alert>
+        )}
+      </Lists>
+
+      <div>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={open}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 400,
+          }}
+        >
+          <Fade in={open}>
+            <Box sx={style}>
+              <p className="create__group__heading"> Create Group </p>
+
+              <div className="image__holder  image__holder__relative">
+                {image ? (
+                  <div className="img-preview"></div>
+                ) : (
+                  <div className="image__holder">
+                    <Avatar
+                      sx={{ width: "100%", height: "100%" }}
+                      className="profile__img"
+                    />
+                  </div>
+                )}
+
+                <IconButton
+                  sx={{
+                    position: "absolute",
+                    bottom: "-10px",
+                    right: "-22px",
+                  }}
+                  color="primary"
+                  aria-label="upload picture"
+                  component="label"
+                  title="Select Image"
+                >
+                  <input
+                    onChange={onChange}
+                    hidden
+                    accept="image/*"
+                    type="file"
+                  />
+                  <PhotoCamera />
+                </IconButton>
+              </div>
+
+              <div>
+                {errorMsg.groupName ? (
+                  <Alert
+                    sx={{ margin: "9px 0" }}
+                    className="error__alert__message  error__alert__forgot__password"
+                    variant="filled"
+                    severity="error"
+                  >
+                    {errorMsg.groupName}
+                  </Alert>
+                ) : errorMsg.groupTag ? (
+                  <Alert
+                    sx={{ margin: "9px 0" }}
+                    className="error__alert__message  error__alert__forgot__password"
+                    variant="filled"
+                    severity="error"
+                  >
+                    {errorMsg.groupTag}
+                  </Alert>
+                ) : (
+                  <Alert
+                    sx={{ visibility: "hidden" }}
+                    className="error__alert__message  error__alert__forgot__password"
+                    variant="filled"
+                    severity="error"
+                  >
+                    Hidden
+                  </Alert>
+                )}
+              </div>
+
+              <div>
+                {image && (
+                  <Cropper
+                    style={{ height: 180, width: "100%" }}
+                    zoomTo={0.5}
+                    initialAspectRatio={1}
+                    preview=".img-preview"
+                    src={image}
+                    viewMode={1}
+                    minCropBoxHeight={10}
+                    minCropBoxWidth={10}
+                    background={false}
+                    responsive={true}
+                    autoCropArea={1}
+                    checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+                    onInitialized={(instance) => {
+                      setCropper(instance);
+                    }}
+                    guides={true}
+                  />
+                )}
+              </div>
+
+              <TextField
+                disabled={disable}
+                onChange={handleForm}
+                label="Group Name"
+                variant="standard"
+                name="groupName"
+                value={groupFormData.groupName}
+                required
+              />
+
+              <TextField
+                disabled={disable}
+                onChange={handleForm}
+                label="Tagline"
+                variant="standard"
+                name="groupTag"
+                value={groupFormData.groupTag}
+                required
+              />
+
+              {loader ? (
+                <ColorRing
+                  visible={true}
+                  height="42"
+                  width="42"
+                  ariaLabel="blocks-loading"
+                  wrapperStyle={{ alignSelf: "center" }}
+                  wrapperClass="blocks-wrapper"
+                  colors={[
+                    "#e15b64",
+                    "#f47e60",
+                    "#f8b26a",
+                    "#abbd81",
+                    "#849b87",
+                  ]}
                 />
               ) : (
-                <ListItem
-                  key={index}
-                  imageAs="large"
-                  photoURL={item.groupPhotoURL}
-                  heading={item.groupName}
-                  headingAs="h4"
-                  textAs={item.groupTag}
-                  button="button"
-                  handleClick={() =>
-                    handleGroupJoin(
-                      item.adminId,
-                      item.adminName,
-                      item.id,
-                      item.groupName,
-                      item.groupPhotoURL,
-                      item.groupTag
-                    )
-                  }
-                  buttonText="Join"
-                  loader={loader}
-                />
-              )
-            )
-          ) : (
-            <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
-              Empty Group List..!
-            </Alert>
-          )}
-        </Lists>
-
-        <div>
-          <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            open={open}
-            onClose={handleClose}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-              timeout: 400,
-            }}
-          >
-            <Fade in={open}>
-              <Box sx={style}>
-                <p className="create__group__heading"> Create Group </p>
-
-                <div className="image__holder  image__holder__relative">
-                  {image ? (
-                    <div className="img-preview"></div>
-                  ) : (
-                    <div className="image__holder">
-                      <Avatar
-                        sx={{ width: "100%", height: "100%" }}
-                        className="profile__img"
-                      />
-                    </div>
-                  )}
-
-                  <IconButton
-                    sx={{
-                      position: "absolute",
-                      bottom: "-10px",
-                      right: "-22px",
-                    }}
-                    color="primary"
-                    aria-label="upload picture"
-                    component="label"
-                    title="Select Image"
-                  >
-                    <input
-                      onChange={onChange}
-                      hidden
-                      accept="image/*"
-                      type="file"
-                    />
-                    <PhotoCamera />
-                  </IconButton>
-                </div>
-
-                <div>
-                  {errorMsg.groupName ? (
-                    <Alert
-                      sx={{ margin: "9px 0" }}
-                      className="error__alert__message  error__alert__forgot__password"
-                      variant="filled"
-                      severity="error"
-                    >
-                      {errorMsg.groupName}
-                    </Alert>
-                  ) : errorMsg.groupTag ? (
-                    <Alert
-                      sx={{ margin: "9px 0" }}
-                      className="error__alert__message  error__alert__forgot__password"
-                      variant="filled"
-                      severity="error"
-                    >
-                      {errorMsg.groupTag}
-                    </Alert>
-                  ) : (
-                    <Alert
-                      sx={{ visibility: "hidden" }}
-                      className="error__alert__message  error__alert__forgot__password"
-                      variant="filled"
-                      severity="error"
-                    >
-                      Hidden
-                    </Alert>
-                  )}
-                </div>
-
-                <div>
-                  {image && (
-                    <Cropper
-                      style={{ height: 180, width: "100%" }}
-                      zoomTo={0.5}
-                      initialAspectRatio={1}
-                      preview=".img-preview"
-                      src={image}
-                      viewMode={1}
-                      minCropBoxHeight={10}
-                      minCropBoxWidth={10}
-                      background={false}
-                      responsive={true}
-                      autoCropArea={1}
-                      checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
-                      onInitialized={(instance) => {
-                        setCropper(instance);
-                      }}
-                      guides={true}
-                    />
-                  )}
-                </div>
-
-                <TextField
-                  disabled={disable}
-                  onChange={handleForm}
-                  label="Group Name"
-                  variant="standard"
-                  name="groupName"
-                  value={groupFormData.groupName}
-                  required
-                />
-
-                <TextField
-                  disabled={disable}
-                  onChange={handleForm}
-                  label="Tagline"
-                  variant="standard"
-                  name="groupTag"
-                  value={groupFormData.groupTag}
-                  required
-                />
-
-                {loader ? (
-                  <ColorRing
-                    visible={true}
-                    height="42"
-                    width="42"
-                    ariaLabel="blocks-loading"
-                    wrapperStyle={{ alignSelf: "center" }}
-                    wrapperClass="blocks-wrapper"
-                    colors={[
-                      "#e15b64",
-                      "#f47e60",
-                      "#f8b26a",
-                      "#abbd81",
-                      "#849b87",
-                    ]}
-                  />
-                ) : (
-                  <Button
-                    onClick={getCropData}
-                    type="submit"
-                    variant="contained"
-                  >
-                    Create Group
-                  </Button>
-                )}
-              </Box>
-            </Fade>
-          </Modal>
-        </div>
-      </section>
-    </Grid>
+                <Button onClick={getCropData} type="submit" variant="contained">
+                  Create Group
+                </Button>
+              )}
+            </Box>
+          </Fade>
+        </Modal>
+      </div>
+    </section>
   );
 };
 

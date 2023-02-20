@@ -67,33 +67,31 @@ const BlockList = () => {
   };
 
   return (
-    <Grid item xs={4}>
-      <section className="section__main">
-        <ContentHeading heading="Block List" />
+    <section className="section__main">
+      <ContentHeading heading="Block List" />
 
-        <Lists>
-          {blockList.length > 0 ? (
-            blockList.map((item) => (
-              <ListItem
-                key={item.id}
-                imageAs="small"
-                photoURL={item.blockPhoto}
-                heading={item.blockName}
-                textAs={item.date}
-                button="button"
-                buttonText="Unblock"
-                handleClick={() => handleUnBlock(item)}
-                loader={loader}
-              />
-            ))
-          ) : (
-            <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
-              Empty Block List..!
-            </Alert>
-          )}
-        </Lists>
-      </section>
-    </Grid>
+      <Lists>
+        {blockList.length > 0 ? (
+          blockList.map((item) => (
+            <ListItem
+              key={item.id}
+              imageAs="small"
+              photoURL={item.blockPhoto}
+              heading={item.blockName}
+              textAs={item.date}
+              button="button"
+              buttonText="Unblock"
+              handleClick={() => handleUnBlock(item)}
+              loader={loader}
+            />
+          ))
+        ) : (
+          <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
+            Empty Block List..!
+          </Alert>
+        )}
+      </Lists>
+    </section>
   );
 };
 
