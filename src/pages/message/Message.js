@@ -57,7 +57,6 @@ const Message = () => {
                     : data.activeChat.focusedItem.senderName
                   : "Default Khan"
               }
-              status="Online"
               photoURL={
                 data.activeChat.focusedItem
                   ? data.userData.userInfo.uid ===
