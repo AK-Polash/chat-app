@@ -1,0 +1,97 @@
+.profile__heading__chat {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: #333;
+}
+
+.extra__padding {
+  padding: 10px 30px;
+}
+
+.chat {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #333;
+  padding: 11px 20px;
+}
+.chat__moment {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  text-align: center;
+  padding-top: 3px;
+  background: transparent;
+  color: #bfbfbf;
+}
+
+.receiver {
+  align-self: flex-start;
+}
+.receiver__chat {
+  background: #f1f1f1;
+  color: #000;
+  position: relative;
+  border-radius: 10px 10px 10px 0;
+}
+.receiver__chat::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  bottom: 0;
+  left: -13px;
+  background: #f1f1f1;
+  -webkit-clip-path: polygon(100% 17%, 0% 100%, 100% 100%);
+  clip-path: polygon(100% 17%, 0% 100%, 100% 100%);
+}
+
+.sender {
+  align-self: flex-end;
+  max-width: 100%;
+}
+.sender__chat {
+  background: #5f35f5;
+  color: #fff;
+  position: relative;
+  border-radius: 10px 10px 0 10px;
+}
+.sender__chat::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: -9px;
+  width: 20px;
+  height: 20px;
+  background: #5f35f5;
+  -webkit-clip-path: polygon(0 17%, 0% 100%, 100% 100%);
+  clip-path: polygon(0 17%, 0% 100%, 100% 100%);
+}
+
+.input__main {
+  padding: 35px 0;
+}
+.form__main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.input__main {
+  width: 100%;
+}
+.send__icon {
+  color: #fff !important;
+  font-size: 30px !important;
+}
+
+.emoji__icon {
+  position: absolute;
+  top: 50%;
+  right: 240px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
