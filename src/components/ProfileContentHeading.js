@@ -36,7 +36,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const ProfileContentHeading = ({ userAs, title, status, photoURL }) => {
+const ProfileContentHeading = ({ userAs, title, photoURL }) => {
   return (
     <div className="section__heading  extra__padding">
       <div className="profile__heading__chat">
@@ -86,7 +86,7 @@ const ProfileContentHeading = ({ userAs, title, status, photoURL }) => {
 
         <div>
           <h2> {title} </h2>
-          <span> {status} </span>
+          {userAs === "active" ? <span> Online </span> : <span> Offline </span>}
         </div>
       </div>
 

@@ -43,7 +43,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 const ListItem = (props) => {
   return (
     <div className="section__users">
-      <div className="user__left__side">
+      <div className="user__left__side" onClick={props.handleChatClick}>
         {/* for Large Image start */}
         {props.imageAs === "large" && props.userAs === "active" ? (
           <div className="user__large__image__holder">

@@ -11,12 +11,14 @@ import {
   push,
   remove,
 } from "firebase/database";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { activeChatUser } from "../slices/activeChatSlice";
 
 const Friends = () => {
   const db = getDatabase();
   let data = useSelector((state) => state);
+  let dispatch = useDispatch();
   let [friends, setFriends] = useState([]);
   let [loader, setLoader] = useState(false);
 
@@ -84,6 +86,10 @@ const Friends = () => {
     });
   };
 
+  let handleChatFocus = (focusItem) => {
+    dispatch(activeChatUser(focusItem));
+  };
+
   return (
     <section className="section__main">
       <ContentHeading heading="Friends" />
@@ -106,6 +112,7 @@ const Friends = () => {
                 buttonOneOnClick={() => handleBlock(item)}
                 buttonTwoOnClick={() => handleUnfriend(item)}
                 loader={loader}
+                handleChatClick={() => handleChatFocus(item)}
               />
             ) : (
               <ListItem
@@ -122,6 +129,7 @@ const Friends = () => {
                 buttonOneOnClick={() => handleBlock(item)}
                 buttonTwoOnClick={() => handleUnfriend(item)}
                 loader={loader}
+                handleChatClick={() => handleChatFocus(item)}
               />
             )
           )
