@@ -87,7 +87,7 @@ const Friends = () => {
   };
 
   let handleChatFocus = (focusItem) => {
-    dispatch(activeChatUser(focusItem));
+    dispatch(activeChatUser({ ...focusItem, status: "single" }));
   };
 
   return (

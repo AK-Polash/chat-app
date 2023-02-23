@@ -61,6 +61,7 @@
   justify-content: space-between;
   align-items: center;
   column-gap: 6px;
+  cursor: pointer;
 }
 .user__large__image__holder {
   width: 70px;

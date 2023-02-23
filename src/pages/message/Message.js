@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MyGroups from "../../components/MyGroups";
 import Friends from "../../components/Friends";
 import {
@@ -17,9 +17,13 @@ import ProfileContentHeading from "../../components/ProfileContentHeading";
 import { TbSend } from "react-icons/tb";
 import { BsEmojiSmile } from "react-icons/bs";
 import { useSelector } from "react-redux";
+import { set, push, ref, getDatabase, onValue } from "firebase/database";
 
 const Message = () => {
   let data = useSelector((state) => state);
+  let db = getDatabase();
+
+  let [msgList, setMsgList] = useState([]);
 
   let [formData, setFormData] = useState({
     sms: "",
@@ -27,8 +31,57 @@ const Message = () => {
   });
 
   let handleSubmit = () => {
-    console.log(formData);
+    if (data.activeChat.focusedItem.status === "single") {
+      set(push(ref(db, "singleMsg/")), {
+        whoSendName: data.userData.userInfo.displayName,
+        whoSendId: data.userData.userInfo.uid,
+        whoReceiveName: data.activeChat.focusedItem
+          ? data.userData.userInfo.uid === data.activeChat.focusedItem.senderId
+            ? data.activeChat.focusedItem.receiverName
+            : data.activeChat.focusedItem.senderName
+          : "",
+        whoReceiveId: data.activeChat.focusedItem
+          ? data.userData.userInfo.uid === data.activeChat.focusedItem.senderId
+            ? data.activeChat.focusedItem.receiverId
+            : data.activeChat.focusedItem.senderId
+          : "",
+        msg: formData.sms,
+        date: `${new Date().getDate()} - ${
+          new Date().getMonth() + 1
+        } - ${new Date().getFullYear()} `,
+      })
+        .then(() => {
+          setFormData({ ...formData, sms: "", photo: "" });
+        })
+        .catch((error) => {
+          console.log(error.code);
+        });
+    }
   };
+
+  useEffect(() => {
+    const signleMsgRef = ref(db, "singleMsg");
+    onValue(signleMsgRef, (snapshot) => {
+      let arr = [];
+      let clickedId =
+        data.activeChat.focusedItem.receiverId === data.userData.userInfo.uid
+          ? data.activeChat.focusedItem.senderId
+          : data.activeChat.focusedItem.receiverId;
+
+      snapshot.forEach((item) => {
+        if (
+          (item.val().whoSendId === data.userData.userInfo.uid &&
+            item.val().whoReceiveId === clickedId) ||
+          (item.val().whoSendId === clickedId &&
+            item.val().whoReceiveId === data.userData.userInfo.uid)
+        ) {
+          arr.push({ ...item.val(), id: item.key });
+        }
+      });
+
+      setMsgList(arr);
+    });
+  }, [data.activeChat.focusedItem]);
 
   return (
     <>
@@ -65,7 +118,7 @@ const Message = () => {
                       data.activeChat.focusedItem.senderId
                       ? data.activeChat.focusedItem.receiverName
                       : data.activeChat.focusedItem.senderName
-                    : "Default Khan"
+                    : "Default Name"
                 }
                 photoURL={
                   data.activeChat.focusedItem
@@ -94,15 +147,19 @@ const Message = () => {
                   position: "relative",
                 }}
               >
-                <div className="receiver">
-                  <div className="chat receiver__chat"> Receiver </div>
-                  <div className="chat__moment"> Just now </div>
-                </div>
-
-                <div className="sender">
-                  <div className="chat sender__chat"> Sender </div>
-                  <div className="chat__moment"> Just now </div>
-                </div>
+                {msgList.map((item, index) =>
+                  data.userData.userInfo.uid === item.whoSendId ? (
+                    <div className="sender" key={index}>
+                      <div className="chat sender__chat"> {item.msg} </div>
+                      <div className="chat__moment"> Just now </div>
+                    </div>
+                  ) : (
+                    <div className="receiver" key={index}>
+                      <div className="chat receiver__chat"> {item.msg} </div>
+                      <div className="chat__moment"> Just now </div>
+                    </div>
+                  )
+                )}
               </Box>
 
               <Divider />
