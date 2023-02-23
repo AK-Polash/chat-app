@@ -138,8 +138,6 @@ const Message = () => {
                   background: "#fff",
                   display: "flex",
                   flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
                   rowGap: "10px",
                   padding: "15px 30px",
                   overflowY: "scroll",

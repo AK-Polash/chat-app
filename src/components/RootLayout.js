@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Outlet, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { activeUser } from "../slices/userSlice";
+import { activeChatUser } from "../slices/activeChatSlice";
 import { getAuth, signOut, updateProfile } from "firebase/auth";
 import {
   getStorage,
@@ -228,6 +229,9 @@ const RootLayout = () => {
         dispatch(activeUser(null));
         localStorage.removeItem("userInfo");
         navigate("/login");
+
+        // for removing data after log out of clicked friend item:
+        dispatch(activeChatUser(null));
       })
       .catch((error) => {
         console.log(error);
