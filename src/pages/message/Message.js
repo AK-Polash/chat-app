@@ -18,6 +18,7 @@ import { TbSend } from "react-icons/tb";
 import { BsEmojiSmile } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { set, push, ref, getDatabase, onValue } from "firebase/database";
+import moment from "moment";
 
 const Message = () => {
   let data = useSelector((state) => state);
@@ -46,9 +47,9 @@ const Message = () => {
             : data.activeChat.focusedItem.senderId
           : "",
         msg: formData.sms,
-        date: `${new Date().getDate()} - ${
+        date: `${new Date().getFullYear()}-${
           new Date().getMonth() + 1
-        } - ${new Date().getFullYear()} `,
+        }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
       })
         .then(() => {
           setFormData({ ...formData, sms: "", photo: "" });
@@ -149,12 +150,16 @@ const Message = () => {
                   data.userData.userInfo.uid === item.whoSendId ? (
                     <div className="sender" key={index}>
                       <div className="chat sender__chat"> {item.msg} </div>
-                      <div className="chat__moment"> Just now </div>
+                      <div className="chat__moment">
+                        {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
+                      </div>
                     </div>
                   ) : (
                     <div className="receiver" key={index}>
                       <div className="chat receiver__chat"> {item.msg} </div>
-                      <div className="chat__moment"> Just now </div>
+                      <div className="chat__moment">
+                        {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
+                      </div>
                     </div>
                   )
                 )}
@@ -228,6 +233,7 @@ const Message = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                width: "70%",
               }}
             >
               Select Friends to Send Message..!
