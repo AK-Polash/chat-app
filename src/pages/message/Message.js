@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import MyGroups from "../../components/MyGroups";
 import Friends from "../../components/Friends";
 import {
@@ -19,7 +19,6 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { set, push, ref, getDatabase, onValue } from "firebase/database";
 import moment from "moment";
-import ScrollToBottom from "react-scroll-to-bottom";
 
 const Message = () => {
   let data = useSelector((state) => state);
@@ -86,6 +85,16 @@ const Message = () => {
     });
   }, [data.activeChat.focusedItem]);
 
+  // Scroll to Bottom Functionality :
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [msgList]);
+
   return (
     <>
       <Grid container columnSpacing={2}>
@@ -139,14 +148,14 @@ const Message = () => {
                   data.userData.userInfo.uid === item.whoSendId ? (
                     <div className="sender" key={index}>
                       <div className="chat sender__chat"> {item.msg} </div>
-                      <div className="chat__moment">
+                      <div className="chat__moment" ref={messagesEndRef}>
                         {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
                       </div>
                     </div>
                   ) : (
                     <div className="receiver" key={index}>
                       <div className="chat receiver__chat"> {item.msg} </div>
-                      <div className="chat__moment">
+                      <div className="chat__moment" ref={messagesEndRef}>
                         {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
                       </div>
                     </div>
