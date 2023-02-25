@@ -19,6 +19,7 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { set, push, ref, getDatabase, onValue } from "firebase/database";
 import moment from "moment";
+import ScrollToBottom from "react-scroll-to-bottom";
 
 const Message = () => {
   let data = useSelector((state) => state);
@@ -64,10 +65,11 @@ const Message = () => {
     const signleMsgRef = ref(db, "singleMsg");
     onValue(signleMsgRef, (snapshot) => {
       let arr = [];
-      let clickedId =
-        data.activeChat.focusedItem.receiverId === data.userData.userInfo.uid
+      let clickedId = data.activeChat.focusedItem
+        ? data.activeChat.focusedItem.receiverId === data.userData.userInfo.uid
           ? data.activeChat.focusedItem.senderId
-          : data.activeChat.focusedItem.receiverId;
+          : data.activeChat.focusedItem.receiverId
+        : "";
 
       snapshot.forEach((item) => {
         if (
@@ -132,20 +134,7 @@ const Message = () => {
               />
               <Divider />
 
-              <Box
-                sx={{
-                  width: "100%",
-                  height: "480px",
-                  background: "#fff",
-                  display: "flex",
-                  flexDirection: "column",
-                  rowGap: "10px",
-                  padding: "15px 30px",
-                  overflowY: "scroll",
-                  overflowX: "hidden",
-                  position: "relative",
-                }}
-              >
+              <div className="chat__box">
                 {msgList.map((item, index) =>
                   data.userData.userInfo.uid === item.whoSendId ? (
                     <div className="sender" key={index}>
@@ -163,7 +152,7 @@ const Message = () => {
                     </div>
                   )
                 )}
-              </Box>
+              </div>
 
               <Divider />
               <div className="input__main">
