@@ -10,17 +10,29 @@ import {
   IconButton,
   Container,
   Alert,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import "./message.css";
 import ProfileContentHeading from "../../components/ProfileContentHeading";
 import { TbSend } from "react-icons/tb";
-import { BsEmojiSmile } from "react-icons/bs";
+import { BsEmojiSmile, BsFillReplyFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { set, push, ref, getDatabase, onValue } from "firebase/database";
 import moment from "moment";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const Message = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   let data = useSelector((state) => state);
   let db = getDatabase();
 
@@ -147,15 +159,79 @@ const Message = () => {
                 {msgList.map((item, index) =>
                   data.userData.userInfo.uid === item.whoSendId ? (
                     <div className="sender" key={index}>
-                      <div className="chat sender__chat"> {item.msg} </div>
-                      <div className="chat__moment" ref={messagesEndRef}>
+                      <div className="msg__wrapper">
+                        <div className="msg__action">
+                          <BsFillReplyFill
+                            className="reply__icon"
+                            title="reply"
+                          />
+                          <div>
+                            <IconButton
+                              aria-label="more"
+                              id="long-button"
+                              aria-controls={open ? "long-menu" : undefined}
+                              aria-expanded={open ? "true" : undefined}
+                              aria-haspopup="true"
+                              onClick={handleClick}
+                              title="more"
+                            >
+                              <MoreVertIcon />
+                            </IconButton>
+                            <Menu
+                              anchorEl={anchorEl}
+                              open={open}
+                              onClose={handleClose}
+                            >
+                              <MenuItem onClick={handleClose}>Remove</MenuItem>
+                              <MenuItem onClick={handleClose}>Forward</MenuItem>
+                            </Menu>
+                          </div>
+                        </div>
+                        <div className="chat sender__chat"> {item.msg} </div>
+                      </div>
+                      <div
+                        className="chat__moment chat__moment__sender"
+                        ref={messagesEndRef}
+                      >
                         {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
                       </div>
                     </div>
                   ) : (
                     <div className="receiver" key={index}>
-                      <div className="chat receiver__chat"> {item.msg} </div>
-                      <div className="chat__moment" ref={messagesEndRef}>
+                      <div className="msg__wrapper">
+                        <div className="chat receiver__chat"> {item.msg} </div>
+                        <div className="msg__action">
+                          <div>
+                            <IconButton
+                              aria-label="more"
+                              id="long-button"
+                              aria-controls={open ? "long-menu" : undefined}
+                              aria-expanded={open ? "true" : undefined}
+                              aria-haspopup="true"
+                              onClick={handleClick}
+                              title="more"
+                            >
+                              <MoreVertIcon />
+                            </IconButton>
+                            <Menu
+                              anchorEl={anchorEl}
+                              open={open}
+                              onClose={handleClose}
+                            >
+                              <MenuItem onClick={handleClose}>Remove</MenuItem>
+                              <MenuItem onClick={handleClose}>Forward</MenuItem>
+                            </Menu>
+                          </div>
+                          <BsFillReplyFill
+                            className="reply__icon"
+                            title="reply"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        className="chat__moment chat__moment__receiver"
+                        ref={messagesEndRef}
+                      >
                         {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
                       </div>
                     </div>
