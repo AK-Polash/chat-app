@@ -12,6 +12,10 @@ import {
   Alert,
   Menu,
   MenuItem,
+  Backdrop,
+  Modal,
+  Fade,
+  Typography,
 } from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import "./message.css";
@@ -29,6 +33,19 @@ import {
 } from "firebase/database";
 import moment from "moment";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ForwardMessage from "../../components/ForwardMessage";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 const Message = () => {
   let [selectItem, setSelectItem] = useState("");
@@ -38,6 +55,10 @@ const Message = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  // Modal:
+  const [openModal, setOpenModal] = useState(false);
+  const handleCloseModal = () => setOpenModal(false);
 
   let data = useSelector((state) => state);
   let db = getDatabase();
@@ -133,8 +154,7 @@ const Message = () => {
 
   let handleForwardMsg = () => {
     setAnchorEl(null);
-    console.log(selectItem);
-    console.log("forward");
+    setOpenModal(true);
   };
 
   return (
@@ -375,6 +395,36 @@ const Message = () => {
               Select Friends to Send Message..!
             </Alert>
           )}
+
+          {/* ============================= Forward Modal start ================================== */}
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={openModal}
+            onClose={handleCloseModal}
+            closeAfterTransition
+            slots={{ backdrop: Backdrop }}
+            slotProps={{
+              backdrop: {
+                timeout: 300,
+              },
+            }}
+          >
+            <Fade in={openModal}>
+              <Box sx={style}>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                >
+                  Forward Message
+                </Typography>
+
+                <ForwardMessage message={selectItem} />
+              </Box>
+            </Fade>
+          </Modal>
+          {/* ============================= Forward Modal end ================================== */}
         </Grid>
       </Grid>
     </>

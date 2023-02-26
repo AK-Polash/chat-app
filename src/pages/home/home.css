@@ -203,6 +203,20 @@
   font-weight: 400;
   text-align: center;
 }
+
+.bordered__button {
+  width: 87px;
+  height: 33px;
+  color: #ffffff;
+  background: #999;
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 30px;
+  border: none;
+  border-radius: 4px;
+}
 /* ===================================================================
                              Section End
 ==================================================================== */

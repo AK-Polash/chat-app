@@ -278,6 +278,10 @@ const ListItem = (props) => {
               </button>
             </>
           )
+        ) : props.button === "afterClickButton" ? (
+          <button onClick={props.handleClick} className="bordered__button">
+            {props.buttonText}
+          </button>
         ) : (
           <p className="sub__heading__small"> {props.buttonText} </p>
         )}
