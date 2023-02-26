@@ -126,7 +126,6 @@
   visibility: hidden;
   display: flex;
   align-items: center;
-  column-gap: 5px;
 }
 
 .msg__wrapper:hover .msg__action {
@@ -134,7 +133,8 @@
 }
 
 .css-1poimk-MuiPaper-root-MuiMenu-paper-MuiPaper-root-MuiPopover-paper {
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px !important;
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 1px 1px !important;
+  background: #f9f9f9 !important;
 }
 
 .reply__icon {
@@ -147,4 +147,13 @@
 }
 .reply__icon:hover {
   background: #f7f7f7;
+}
+
+.remove__msg {
+  background: transparent;
+  color: rgba(255, 0, 0, 0.6);
+  border: 1px solid rgba(255, 0, 0, 0.6);
+  border-radius: 8px;
+  font-weight: 400;
+  font-size: 14px;
 }
