@@ -412,15 +412,6 @@ const Message = () => {
           >
             <Fade in={openModal}>
               <Box sx={style}>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  sx={{ marginBottom: "20px" }}
-                >
-                  Forward Message
-                </Typography>
-
                 <ForwardMessage message={selectItem} />
               </Box>
             </Fade>

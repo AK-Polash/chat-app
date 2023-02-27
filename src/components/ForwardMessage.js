@@ -91,7 +91,7 @@ const ForwardMessage = ({ message }) => {
   return (
     <section className="section__main  blend__mood">
       <div className="section__heading">
-        <h2 className="section__heading__title"> Friends </h2>
+        <h2 className="section__heading__title"> Forward Message </h2>
         <TextField
           onChange={handleSearch}
           size="small"
