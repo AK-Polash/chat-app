@@ -416,6 +416,7 @@ const Message = () => {
                   id="transition-modal-title"
                   variant="h6"
                   component="h2"
+                  sx={{ marginBottom: "20px" }}
                 >
                   Forward Message
                 </Typography>

@@ -157,3 +157,8 @@
   font-weight: 400;
   font-size: 14px;
 }
+
+.blend__mood {
+  box-shadow: none;
+  height: 370px;
+}

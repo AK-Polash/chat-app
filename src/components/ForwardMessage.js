@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ContentHeading from "./ContentHeading";
 import Lists from "./Lists";
 import ListItem from "./ListItem";
-import { Alert } from "@mui/material/";
+import { Alert, TextField } from "@mui/material/";
 import { getDatabase, ref, onValue, set, push } from "firebase/database";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -12,6 +12,7 @@ const ForwardMessage = ({ message }) => {
   let data = useSelector((state) => state);
   let [friends, setFriends] = useState([]);
   let [buttonChange, setButtonChange] = useState([]);
+  let [searchArr, setSearchArr] = useState([]);
   let [loader, setLoader] = useState(false);
 
   useEffect(() => {
@@ -68,12 +69,101 @@ const ForwardMessage = ({ message }) => {
       ? data.activeChat.focusedItem.receiverId
       : data.activeChat.focusedItem.senderId;
 
+  let handleSearch = (e) => {
+    let arr = [];
+
+    friends.filter((item) => {
+      if (
+        data.userData.userInfo.uid === item.receiverId &&
+        item.senderName.toLowerCase().includes(e.target.value.toLowerCase())
+      ) {
+        arr.push(item);
+      } else if (
+        data.userData.userInfo.uid === item.senderId &&
+        item.receiverName.toLowerCase().includes(e.target.value.toLowerCase())
+      ) {
+        arr.push(item);
+      }
+    });
+    setSearchArr(arr);
+  };
+
   return (
-    <section className="section__main">
-      <ContentHeading heading="Friends" />
+    <section className="section__main  blend__mood">
+      <div className="section__heading">
+        <h2 className="section__heading__title"> Friends </h2>
+        <TextField
+          onChange={handleSearch}
+          size="small"
+          label="Search"
+          variant="outlined"
+        />
+      </div>
 
       <Lists>
-        {friends.length > 0 ? (
+        {searchArr.length > 0 ? (
+          searchArr.map((item, index) =>
+            data.userData.userInfo.uid === item.receiverId
+              ? id !== item.senderId &&
+                (buttonChange.includes(
+                  item.senderId + data.userData.userInfo.uid
+                ) ? (
+                  <ListItem
+                    key={index}
+                    imageAs="small"
+                    photoURL={item.senderPhoto}
+                    userAs="active"
+                    heading={item.senderName}
+                    textAs="hello..!"
+                    button="afterClickButton"
+                    buttonText="Sent"
+                    loader={loader}
+                  />
+                ) : (
+                  <ListItem
+                    key={index}
+                    imageAs="small"
+                    photoURL={item.senderPhoto}
+                    userAs="active"
+                    heading={item.senderName}
+                    textAs="hello..!"
+                    button="button"
+                    buttonText="Send"
+                    handleClick={() => handleSendMsg(item)}
+                    loader={loader}
+                  />
+                ))
+              : id !== item.receiverId &&
+                (buttonChange.includes(
+                  data.userData.userInfo.uid + item.receiverId
+                ) ? (
+                  <ListItem
+                    key={index}
+                    imageAs="small"
+                    photoURL={item.receiverPhoto}
+                    userAs="active"
+                    heading={item.receiverName}
+                    textAs="hi..!"
+                    button="afterClickButton"
+                    buttonText="Sent"
+                    loader={loader}
+                  />
+                ) : (
+                  <ListItem
+                    key={index}
+                    imageAs="small"
+                    photoURL={item.receiverPhoto}
+                    userAs="active"
+                    heading={item.receiverName}
+                    textAs="hi..!"
+                    button="button"
+                    buttonText="Send"
+                    handleClick={() => handleSendMsg(item)}
+                    loader={loader}
+                  />
+                ))
+          )
+        ) : friends.length > 0 ? (
           friends.map((item, index) =>
             data.userData.userInfo.uid === item.receiverId
               ? id !== item.senderId &&
