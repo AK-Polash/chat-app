@@ -117,7 +117,12 @@
   column-gap: 10px;
   transition: all linear 0.2s;
 }
-
+.sender__wrapper {
+  justify-content: flex-end;
+}
+.receiver__wrapper {
+  justify-content: flex-start;
+}
 .msg__action {
   visibility: hidden;
   display: flex;
@@ -162,7 +167,6 @@
 .sender__img__sms,
 .receiver__img__sms {
   width: 380px;
-  cursor: pointer;
 }
 .chat__img {
   width: 100%;
@@ -199,4 +203,8 @@
 
 .avatar__img {
   font-size: 40px;
+}
+
+.sender__img__box, .receiver__img__box{
+  cursor: pointer;
 }

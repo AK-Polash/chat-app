@@ -15,7 +15,6 @@ import {
   Backdrop,
   Modal,
   Fade,
-  Avatar,
 } from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import "./message.css";
@@ -39,6 +38,7 @@ import {
   ref as storeRef,
   uploadBytes,
   getDownloadURL,
+  deleteObject,
 } from "firebase/storage";
 import moment from "moment";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -46,6 +46,7 @@ import ForwardMessage from "../../components/ForwardMessage";
 import Image from "../../components/Image";
 import { ColorRing } from "react-loader-spinner";
 import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
 
 const style = {
   position: "absolute",
@@ -78,6 +79,7 @@ const Message = () => {
   let data = useSelector((state) => state);
   let db = getDatabase();
   let storage = getStorage();
+  let uuid = uuidv4();
   let clickedName = data.activeChat.focusedItem
     ? data.activeChat.focusedItem.senderId === data.userData.userInfo.uid
       ? data.activeChat.focusedItem.receiverName
@@ -155,20 +157,48 @@ const Message = () => {
 
   let handleRemoveMsg = () => {
     setAnchorEl(null);
+    let { id, ...rest } = selectItem;
 
-    update(ref(db, "singleMsg/" + selectItem.id), {
-      ...selectItem,
-      msg: "removed",
-      date: `${new Date().getFullYear()}-${
-        new Date().getMonth() + 1
-      }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
-    })
-      .then(() => {
-        console.log("Message delete done");
+    if (selectItem.msg) {
+      update(ref(db, "singleMsg/" + id), {
+        ...rest,
+        msg: "removed",
+        date: `${new Date().getFullYear()}-${
+          new Date().getMonth() + 1
+        }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
       })
-      .catch((error) => {
-        console.log(error.code);
-      });
+        .then(() => {
+          toast("Message has been removed");
+        })
+        .catch((error) => {
+          console.log(error.code);
+        });
+    } else if (selectItem.img) {
+      update(ref(db, "singleMsg/" + id), {
+        ...rest,
+        img: "removed",
+        imgRef: "deleted",
+        date: `${new Date().getFullYear()}-${
+          new Date().getMonth() + 1
+        }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
+      })
+        .then(() => {
+          const photoMsgRef = storeRef(
+            storage,
+            "photoMessage/" + selectItem.imgRef
+          );
+          deleteObject(photoMsgRef)
+            .then(() => {
+              toast("Image has been removed");
+            })
+            .catch((error) => {
+              console.log(error.code);
+            });
+        })
+        .catch((error) => {
+          console.log(error.code);
+        });
+    }
   };
 
   let handleForwardMsg = () => {
@@ -224,7 +254,7 @@ const Message = () => {
 
     const storageRef = storeRef(
       storage,
-      "photoMessage/" + Date.now() + uploadImage.name
+      "photoMessage/" + uuid + uploadImage.name
     );
 
     uploadBytes(storageRef, uploadImage).then((snapshot) => {
@@ -247,6 +277,7 @@ const Message = () => {
                   : data.activeChat.focusedItem.senderId
                 : "",
               img: downloadURL,
+              imgRef: uuid + uploadImage.name,
               date: `${new Date().getFullYear()}-${
                 new Date().getMonth() + 1
               }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
@@ -322,13 +353,60 @@ const Message = () => {
                   data.userData.userInfo.uid === item.whoSendId ? (
                     item.img ? (
                       <div className="sender sender__img__sms" key={index}>
-                        <Image
-                          className="chat__img"
-                          imageSource={item.img}
-                          alt="photo sms"
-                          loading="lazy"
-                        />
-
+                        <div className="msg__wrapper sender__wrapper">
+                          {item.img !== "removed" ? (
+                            <>
+                              <div className="msg__action">
+                                <BsFillReplyFill
+                                  className="reply__icon"
+                                  title="reply"
+                                />
+                                <div>
+                                  <IconButton
+                                    aria-label="more"
+                                    id="long-button"
+                                    aria-controls={
+                                      open ? "long-menu" : undefined
+                                    }
+                                    aria-expanded={open ? "true" : undefined}
+                                    aria-haspopup="true"
+                                    onClick={(e) => {
+                                      setAnchorEl(e.currentTarget);
+                                      setSelectItem(item);
+                                    }}
+                                    title="more"
+                                  >
+                                    <MoreVertIcon />
+                                  </IconButton>
+                                  <Menu
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={handleClose}
+                                  >
+                                    <MenuItem onClick={handleRemoveMsg}>
+                                      Remove
+                                    </MenuItem>
+                                    <MenuItem onClick={handleForwardMsg}>
+                                      Forward
+                                    </MenuItem>
+                                  </Menu>
+                                </div>
+                              </div>
+                              <div className="sender__img__box">
+                                <Image
+                                  className="chat__img"
+                                  imageSource={item.img}
+                                  alt="photo sms"
+                                  loading="lazy"
+                                />
+                              </div>
+                            </>
+                          ) : (
+                            <div className="chat remove__msg">
+                              image has been removed
+                            </div>
+                          )}
+                        </div>
                         <div
                           className="chat__moment  chat__moment__sender"
                           ref={messagesEndRef}
@@ -397,12 +475,58 @@ const Message = () => {
                     )
                   ) : item.img ? (
                     <div className="receiver  receiver__img__sms" key={index}>
-                      <Image
-                        className="chat__img"
-                        imageSource={item.img}
-                        alt="photo sms"
-                        loading="lazy"
-                      />
+                      <div className="msg__wrapper  receiver__wrapper">
+                        {item.img !== "removed" ? (
+                          <>
+                            <div className="receiver__img__box">
+                              <Image
+                                className="chat__img"
+                                imageSource={item.img}
+                                alt="photo sms"
+                                loading="lazy"
+                              />
+                            </div>
+                            <div className="msg__action">
+                              <div>
+                                <IconButton
+                                  aria-label="more"
+                                  id="long-button"
+                                  aria-controls={open ? "long-menu" : undefined}
+                                  aria-expanded={open ? "true" : undefined}
+                                  aria-haspopup="true"
+                                  onClick={(e) => {
+                                    setAnchorEl(e.currentTarget);
+                                    setSelectItem(item);
+                                  }}
+                                  title="more"
+                                >
+                                  <MoreVertIcon />
+                                </IconButton>
+                                <Menu
+                                  anchorEl={anchorEl}
+                                  open={open}
+                                  onClose={handleClose}
+                                >
+                                  <MenuItem onClick={handleRemoveMsg}>
+                                    Remove
+                                  </MenuItem>
+                                  <MenuItem onClick={handleForwardMsg}>
+                                    Forward
+                                  </MenuItem>
+                                </Menu>
+                              </div>
+                              <BsFillReplyFill
+                                className="reply__icon"
+                                title="reply"
+                              />
+                            </div>
+                          </>
+                        ) : (
+                          <div className="chat remove__msg">
+                            image has been removed
+                          </div>
+                        )}
+                      </div>
 
                       <div
                         className="chat__moment chat__moment__receiver"
