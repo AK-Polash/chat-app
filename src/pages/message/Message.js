@@ -610,6 +610,30 @@ const Message = () => {
                     selectedPhotoURL ? (
                       <>
                         {/* =========== image preview start ============= */}
+                        <div className="preview__img__container">
+                          <Image
+                            className="preview__img"
+                            imageSource={selectedPhotoURL}
+                            alt="preview img"
+                            loading="lazy"
+                          />
+
+                          <IconButton
+                            color="primary"
+                            component="label"
+                            title="close"
+                            sx={{
+                              alignSelf: "flex-start",
+                            }}
+                            onClick={() => {
+                              setShow(false);
+                              setSelectedPhotoURL("");
+                            }}
+                          >
+                            <RxCross2 />
+                          </IconButton>
+                        </div>
+
                         {loading ? (
                           <div className="preview__img__container">
                             <ColorRing
@@ -629,34 +653,13 @@ const Message = () => {
                             />
                           </div>
                         ) : (
-                          <div className="preview__img__container">
-                            <Image
-                              className="preview__img"
-                              imageSource={selectedPhotoURL}
-                              alt="preview img"
-                              loading="lazy"
-                            />
-
-                            <IconButton
-                              color="primary"
-                              component="label"
-                              title="close"
-                              sx={{
-                                alignSelf: "flex-start",
-                              }}
-                              onClick={() => {
-                                setShow(false);
-                                setSelectedPhotoURL("");
-                              }}
-                            >
-                              <RxCross2 />
-                            </IconButton>
-                          </div>
+                          <Button
+                            onClick={handleImageUpload}
+                            variant="contained"
+                          >
+                            send
+                          </Button>
                         )}
-
-                        <Button onClick={handleImageUpload} variant="contained">
-                          send
-                        </Button>
 
                         {/* =========== image preview end ============= */}
                       </>
