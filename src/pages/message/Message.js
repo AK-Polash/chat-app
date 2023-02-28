@@ -15,13 +15,15 @@ import {
   Backdrop,
   Modal,
   Fade,
-  Typography,
+  Avatar,
 } from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import "./message.css";
 import ProfileContentHeading from "../../components/ProfileContentHeading";
 import { TbSend } from "react-icons/tb";
-import { BsEmojiSmile, BsFillReplyFill } from "react-icons/bs";
+import { BsEmojiSmile, BsFillReplyFill, BsImage } from "react-icons/bs";
+import { AiFillAudio } from "react-icons/ai";
+import { MdOutlinePhotoSizeSelectLarge } from "react-icons/md";
 import { useSelector } from "react-redux";
 import {
   set,
@@ -31,9 +33,18 @@ import {
   onValue,
   update,
 } from "firebase/database";
+import {
+  getStorage,
+  ref as storeRef,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
 import moment from "moment";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ForwardMessage from "../../components/ForwardMessage";
+import Image from "../../components/Image";
+import { ColorRing } from "react-loader-spinner";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -60,15 +71,22 @@ const Message = () => {
   const [openModal, setOpenModal] = useState(false);
   const handleCloseModal = () => setOpenModal(false);
 
+  let [show, setShow] = useState(false);
+  let [loading, setLoading] = useState(false);
+
   let data = useSelector((state) => state);
   let db = getDatabase();
+  let storage = getStorage();
+  let clickedName = data.activeChat.focusedItem
+    ? data.activeChat.focusedItem.senderId === data.userData.userInfo.uid
+      ? data.activeChat.focusedItem.receiverName
+      : data.activeChat.focusedItem.senderName
+    : "";
 
   let [msgList, setMsgList] = useState([]);
-
-  let [formData, setFormData] = useState({
-    sms: "",
-    photo: "",
-  });
+  let [sms, setSms] = useState("");
+  let [selectedPhotoURL, setSelectedPhotoURL] = useState("");
+  let [uploadImage, setUploadImage] = useState("");
 
   let handleSubmit = () => {
     if (data.activeChat.focusedItem.status === "single") {
@@ -85,13 +103,13 @@ const Message = () => {
             ? data.activeChat.focusedItem.receiverId
             : data.activeChat.focusedItem.senderId
           : "",
-        msg: formData.sms,
+        msg: sms,
         date: `${new Date().getFullYear()}-${
           new Date().getMonth() + 1
         }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
       })
         .then(() => {
-          setFormData({ ...formData, sms: "", photo: "" });
+          setSms("");
         })
         .catch((error) => {
           console.log(error.code);
@@ -157,6 +175,96 @@ const Message = () => {
     setOpenModal(true);
   };
 
+  let handleKeyUp = (e) => {
+    if (e.key === "Enter") {
+      if (data.activeChat.focusedItem.status === "single") {
+        set(push(ref(db, "singleMsg/")), {
+          whoSendName: data.userData.userInfo.displayName,
+          whoSendId: data.userData.userInfo.uid,
+          whoReceiveName: data.activeChat.focusedItem
+            ? data.userData.userInfo.uid ===
+              data.activeChat.focusedItem.senderId
+              ? data.activeChat.focusedItem.receiverName
+              : data.activeChat.focusedItem.senderName
+            : "",
+          whoReceiveId: data.activeChat.focusedItem
+            ? data.userData.userInfo.uid ===
+              data.activeChat.focusedItem.senderId
+              ? data.activeChat.focusedItem.receiverId
+              : data.activeChat.focusedItem.senderId
+            : "",
+          msg: sms,
+          date: `${new Date().getFullYear()}-${
+            new Date().getMonth() + 1
+          }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
+        })
+          .then(() => {
+            setSms("");
+          })
+          .catch((error) => {
+            console.log(error.code);
+          });
+      }
+    }
+  };
+
+  let handlePreviewImage = (e) => {
+    const [file] = e.target.files;
+
+    if (file) {
+      setSelectedPhotoURL(URL.createObjectURL(file));
+    }
+
+    setUploadImage(e.target.files[0]);
+  };
+
+  let handleImageUpload = () => {
+    setLoading(true);
+
+    const storageRef = storeRef(storage, "photoMessage/" + uploadImage.name);
+
+    uploadBytes(storageRef, uploadImage).then((snapshot) => {
+      getDownloadURL(storageRef)
+        .then((downloadURL) => {
+          if (data.activeChat.focusedItem.status === "single") {
+            set(push(ref(db, "singleMsg/")), {
+              whoSendName: data.userData.userInfo.displayName,
+              whoSendId: data.userData.userInfo.uid,
+              whoReceiveName: data.activeChat.focusedItem
+                ? data.userData.userInfo.uid ===
+                  data.activeChat.focusedItem.senderId
+                  ? data.activeChat.focusedItem.receiverName
+                  : data.activeChat.focusedItem.senderName
+                : "",
+              whoReceiveId: data.activeChat.focusedItem
+                ? data.userData.userInfo.uid ===
+                  data.activeChat.focusedItem.senderId
+                  ? data.activeChat.focusedItem.receiverId
+                  : data.activeChat.focusedItem.senderId
+                : "",
+              img: downloadURL,
+              date: `${new Date().getFullYear()}-${
+                new Date().getMonth() + 1
+              }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
+            })
+              .then(() => {
+                setSms("");
+                setSelectedPhotoURL("");
+                setShow(false);
+                setLoading(false);
+                toast(`image sent to ${clickedName}`);
+              })
+              .catch((error) => {
+                console.log(error.code);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log(error.code);
+        });
+    });
+  };
+
   return (
     <>
       <Grid container columnSpacing={2}>
@@ -208,54 +316,92 @@ const Message = () => {
               <div className="chat__box">
                 {msgList.map((item, index) =>
                   data.userData.userInfo.uid === item.whoSendId ? (
-                    <div className="sender" key={index}>
-                      <div className="msg__wrapper">
-                        {item.msg !== "removed" ? (
-                          <>
-                            <div className="msg__action">
-                              <BsFillReplyFill
-                                className="reply__icon"
-                                title="reply"
-                              />
-                              <div>
-                                <IconButton
-                                  aria-label="more"
-                                  id="long-button"
-                                  aria-controls={open ? "long-menu" : undefined}
-                                  aria-expanded={open ? "true" : undefined}
-                                  aria-haspopup="true"
-                                  onClick={(e) => {
-                                    setAnchorEl(e.currentTarget);
-                                    setSelectItem(item);
-                                  }}
-                                  title="more"
-                                >
-                                  <MoreVertIcon />
-                                </IconButton>
-                                <Menu
-                                  anchorEl={anchorEl}
-                                  open={open}
-                                  onClose={handleClose}
-                                >
-                                  <MenuItem onClick={handleRemoveMsg}>
-                                    Remove
-                                  </MenuItem>
-                                  <MenuItem onClick={handleForwardMsg}>
-                                    Forward
-                                  </MenuItem>
-                                </Menu>
-                              </div>
-                            </div>
-                            <div className="chat sender__chat">{item.msg}</div>
-                          </>
-                        ) : (
-                          <div className="chat remove__msg">
-                            message has been removed
-                          </div>
-                        )}
+                    item.img ? (
+                      <div className="sender sender__img__sms" key={index}>
+                        <Image
+                          className="chat__img"
+                          imageSource={item.img}
+                          alt="photo sms"
+                          loading="lazy"
+                        />
+
+                        <div
+                          className="chat__moment  chat__moment__sender"
+                          ref={messagesEndRef}
+                        >
+                          {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
+                        </div>
                       </div>
+                    ) : (
+                      <div className="sender" key={index}>
+                        <div className="msg__wrapper">
+                          {item.msg !== "removed" ? (
+                            <>
+                              <div className="msg__action">
+                                <BsFillReplyFill
+                                  className="reply__icon"
+                                  title="reply"
+                                />
+                                <div>
+                                  <IconButton
+                                    aria-label="more"
+                                    id="long-button"
+                                    aria-controls={
+                                      open ? "long-menu" : undefined
+                                    }
+                                    aria-expanded={open ? "true" : undefined}
+                                    aria-haspopup="true"
+                                    onClick={(e) => {
+                                      setAnchorEl(e.currentTarget);
+                                      setSelectItem(item);
+                                    }}
+                                    title="more"
+                                  >
+                                    <MoreVertIcon />
+                                  </IconButton>
+                                  <Menu
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={handleClose}
+                                  >
+                                    <MenuItem onClick={handleRemoveMsg}>
+                                      Remove
+                                    </MenuItem>
+                                    <MenuItem onClick={handleForwardMsg}>
+                                      Forward
+                                    </MenuItem>
+                                  </Menu>
+                                </div>
+                              </div>
+                              <div className="chat sender__chat">
+                                {item.msg}
+                              </div>
+                            </>
+                          ) : (
+                            <div className="chat remove__msg">
+                              message has been removed
+                            </div>
+                          )}
+                        </div>
+                        <div
+                          className="chat__moment chat__moment__sender"
+                          ref={messagesEndRef}
+                        >
+                          {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
+                        </div>
+                      </div>
+                    )
+                  ) : item.img ? (
+                    <div className="receiver  receiver__img__sms" key={index}>
+                      <Image
+                        className="chat__img"
+                        imageSource={item.img}
+                        alt="photo sms"
+                        loading="lazy"
+                      />
+
                       <div
-                        className="chat__moment chat__moment__sender"
+                        className="chat__moment chat__moment__receiver"
                         ref={messagesEndRef}
                       >
                         {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
@@ -327,58 +473,127 @@ const Message = () => {
                   sx={{
                     display: "flex",
                     columnGap: "20px",
-                    justifyContent: "center",
+                    justifyContent: "space-between",
                     alignItems: "center",
                     position: "relative",
                   }}
                 >
-                  <TextField
-                    placeholder="type message"
-                    size="small"
-                    multiline={false}
-                    name="sms"
-                    onChange={(e) =>
-                      setFormData({ ...formData, sms: e.target.value })
-                    }
-                    value={formData.sms}
-                    sx={{
-                      width: "80%",
-                      background: "#F1F1F1",
-                    }}
-                  />
+                  {show ? (
+                    selectedPhotoURL ? (
+                      <>
+                        {/* =========== image preview start ============= */}
+                        {loading ? (
+                          <div className="preview__img__container">
+                            <ColorRing
+                              visible={true}
+                              height="42"
+                              width="42"
+                              ariaLabel="blocks-loading"
+                              wrapperStyle={{}}
+                              wrapperClass="blocks-wrapper"
+                              colors={[
+                                "#e15b64",
+                                "#f47e60",
+                                "#f8b26a",
+                                "#abbd81",
+                                "#849b87",
+                              ]}
+                            />
+                          </div>
+                        ) : (
+                          <div className="preview__img__container">
+                            <Image
+                              className="preview__img"
+                              imageSource={selectedPhotoURL}
+                              alt="preview img"
+                              loading="lazy"
+                            />
+                          </div>
+                        )}
 
-                  <IconButton
-                    color="primary"
-                    aria-label="upload picture"
-                    component="label"
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      right: "190px",
-                      transform: "translateY(-50%)",
-                    }}
-                  >
-                    <input
-                      hidden
-                      accept="image/*"
-                      type="file"
-                      name="photo"
-                      onChange={(e) =>
-                        setFormData({ ...formData, photo: e.target.value })
-                      }
-                    />
-                    <PhotoCamera />
-                  </IconButton>
+                        <Button onClick={handleImageUpload} variant="contained">
+                          send
+                        </Button>
 
-                  <BsEmojiSmile className="emoji__icon" />
+                        {/* =========== image preview end ============= */}
+                      </>
+                    ) : (
+                      <Avatar>
+                        <MdOutlinePhotoSizeSelectLarge />
+                      </Avatar>
+                    )
+                  ) : (
+                    <>
+                      <TextField
+                        placeholder="type message"
+                        size="small"
+                        multiline={false}
+                        name="sms"
+                        onChange={(e) => setSms(e.target.value)}
+                        value={sms}
+                        onKeyUp={handleKeyUp}
+                        sx={{
+                          width: "69%",
+                          background: "#F1F1F1",
+                        }}
+                      />
 
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    onClick={handleSubmit}
-                  >
-                    <TbSend className="send__icon" />
-                  </Button>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        onClick={handleSubmit}
+                      >
+                        <TbSend className="send__icon" />
+                      </Button>
+                    </>
+                  )}
+
+                  <div className="media__sms">
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="label"
+                      title="emoji"
+                    >
+                      <BsEmojiSmile className="emoji__icon" />
+                    </IconButton>
+
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="label"
+                      title="voice"
+                    >
+                      <AiFillAudio />
+                    </IconButton>
+
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="label"
+                      title="camera"
+                    >
+                      <PhotoCamera />
+                    </IconButton>
+
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="label"
+                      title="image"
+                      onClick={() => setShow(true)}
+                    >
+                      <input
+                        hidden
+                        accept="image/*"
+                        type="file"
+                        name="photo"
+                        onChange={handlePreviewImage}
+                      />
+
+                      <BsImage className="file__icon" />
+                    </IconButton>
+                  </div>
                 </Container>
               </div>
             </Box>
