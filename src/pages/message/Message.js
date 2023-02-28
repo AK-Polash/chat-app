@@ -222,7 +222,10 @@ const Message = () => {
   let handleImageUpload = () => {
     setLoading(true);
 
-    const storageRef = storeRef(storage, "photoMessage/" + uploadImage.name);
+    const storageRef = storeRef(
+      storage,
+      "photoMessage/" + Date.now() + uploadImage.name
+    );
 
     uploadBytes(storageRef, uploadImage).then((snapshot) => {
       getDownloadURL(storageRef)
