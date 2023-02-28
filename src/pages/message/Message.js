@@ -24,6 +24,7 @@ import { TbSend } from "react-icons/tb";
 import { BsEmojiSmile, BsFillReplyFill, BsImage } from "react-icons/bs";
 import { AiFillAudio } from "react-icons/ai";
 import { MdOutlinePhotoSizeSelectLarge } from "react-icons/md";
+import { RxCross2 } from "react-icons/rx";
 import { useSelector } from "react-redux";
 import {
   set,
@@ -508,6 +509,21 @@ const Message = () => {
                               alt="preview img"
                               loading="lazy"
                             />
+
+                            <IconButton
+                              color="primary"
+                              component="label"
+                              title="close"
+                              sx={{
+                                alignSelf: "flex-start",
+                              }}
+                              onClick={() => {
+                                setShow(false);
+                                setSelectedPhotoURL("");
+                              }}
+                            >
+                              <RxCross2 />
+                            </IconButton>
                           </div>
                         )}
 
@@ -518,9 +534,24 @@ const Message = () => {
                         {/* =========== image preview end ============= */}
                       </>
                     ) : (
-                      <Avatar>
-                        <MdOutlinePhotoSizeSelectLarge />
-                      </Avatar>
+                      <div className="preview__img__container">
+                        <MdOutlinePhotoSizeSelectLarge className="avatar__img" />
+
+                        <IconButton
+                          color="primary"
+                          component="label"
+                          title="close"
+                          sx={{
+                            alignSelf: "flex-start",
+                          }}
+                          onClick={() => {
+                            setShow(false);
+                            setSelectedPhotoURL("");
+                          }}
+                        >
+                          <RxCross2 />
+                        </IconButton>
+                      </div>
                     )
                   ) : (
                     <>
