@@ -47,7 +47,10 @@ const ForwardMessage = ({ message }) => {
           data.userData.userInfo.uid === msgItem.senderId
             ? msgItem.receiverId
             : msgItem.senderId,
-        msg: message.msg,
+
+        ...(message.msg && { msg: message.msg }),
+        ...(message.img && { img: message.img, imgRef: message.imgRef }),
+
         date: `${new Date().getFullYear()}-${
           new Date().getMonth() + 1
         }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
