@@ -224,3 +224,9 @@
 #outer-circle {
   cursor: pointer;
 }
+
+.audio__preview__wrapper {
+  display: flex;
+  align-items: center;
+  column-gap: 2px;
+}

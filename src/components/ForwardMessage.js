@@ -50,6 +50,7 @@ const ForwardMessage = ({ message }) => {
 
         ...(message.msg && { msg: message.msg }),
         ...(message.img && { img: message.img, imgRef: message.imgRef }),
+        ...(message.audio && { audio: message.audio, audioRef: message.audioRef }),
 
         date: `${new Date().getFullYear()}-${
           new Date().getMonth() + 1

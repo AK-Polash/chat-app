@@ -22,8 +22,9 @@ import ProfileContentHeading from "../../components/ProfileContentHeading";
 import { TbSend } from "react-icons/tb";
 import { BsEmojiSmile, BsFillReplyFill, BsImage } from "react-icons/bs";
 import { AiFillAudio } from "react-icons/ai";
-import { MdOutlinePhotoSizeSelectLarge } from "react-icons/md";
+import { GiSoundWaves } from "react-icons/gi";
 import { CgClose } from "react-icons/cg";
+import { VscFileMedia } from "react-icons/vsc";
 import { RxCross2 } from "react-icons/rx";
 import { useSelector } from "react-redux";
 import {
@@ -51,6 +52,7 @@ import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import Camera from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
+import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 
 const style = {
   position: "absolute",
@@ -96,6 +98,7 @@ const Message = () => {
   let [sms, setSms] = useState("");
   let [selectedPhotoURL, setSelectedPhotoURL] = useState("");
   let [loadImage, setLoadImage] = useState("");
+  let [audio, setAudio] = useState("");
 
   let handleSubmit = () => {
     if (data.activeChat.focusedItem.status === "single") {
@@ -196,6 +199,31 @@ const Message = () => {
           deleteObject(photoMsgRef)
             .then(() => {
               toast("Image has been removed");
+            })
+            .catch((error) => {
+              console.log(error.code);
+            });
+        })
+        .catch((error) => {
+          console.log(error.code);
+        });
+    } else if (selectItem.audio) {
+      update(ref(db, "singleMsg/" + id), {
+        ...rest,
+        audio: "removed",
+        audioRef: "deleted",
+        date: `${new Date().getFullYear()}-${
+          new Date().getMonth() + 1
+        }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
+      })
+        .then(() => {
+          const audioMsgRef = storeRef(
+            storage,
+            "audioMessage/" + selectItem.audioRef
+          );
+          deleteObject(audioMsgRef)
+            .then(() => {
+              toast("Audio has been removed");
             })
             .catch((error) => {
               console.log(error.code);
@@ -359,6 +387,78 @@ const Message = () => {
     });
   };
 
+  // Audio functionality start
+  let [audioURL, setAudioURL] = useState("");
+
+  const recorderControls = useAudioRecorder();
+  const addAudioElement = (blob) => {
+    const url = URL.createObjectURL(blob);
+    const audio = document.createElement("audio");
+    audio.src = url;
+    audio.controls = true;
+
+    setAudio(audio);
+    setAudioURL(blob);
+  };
+
+  let handleAudioClick = () => {
+    setShow(true);
+    setSelectedPhotoURL("");
+    setDataUri("");
+  };
+
+  let handleSendAudio = () => {
+    setLoading(true);
+
+    const storageRef = storeRef(storage, "audioMessage/" + uuid);
+
+    uploadBytes(storageRef, audioURL).then((snapshot) => {
+      getDownloadURL(storageRef)
+        .then((downloadURL) => {
+          if (data.activeChat.focusedItem.status === "single") {
+            set(push(ref(db, "singleMsg/")), {
+              whoSendName: data.userData.userInfo.displayName,
+              whoSendId: data.userData.userInfo.uid,
+              whoReceiveName: data.activeChat.focusedItem
+                ? data.userData.userInfo.uid ===
+                  data.activeChat.focusedItem.senderId
+                  ? data.activeChat.focusedItem.receiverName
+                  : data.activeChat.focusedItem.senderName
+                : "",
+              whoReceiveId: data.activeChat.focusedItem
+                ? data.userData.userInfo.uid ===
+                  data.activeChat.focusedItem.senderId
+                  ? data.activeChat.focusedItem.receiverId
+                  : data.activeChat.focusedItem.senderId
+                : "",
+              audio: downloadURL,
+              audioRef: uuid,
+              date: `${new Date().getFullYear()}-${
+                new Date().getMonth() + 1
+              }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
+            })
+              .then(() => {
+                setSms("");
+                setSelectedPhotoURL("");
+                setDataUri("");
+                setAudio("");
+                setAudioURL("");
+                setShow(false);
+                setLoading(false);
+                toast(`audio sent to ${clickedName}`);
+              })
+              .catch((error) => {
+                console.log(error.code);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log(error.code);
+        });
+    });
+  };
+  // Audio functionality end
+
   return (
     <>
       <Grid container sx={{ postion: "relative" }} columnSpacing={2}>
@@ -505,6 +605,64 @@ const Message = () => {
                           {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
                         </div>
                       </div>
+                    ) : item.audio ? (
+                      <div className="sender sender__img__sms" key={index}>
+                        <div className="msg__wrapper sender__wrapper">
+                          {item.audio !== "removed" ? (
+                            <>
+                              <div className="msg__action">
+                                <BsFillReplyFill
+                                  className="reply__icon"
+                                  title="reply"
+                                />
+                                <div>
+                                  <IconButton
+                                    aria-label="more"
+                                    id="long-button"
+                                    aria-controls={
+                                      open ? "long-menu" : undefined
+                                    }
+                                    aria-expanded={open ? "true" : undefined}
+                                    aria-haspopup="true"
+                                    onClick={(e) => {
+                                      setAnchorEl(e.currentTarget);
+                                      setSelectItem(item);
+                                    }}
+                                    title="more"
+                                  >
+                                    <MoreVertIcon />
+                                  </IconButton>
+                                  <Menu
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={handleClose}
+                                  >
+                                    <MenuItem onClick={handleRemoveMsg}>
+                                      Remove
+                                    </MenuItem>
+                                    <MenuItem onClick={handleForwardMsg}>
+                                      Forward
+                                    </MenuItem>
+                                  </Menu>
+                                </div>
+                              </div>
+                              <div className="sender__img__box">
+                                <audio src={item.audio} controls />
+                              </div>
+                            </>
+                          ) : (
+                            <div className="chat remove__msg">
+                              audio has been removed
+                            </div>
+                          )}
+                        </div>
+                        <div
+                          className="chat__moment  chat__moment__sender"
+                          ref={messagesEndRef}
+                        >
+                          {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
+                        </div>
+                      </div>
                     ) : (
                       <div className="sender" key={index}>
                         <div className="msg__wrapper">
@@ -615,6 +773,63 @@ const Message = () => {
                         ) : (
                           <div className="chat remove__msg">
                             image has been removed
+                          </div>
+                        )}
+                      </div>
+
+                      <div
+                        className="chat__moment chat__moment__receiver"
+                        ref={messagesEndRef}
+                      >
+                        {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
+                      </div>
+                    </div>
+                  ) : item.audio ? (
+                    <div className="receiver  receiver__img__sms" key={index}>
+                      <div className="msg__wrapper  receiver__wrapper">
+                        {item.audio !== "removed" ? (
+                          <>
+                            <div className="receiver__img__box">
+                              <audio src={item.audio} controls />
+                            </div>
+                            <div className="msg__action">
+                              <div>
+                                <IconButton
+                                  aria-label="more"
+                                  id="long-button"
+                                  aria-controls={open ? "long-menu" : undefined}
+                                  aria-expanded={open ? "true" : undefined}
+                                  aria-haspopup="true"
+                                  onClick={(e) => {
+                                    setAnchorEl(e.currentTarget);
+                                    setSelectItem(item);
+                                  }}
+                                  title="more"
+                                >
+                                  <MoreVertIcon />
+                                </IconButton>
+                                <Menu
+                                  anchorEl={anchorEl}
+                                  open={open}
+                                  onClose={handleClose}
+                                >
+                                  <MenuItem onClick={handleRemoveMsg}>
+                                    Remove
+                                  </MenuItem>
+                                  <MenuItem onClick={handleForwardMsg}>
+                                    Forward
+                                  </MenuItem>
+                                </Menu>
+                              </div>
+                              <BsFillReplyFill
+                                className="reply__icon"
+                                title="reply"
+                              />
+                            </div>
+                          </>
+                        ) : (
+                          <div className="chat remove__msg">
+                            audio has been removed
                           </div>
                         )}
                       </div>
@@ -748,6 +963,7 @@ const Message = () => {
                           <Button
                             onClick={handleSendPhotoByFile}
                             variant="contained"
+                            title="send image"
                           >
                             send
                           </Button>
@@ -805,6 +1021,7 @@ const Message = () => {
                           <Button
                             onClick={handleSendPhotoByCamera}
                             variant="contained"
+                            title="send image"
                           >
                             Send
                           </Button>
@@ -812,9 +1029,55 @@ const Message = () => {
 
                         {/* =========== image preview end ============= */}
                       </>
+                    ) : audio ? (
+                      <>
+                        <div className="audio__preview__wrapper">
+                          <audio src={audio.src} controls={audio.controls} />
+                          <IconButton
+                            color="primary"
+                            component="label"
+                            title="close"
+                            onClick={() => {
+                              setShow(false);
+                              setSelectedPhotoURL("");
+                              setDataUri("");
+                              setAudio("");
+                            }}
+                          >
+                            <RxCross2 />
+                          </IconButton>
+                        </div>
+                        {loading ? (
+                          <div className="preview__img__container">
+                            <ColorRing
+                              visible={true}
+                              height="42"
+                              width="42"
+                              ariaLabel="blocks-loading"
+                              wrapperStyle={{}}
+                              wrapperClass="blocks-wrapper"
+                              colors={[
+                                "#e15b64",
+                                "#f47e60",
+                                "#f8b26a",
+                                "#abbd81",
+                                "#849b87",
+                              ]}
+                            />
+                          </div>
+                        ) : (
+                          <Button
+                            onClick={handleSendAudio}
+                            variant="contained"
+                            title="send audio"
+                          >
+                            <GiSoundWaves className="send__icon" />
+                          </Button>
+                        )}
+                      </>
                     ) : (
                       <div className="preview__img__container">
-                        <MdOutlinePhotoSizeSelectLarge className="avatar__img" />
+                        <VscFileMedia className="avatar__img" />
 
                         <IconButton
                           color="primary"
@@ -869,14 +1132,20 @@ const Message = () => {
                       <BsEmojiSmile className="emoji__icon" />
                     </IconButton>
 
-                    <IconButton
+                    {/* <IconButton
                       color="primary"
                       aria-label="upload picture"
                       component="label"
                       title="voice"
                     >
                       <AiFillAudio />
-                    </IconButton>
+                    </IconButton> */}
+                    <div onClick={handleAudioClick}>
+                      <AudioRecorder
+                        onRecordingComplete={(blob) => addAudioElement(blob)}
+                        recorderControls={recorderControls}
+                      />
+                    </div>
 
                     <IconButton
                       color="primary"
@@ -886,6 +1155,7 @@ const Message = () => {
                       onClick={() => {
                         setCameraOpen(true);
                         setSelectedPhotoURL("");
+                        setAudio("");
                       }}
                     >
                       <PhotoCamera />
@@ -899,6 +1169,7 @@ const Message = () => {
                       onClick={() => {
                         setShow(true);
                         setDataUri("");
+                        setAudio("");
                       }}
                     >
                       <input
