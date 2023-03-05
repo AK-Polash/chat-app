@@ -23,6 +23,7 @@ import { TbSend } from "react-icons/tb";
 import { BsEmojiSmile, BsFillReplyFill, BsImage } from "react-icons/bs";
 import { AiFillAudio } from "react-icons/ai";
 import { MdOutlinePhotoSizeSelectLarge } from "react-icons/md";
+import { CgClose } from "react-icons/cg";
 import { RxCross2 } from "react-icons/rx";
 import { useSelector } from "react-redux";
 import {
@@ -39,6 +40,7 @@ import {
   uploadBytes,
   getDownloadURL,
   deleteObject,
+  uploadString,
 } from "firebase/storage";
 import moment from "moment";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -47,6 +49,8 @@ import Image from "../../components/Image";
 import { ColorRing } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
+import Camera from "react-html5-camera-photo";
+import "react-html5-camera-photo/build/css/index.css";
 
 const style = {
   position: "absolute",
@@ -75,6 +79,8 @@ const Message = () => {
 
   let [show, setShow] = useState(false);
   let [loading, setLoading] = useState(false);
+  let [dataUri, setDataUri] = useState("");
+  let [cameraOpen, setCameraOpen] = useState(false);
 
   let data = useSelector((state) => state);
   let db = getDatabase();
@@ -89,7 +95,7 @@ const Message = () => {
   let [msgList, setMsgList] = useState([]);
   let [sms, setSms] = useState("");
   let [selectedPhotoURL, setSelectedPhotoURL] = useState("");
-  let [uploadImage, setUploadImage] = useState("");
+  let [loadImage, setLoadImage] = useState("");
 
   let handleSubmit = () => {
     if (data.activeChat.focusedItem.status === "single") {
@@ -239,25 +245,22 @@ const Message = () => {
     }
   };
 
-  let handlePreviewImage = (e) => {
+  let handleLoadPhotoByFile = (e) => {
     const [file] = e.target.files;
 
     if (file) {
       setSelectedPhotoURL(URL.createObjectURL(file));
     }
 
-    setUploadImage(e.target.files[0]);
+    setLoadImage(e.target.files[0]);
   };
 
-  let handleImageUpload = () => {
+  let handleSendPhotoByFile = () => {
     setLoading(true);
 
-    const storageRef = storeRef(
-      storage,
-      "photoMessage/" + uuid + uploadImage.name
-    );
+    const storageRef = storeRef(storage, "photoMessage/" + uuid);
 
-    uploadBytes(storageRef, uploadImage).then((snapshot) => {
+    uploadBytes(storageRef, loadImage).then((snapshot) => {
       getDownloadURL(storageRef)
         .then((downloadURL) => {
           if (data.activeChat.focusedItem.status === "single") {
@@ -277,7 +280,7 @@ const Message = () => {
                   : data.activeChat.focusedItem.senderId
                 : "",
               img: downloadURL,
-              imgRef: uuid + uploadImage.name,
+              imgRef: uuid,
               date: `${new Date().getFullYear()}-${
                 new Date().getMonth() + 1
               }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
@@ -300,9 +303,97 @@ const Message = () => {
     });
   };
 
+  let handleTakePhoto = (dataUri) => {
+    setDataUri(dataUri);
+    setShow(true);
+    setCameraOpen(false);
+  };
+
+  let handleSendPhotoByCamera = () => {
+    setLoading(true);
+
+    const storageRef = storeRef(storage, "photoMessage/" + uuid);
+    const message4 = dataUri;
+
+    uploadString(storageRef, message4, "data_url").then((snapshot) => {
+      getDownloadURL(storageRef)
+        .then((downloadURL) => {
+          if (data.activeChat.focusedItem.status === "single") {
+            set(push(ref(db, "singleMsg/")), {
+              whoSendName: data.userData.userInfo.displayName,
+              whoSendId: data.userData.userInfo.uid,
+              whoReceiveName: data.activeChat.focusedItem
+                ? data.userData.userInfo.uid ===
+                  data.activeChat.focusedItem.senderId
+                  ? data.activeChat.focusedItem.receiverName
+                  : data.activeChat.focusedItem.senderName
+                : "",
+              whoReceiveId: data.activeChat.focusedItem
+                ? data.userData.userInfo.uid ===
+                  data.activeChat.focusedItem.senderId
+                  ? data.activeChat.focusedItem.receiverId
+                  : data.activeChat.focusedItem.senderId
+                : "",
+              img: downloadURL,
+              imgRef: uuid,
+              date: `${new Date().getFullYear()}-${
+                new Date().getMonth() + 1
+              }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
+            })
+              .then(() => {
+                setCameraOpen(false);
+                setSms("");
+                setDataUri("");
+                setShow(false);
+                setLoading(false);
+                toast(`image sent to ${clickedName}`);
+              })
+              .catch((error) => {
+                console.log(error.code);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log(error.code);
+        });
+    });
+  };
+
   return (
     <>
-      <Grid container columnSpacing={2}>
+      <Grid container sx={{ postion: "relative" }} columnSpacing={2}>
+        {cameraOpen && (
+          <div className="camera__container">
+            <Camera
+              onTakePhoto={(dataUri) => {
+                handleTakePhoto(dataUri);
+              }}
+              idealResolution={{ width: 640, height: 480 }}
+              imageCompression={0.97}
+              isMaxResolution={true}
+              isImageMirror={false}
+              isSilentMode={false}
+              isDisplayStartCameraError={true}
+              isFullscreen={true}
+              sizeFactor={1}
+            />
+
+            <IconButton
+              color="primary"
+              component="label"
+              title="close"
+              onClick={() => setCameraOpen(false)}
+              sx={{
+                position: "absolute",
+                top: "50px",
+                right: "50px",
+                fontSize: "40px",
+              }}
+            >
+              <CgClose />
+            </IconButton>
+          </div>
+        )}
         <Grid item xs={4.4}>
           <MyGroups />
           <br />
@@ -628,6 +719,7 @@ const Message = () => {
                             onClick={() => {
                               setShow(false);
                               setSelectedPhotoURL("");
+                              setDataUri("");
                             }}
                           >
                             <RxCross2 />
@@ -654,10 +746,67 @@ const Message = () => {
                           </div>
                         ) : (
                           <Button
-                            onClick={handleImageUpload}
+                            onClick={handleSendPhotoByFile}
                             variant="contained"
                           >
                             send
+                          </Button>
+                        )}
+
+                        {/* =========== image preview end ============= */}
+                      </>
+                    ) : dataUri ? (
+                      <>
+                        {/* =========== image preview start ============= */}
+                        <div className="preview__img__container">
+                          <Image
+                            className="preview__img"
+                            imageSource={dataUri}
+                            alt="preview img"
+                            loading="lazy"
+                          />
+
+                          <IconButton
+                            color="primary"
+                            component="label"
+                            title="close"
+                            sx={{
+                              alignSelf: "flex-start",
+                            }}
+                            onClick={() => {
+                              setShow(false);
+                              setSelectedPhotoURL("");
+                              setDataUri("");
+                            }}
+                          >
+                            <RxCross2 />
+                          </IconButton>
+                        </div>
+
+                        {loading ? (
+                          <div className="preview__img__container">
+                            <ColorRing
+                              visible={true}
+                              height="42"
+                              width="42"
+                              ariaLabel="blocks-loading"
+                              wrapperStyle={{}}
+                              wrapperClass="blocks-wrapper"
+                              colors={[
+                                "#e15b64",
+                                "#f47e60",
+                                "#f8b26a",
+                                "#abbd81",
+                                "#849b87",
+                              ]}
+                            />
+                          </div>
+                        ) : (
+                          <Button
+                            onClick={handleSendPhotoByCamera}
+                            variant="contained"
+                          >
+                            Send
                           </Button>
                         )}
 
@@ -677,6 +826,7 @@ const Message = () => {
                           onClick={() => {
                             setShow(false);
                             setSelectedPhotoURL("");
+                            setDataUri("");
                           }}
                         >
                           <RxCross2 />
@@ -733,6 +883,10 @@ const Message = () => {
                       aria-label="upload picture"
                       component="label"
                       title="camera"
+                      onClick={() => {
+                        setCameraOpen(true);
+                        setSelectedPhotoURL("");
+                      }}
                     >
                       <PhotoCamera />
                     </IconButton>
@@ -742,14 +896,17 @@ const Message = () => {
                       aria-label="upload picture"
                       component="label"
                       title="image"
-                      onClick={() => setShow(true)}
+                      onClick={() => {
+                        setShow(true);
+                        setDataUri("");
+                      }}
                     >
                       <input
                         hidden
                         accept="image/*"
                         type="file"
                         name="photo"
-                        onChange={handlePreviewImage}
+                        onChange={handleLoadPhotoByFile}
                       />
 
                       <BsImage className="file__icon" />

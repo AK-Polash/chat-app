@@ -205,6 +205,22 @@
   font-size: 40px;
 }
 
-.sender__img__box, .receiver__img__box{
+.sender__img__box,
+.receiver__img__box {
+  cursor: pointer;
+}
+
+.camera__container {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.react-html5-camera-photo {
+  overflow: hidden;
+}
+#outer-circle {
   cursor: pointer;
 }
