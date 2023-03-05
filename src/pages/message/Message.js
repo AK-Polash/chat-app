@@ -21,7 +21,7 @@ import "./message.css";
 import ProfileContentHeading from "../../components/ProfileContentHeading";
 import { TbSend } from "react-icons/tb";
 import { BsEmojiSmile, BsFillReplyFill, BsImage } from "react-icons/bs";
-import { AiFillAudio } from "react-icons/ai";
+// import { AiFillAudio } from "react-icons/ai";
 import { GiSoundWaves } from "react-icons/gi";
 import { CgClose } from "react-icons/cg";
 import { VscFileMedia } from "react-icons/vsc";
@@ -99,6 +99,7 @@ const Message = () => {
   let [selectedPhotoURL, setSelectedPhotoURL] = useState("");
   let [loadImage, setLoadImage] = useState("");
   let [audio, setAudio] = useState("");
+  let [audioURL, setAudioURL] = useState("");
 
   let handleSubmit = () => {
     if (data.activeChat.focusedItem.status === "single") {
@@ -388,7 +389,6 @@ const Message = () => {
   };
 
   // Audio functionality start
-  let [audioURL, setAudioURL] = useState("");
 
   const recorderControls = useAudioRecorder();
   const addAudioElement = (blob) => {
