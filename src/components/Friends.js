@@ -104,7 +104,7 @@ const Friends = () => {
                 photoURL={item.senderPhoto}
                 userAs="active"
                 heading={item.senderName}
-                textAs="hello..!"
+                textAs={item.lastMsg}
                 button="buttonAndText"
                 contentText={item.date}
                 buttonOneText="Block"
@@ -121,7 +121,7 @@ const Friends = () => {
                 photoURL={item.receiverPhoto}
                 userAs="active"
                 heading={item.receiverName}
-                textAs="hi..!"
+                textAs={item.lastMsg}
                 button="buttonAndText"
                 contentText={item.date}
                 buttonOneText="Block"

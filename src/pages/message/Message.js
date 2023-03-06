@@ -131,7 +131,15 @@ const Message = () => {
         }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
       })
         .then(() => {
-          setSms("");
+          update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
+            lastMsg: sms,
+          })
+            .then(() => {
+              setSms("");
+            })
+            .catch((error) => {
+              console.log(error.code);
+            });
         })
         .catch((error) => {
           console.log(error.code);
@@ -280,7 +288,15 @@ const Message = () => {
           }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
         })
           .then(() => {
-            setSms("");
+            update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
+              lastMsg: sms,
+            })
+              .then(() => {
+                setSms("");
+              })
+              .catch((error) => {
+                console.log(error.code);
+              });
           })
           .catch((error) => {
             console.log(error.code);
@@ -330,11 +346,19 @@ const Message = () => {
               }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
             })
               .then(() => {
-                setSms("");
-                setSelectedPhotoURL("");
-                setShow(false);
-                setLoading(false);
-                toast(`image sent to ${clickedName}`);
+                update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
+                  lastMsg: "Sent an Image",
+                })
+                  .then(() => {
+                    setSms("");
+                    setSelectedPhotoURL("");
+                    setShow(false);
+                    setLoading(false);
+                    toast(`image sent to ${clickedName}`);
+                  })
+                  .catch((error) => {
+                    console.log(error.code);
+                  });
               })
               .catch((error) => {
                 console.log(error.code);
@@ -385,12 +409,20 @@ const Message = () => {
               }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
             })
               .then(() => {
-                setCameraOpen(false);
-                setSms("");
-                setDataUri("");
-                setShow(false);
-                setLoading(false);
-                toast(`image sent to ${clickedName}`);
+                update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
+                  lastMsg: "Sent an Image",
+                })
+                  .then(() => {
+                    setCameraOpen(false);
+                    setSms("");
+                    setDataUri("");
+                    setShow(false);
+                    setLoading(false);
+                    toast(`image sent to ${clickedName}`);
+                  })
+                  .catch((error) => {
+                    console.log(error.code);
+                  });
               })
               .catch((error) => {
                 console.log(error.code);
@@ -452,14 +484,22 @@ const Message = () => {
               }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
             })
               .then(() => {
-                setSms("");
-                setSelectedPhotoURL("");
-                setDataUri("");
-                setAudio("");
-                setAudioURL("");
-                setShow(false);
-                setLoading(false);
-                toast(`audio sent to ${clickedName}`);
+                update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
+                  lastMsg: "Sent an Audio",
+                })
+                  .then(() => {
+                    setSms("");
+                    setSelectedPhotoURL("");
+                    setDataUri("");
+                    setAudio("");
+                    setAudioURL("");
+                    setShow(false);
+                    setLoading(false);
+                    toast(`audio sent to ${clickedName}`);
+                  })
+                  .catch((error) => {
+                    console.log(error.code);
+                  });
               })
               .catch((error) => {
                 console.log(error.code);
