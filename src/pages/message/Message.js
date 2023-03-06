@@ -53,6 +53,7 @@ import { v4 as uuidv4 } from "uuid";
 import Camera from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
+import EmojiPicker from "emoji-picker-react";
 
 const style = {
   position: "absolute",
@@ -101,6 +102,7 @@ const Message = () => {
   let [loadImage, setLoadImage] = useState("");
   let [audio, setAudio] = useState("");
   let [audioURL, setAudioURL] = useState("");
+  let [showEmoji, setShowEmoji] = useState(false);
 
   let handleSubmit = () => {
     let smsRegex = /^\s+$/;
@@ -470,6 +472,11 @@ const Message = () => {
     });
   };
   // Audio functionality end
+
+  let handleSendEmoji = (e) => {
+    setSms(sms + e.emoji);
+    setShowEmoji(false);
+  };
 
   return (
     <>
@@ -1144,9 +1151,15 @@ const Message = () => {
                       aria-label="upload picture"
                       component="label"
                       title="emoji"
+                      onClick={() => setShowEmoji(!showEmoji)}
                     >
                       <BsEmojiSmile className="emoji__icon" />
                     </IconButton>
+                    {showEmoji && (
+                      <EmojiPicker
+                        onEmojiClick={(emoji) => handleSendEmoji(emoji)}
+                      />
+                    )}
 
                     {/* <IconButton
                       color="primary"
