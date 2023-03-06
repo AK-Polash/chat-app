@@ -195,7 +195,15 @@ const Message = () => {
         }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
       })
         .then(() => {
-          toast("Message has been removed");
+          update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
+            lastMsg: "Removed Message",
+          })
+            .then(() => {
+              toast("Message has been removed");
+            })
+            .catch((error) => {
+              console.log(error.code);
+            });
         })
         .catch((error) => {
           console.log(error.code);
@@ -216,7 +224,15 @@ const Message = () => {
           );
           deleteObject(photoMsgRef)
             .then(() => {
-              toast("Image has been removed");
+              update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
+                lastMsg: "Removed Image",
+              })
+                .then(() => {
+                  toast("Image has been removed");
+                })
+                .catch((error) => {
+                  console.log(error.code);
+                });
             })
             .catch((error) => {
               console.log(error.code);
@@ -241,7 +257,15 @@ const Message = () => {
           );
           deleteObject(audioMsgRef)
             .then(() => {
-              toast("Audio has been removed");
+              update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
+                lastMsg: "Removed Audio",
+              })
+                .then(() => {
+                  toast("Audio has been removed");
+                })
+                .catch((error) => {
+                  console.log(error.code);
+                });
             })
             .catch((error) => {
               console.log(error.code);
@@ -581,18 +605,24 @@ const Message = () => {
                 userAs="active"
                 title={
                   data.activeChat.focusedItem
-                    ? data.userData.userInfo.uid ===
-                      data.activeChat.focusedItem.senderId
-                      ? data.activeChat.focusedItem.receiverName
-                      : data.activeChat.focusedItem.senderName
+                    ? data.activeChat.focusedItem.status === "single"
+                      ? data.userData.userInfo.uid ===
+                        data.activeChat.focusedItem.senderId
+                        ? data.activeChat.focusedItem.receiverName
+                        : data.activeChat.focusedItem.senderName
+                      : data.activeChat.focusedItem.groupName
                     : "Default Name"
                 }
                 photoURL={
                   data.activeChat.focusedItem
-                    ? data.userData.userInfo.uid ===
-                      data.activeChat.focusedItem.senderId
-                      ? data.activeChat.focusedItem.receiverPhoto
-                      : data.activeChat.focusedItem.senderPhoto
+                    ? data.activeChat.focusedItem.status === "single"
+                      ? data.userData.userInfo.uid ===
+                        data.activeChat.focusedItem.senderId
+                        ? data.activeChat.focusedItem.receiverPhoto
+                        : data.activeChat.focusedItem.senderPhoto
+                      : data.activeChat.focusedItem.groupPhotoURL
+                      ? data.activeChat.focusedItem.groupPhotoURL
+                      : data.activeChat.focusedItem.groupPhoto
                     : ""
                 }
               />

@@ -3,7 +3,14 @@ import ContentHeading from "./ContentHeading";
 import Lists from "./Lists";
 import ListItem from "./ListItem";
 import { Alert, TextField } from "@mui/material/";
-import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  push,
+  update,
+} from "firebase/database";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -42,28 +49,42 @@ const ForwardMessage = ({ message }) => {
           data.userData.userInfo.uid === msgItem.senderId
             ? msgItem.receiverName
             : msgItem.senderName,
-
         whoReceiveId:
           data.userData.userInfo.uid === msgItem.senderId
             ? msgItem.receiverId
             : msgItem.senderId,
-
         ...(message.msg && { msg: message.msg }),
         ...(message.img && { img: message.img, imgRef: message.imgRef }),
-        ...(message.audio && { audio: message.audio, audioRef: message.audioRef }),
-
+        ...(message.audio && {
+          audio: message.audio,
+          audioRef: message.audioRef,
+        }),
         date: `${new Date().getFullYear()}-${
           new Date().getMonth() + 1
         }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
       }).then(() => {
-        setButtonChange(msgItem.senderId + msgItem.receiverId);
-        toast(
-          `Forwarded to ${
-            data.userData.userInfo.uid === msgItem.senderId
-              ? msgItem.receiverName
-              : msgItem.senderName
-          }`
-        );
+        update(ref(db, "friends/" + msgItem.id), {
+          lastMsg: message.msg
+            ? message.msg
+            : message.img
+            ? "Sent an Image"
+            : message.audio
+            ? "Sent an Audio"
+            : "",
+        })
+          .then(() => {
+            setButtonChange(msgItem.senderId + msgItem.receiverId);
+            toast(
+              `Forwarded to ${
+                data.userData.userInfo.uid === msgItem.senderId
+                  ? msgItem.receiverName
+                  : msgItem.senderName
+              }`
+            );
+          })
+          .catch((error) => {
+            console.log(error.code);
+          });
       });
     }
   };
@@ -118,7 +139,7 @@ const ForwardMessage = ({ message }) => {
                     photoURL={item.senderPhoto}
                     userAs="active"
                     heading={item.senderName}
-                    textAs="hello..!"
+                    textAs={item.lastMsg}
                     button="afterClickButton"
                     buttonText="Sent"
                     loader={loader}
@@ -130,7 +151,7 @@ const ForwardMessage = ({ message }) => {
                     photoURL={item.senderPhoto}
                     userAs="active"
                     heading={item.senderName}
-                    textAs="hello..!"
+                    textAs={item.lastMsg}
                     button="button"
                     buttonText="Send"
                     handleClick={() => handleSendMsg(item)}
@@ -147,7 +168,7 @@ const ForwardMessage = ({ message }) => {
                     photoURL={item.receiverPhoto}
                     userAs="active"
                     heading={item.receiverName}
-                    textAs="hi..!"
+                    textAs={item.lastMsg}
                     button="afterClickButton"
                     buttonText="Sent"
                     loader={loader}
@@ -159,7 +180,7 @@ const ForwardMessage = ({ message }) => {
                     photoURL={item.receiverPhoto}
                     userAs="active"
                     heading={item.receiverName}
-                    textAs="hi..!"
+                    textAs={item.lastMsg}
                     button="button"
                     buttonText="Send"
                     handleClick={() => handleSendMsg(item)}
@@ -180,7 +201,7 @@ const ForwardMessage = ({ message }) => {
                     photoURL={item.senderPhoto}
                     userAs="active"
                     heading={item.senderName}
-                    textAs="hello..!"
+                    textAs={item.lastMsg}
                     button="afterClickButton"
                     buttonText="Sent"
                     loader={loader}
@@ -192,7 +213,7 @@ const ForwardMessage = ({ message }) => {
                     photoURL={item.senderPhoto}
                     userAs="active"
                     heading={item.senderName}
-                    textAs="hello..!"
+                    textAs={item.lastMsg}
                     button="button"
                     buttonText="Send"
                     handleClick={() => handleSendMsg(item)}
@@ -209,7 +230,7 @@ const ForwardMessage = ({ message }) => {
                     photoURL={item.receiverPhoto}
                     userAs="active"
                     heading={item.receiverName}
-                    textAs="hi..!"
+                    textAs={item.lastMsg}
                     button="afterClickButton"
                     buttonText="Sent"
                     loader={loader}
@@ -221,7 +242,7 @@ const ForwardMessage = ({ message }) => {
                     photoURL={item.receiverPhoto}
                     userAs="active"
                     heading={item.receiverName}
-                    textAs="hi..!"
+                    textAs={item.lastMsg}
                     button="button"
                     buttonText="Send"
                     handleClick={() => handleSendMsg(item)}

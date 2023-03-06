@@ -11,7 +11,6 @@ import {
   Typography,
   Backdrop,
 } from "@mui/material/";
-
 import {
   getDatabase,
   set,
@@ -21,7 +20,8 @@ import {
   update,
   remove,
 } from "firebase/database";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { activeChatUser } from "../slices/activeChatSlice";
 import { toast } from "react-toastify";
 
 const style = {
@@ -39,6 +39,7 @@ const style = {
 const MyGroups = () => {
   let db = getDatabase();
   let data = useSelector((state) => state);
+  let dispatch = useDispatch();
   let [groups, setGroups] = useState([]);
   let [groupRequest, setGroupRequest] = useState([]);
   let [groupMembers, setGroupMembers] = useState([]);
@@ -206,6 +207,10 @@ const MyGroups = () => {
     setMemberList(arr);
   };
 
+  let handleChatFocus = (focusItem) => {
+    dispatch(activeChatUser({ ...focusItem, status: "group" }));
+  };
+
   return (
     <section className="section__main">
       <ContentHeading heading="My Groups" />
@@ -229,6 +234,7 @@ const MyGroups = () => {
                 buttonThreeOnClick={() => handleGroupDelete(item)}
                 userAs="active"
                 loader={loader}
+                handleChatClick={() => handleChatFocus(item)}
               />
             ))}
 
@@ -246,6 +252,7 @@ const MyGroups = () => {
                 buttonTwoOnclick={() => handleLeaveGroup(item)}
                 userAs="active"
                 loader={loader}
+                handleChatClick={() => handleChatFocus(item)}
               />
             ))}
           </>
