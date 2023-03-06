@@ -1186,6 +1186,11 @@ const Message = () => {
                   )}
 
                   <div className="media__sms">
+                    {showEmoji && (
+                      <EmojiPicker
+                        onEmojiClick={(emoji) => handleSendEmoji(emoji)}
+                      />
+                    )}
                     <IconButton
                       color="primary"
                       aria-label="upload picture"
@@ -1195,11 +1200,11 @@ const Message = () => {
                     >
                       <BsEmojiSmile className="emoji__icon" />
                     </IconButton>
-                    {showEmoji && (
+                    {/* {showEmoji && (
                       <EmojiPicker
                         onEmojiClick={(emoji) => handleSendEmoji(emoji)}
                       />
-                    )}
+                    )} */}
 
                     {/* <IconButton
                       color="primary"
