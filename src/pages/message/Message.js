@@ -96,13 +96,20 @@ const Message = () => {
 
   let [msgList, setMsgList] = useState([]);
   let [sms, setSms] = useState("");
+  let [errorMsg, setErrorMsg] = useState("");
   let [selectedPhotoURL, setSelectedPhotoURL] = useState("");
   let [loadImage, setLoadImage] = useState("");
   let [audio, setAudio] = useState("");
   let [audioURL, setAudioURL] = useState("");
 
   let handleSubmit = () => {
-    if (data.activeChat.focusedItem.status === "single") {
+    let smsRegex = /^\s+$/;
+
+    if (sms.match(smsRegex)) {
+      setErrorMsg("Empty Message..!");
+    } else if (!sms) {
+      setErrorMsg("Message Required..!");
+    } else if (data.activeChat.focusedItem.status === "single") {
       set(push(ref(db, "singleMsg/")), {
         whoSendName: data.userData.userInfo.displayName,
         whoSendId: data.userData.userInfo.uid,
@@ -242,8 +249,14 @@ const Message = () => {
   };
 
   let handleKeyUp = (e) => {
+    let smsRegex = /^\s+$/;
+
     if (e.key === "Enter") {
-      if (data.activeChat.focusedItem.status === "single") {
+      if (sms.match(smsRegex)) {
+        setErrorMsg("Empty Message..!");
+      } else if (!sms) {
+        setErrorMsg("Message Required..!");
+      } else if (data.activeChat.focusedItem.status === "single") {
         set(push(ref(db, "singleMsg/")), {
           whoSendName: data.userData.userInfo.displayName,
           whoSendId: data.userData.userInfo.uid,
@@ -389,7 +402,6 @@ const Message = () => {
   };
 
   // Audio functionality start
-
   const recorderControls = useAudioRecorder();
   const addAudioElement = (blob) => {
     const url = URL.createObjectURL(blob);
@@ -1099,11 +1111,15 @@ const Message = () => {
                   ) : (
                     <>
                       <TextField
+                        error={errorMsg ? true : false}
                         placeholder="type message"
                         size="small"
                         multiline={false}
                         name="sms"
-                        onChange={(e) => setSms(e.target.value)}
+                        onChange={(e) => {
+                          setSms(e.target.value);
+                          setErrorMsg("");
+                        }}
                         value={sms}
                         onKeyUp={handleKeyUp}
                         sx={{
