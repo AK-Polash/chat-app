@@ -207,8 +207,12 @@ const MyGroups = () => {
     setMemberList(arr);
   };
 
-  let handleChatFocus = (focusItem) => {
-    dispatch(activeChatUser({ ...focusItem, status: "group" }));
+  let handleChatFocusAsAdmin = (focusItem) => {
+    dispatch(activeChatUser({ ...focusItem, status: "group", as: "admin" }));
+  };
+
+  let handleChatFocusAsMember = (focusItem) => {
+    dispatch(activeChatUser({ ...focusItem, status: "group", as: "member" }));
   };
 
   return (
@@ -234,7 +238,7 @@ const MyGroups = () => {
                 buttonThreeOnClick={() => handleGroupDelete(item)}
                 userAs="active"
                 loader={loader}
-                handleChatClick={() => handleChatFocus(item)}
+                handleChatClick={() => handleChatFocusAsAdmin(item)}
               />
             ))}
 
@@ -252,7 +256,7 @@ const MyGroups = () => {
                 buttonTwoOnclick={() => handleLeaveGroup(item)}
                 userAs="active"
                 loader={loader}
-                handleChatClick={() => handleChatFocus(item)}
+                handleChatClick={() => handleChatFocusAsMember(item)}
               />
             ))}
           </>

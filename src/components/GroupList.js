@@ -35,6 +35,7 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { useSelector, useDispatch } from "react-redux";
 import { ColorRing } from "react-loader-spinner";
+import { v4 as uuidv4 } from "uuid";
 
 const style = {
   position: "absolute",
@@ -71,6 +72,7 @@ const GroupList = () => {
 
   // all variables:
   let db = getDatabase();
+  let uuid = uuidv4();
   let data = useSelector((state) => state);
   let [loader, setLoader] = useState(false);
   let [disable, setDisable] = useState(false);
@@ -135,10 +137,7 @@ const GroupList = () => {
         });
 
         const storage = getStorage();
-        const storageRef = ref(
-          storage,
-          `group-picture/${data.userData.userInfo.uid}`
-        );
+        const storageRef = ref(storage, `group-picture/${uuid}`);
 
         const message4 = cropper.getCroppedCanvas().toDataURL();
         uploadString(storageRef, message4, "data_url").then((snapshot) => {
@@ -149,9 +148,9 @@ const GroupList = () => {
               groupTag: groupFormData.groupTag,
               adminId: data.userData.userInfo.uid,
               adminName: data.userData.userInfo.displayName,
-              // date: `${new Date().getDate()} - ${
-              //   new Date().getMonth() + 1
-              // } - ${new Date().getFullYear()} `,
+              adminPhoto: data.userData.userInfo.photoURL
+                ? data.userData.userInfo.photoURL
+                : "missing__admin__photoURL",
             })
               .then(() => {
                 setOpen(false);
