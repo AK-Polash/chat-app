@@ -246,97 +246,107 @@ const Message = () => {
 
   let handleRemoveMsg = () => {
     setAnchorEl(null);
-    let { id, ...rest } = selectItem;
 
-    if (selectItem.msg) {
-      update(ref(db, "singleMsg/" + id), {
-        ...rest,
-        msg: "removed",
-        date: `${new Date().getFullYear()}-${
-          new Date().getMonth() + 1
-        }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
-      })
-        .then(() => {
-          update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
-            lastMsg: "Removed Message",
+    if (data.activeChat.focusedItem.status === "single") {
+      let { id, ...rest } = selectItem;
+
+      if (selectItem.msg) {
+        update(ref(db, "singleMsg/" + id), {
+          ...rest,
+          msg: "removed",
+          removedById: data.userData.userInfo.uid,
+          date: `${new Date().getFullYear()}-${
+            new Date().getMonth() + 1
+          }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
+        })
+          .then(() => {
+            update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
+              lastMsg: "Removed Message",
+            })
+              .then(() => {
+                toast("Message has been removed");
+              })
+              .catch((error) => {
+                console.log(error.code);
+              });
           })
-            .then(() => {
-              toast("Message has been removed");
-            })
-            .catch((error) => {
-              console.log(error.code);
-            });
+          .catch((error) => {
+            console.log(error.code);
+          });
+      } else if (selectItem.img) {
+        update(ref(db, "singleMsg/" + id), {
+          ...rest,
+          img: "removed",
+          imgRef: "deleted",
+          removedById: data.userData.userInfo.uid,
+          date: `${new Date().getFullYear()}-${
+            new Date().getMonth() + 1
+          }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
         })
-        .catch((error) => {
-          console.log(error.code);
-        });
-    } else if (selectItem.img) {
-      update(ref(db, "singleMsg/" + id), {
-        ...rest,
-        img: "removed",
-        imgRef: "deleted",
-        date: `${new Date().getFullYear()}-${
-          new Date().getMonth() + 1
-        }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
-      })
-        .then(() => {
-          const photoMsgRef = storeRef(
-            storage,
-            "photoMessage/" + selectItem.imgRef
-          );
-          deleteObject(photoMsgRef)
-            .then(() => {
-              update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
-                lastMsg: "Removed Image",
-              })
-                .then(() => {
-                  toast("Image has been removed");
+          .then(() => {
+            const photoMsgRef = storeRef(
+              storage,
+              "photoMessage/" + selectItem.imgRef
+            );
+            deleteObject(photoMsgRef)
+              .then(() => {
+                update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
+                  lastMsg: "Removed Image",
                 })
-                .catch((error) => {
-                  console.log(error.code);
-                });
-            })
-            .catch((error) => {
-              console.log(error.code);
-            });
-        })
-        .catch((error) => {
-          console.log(error.code);
-        });
-    } else if (selectItem.audio) {
-      update(ref(db, "singleMsg/" + id), {
-        ...rest,
-        audio: "removed",
-        audioRef: "deleted",
-        date: `${new Date().getFullYear()}-${
-          new Date().getMonth() + 1
-        }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
-      })
-        .then(() => {
-          const audioMsgRef = storeRef(
-            storage,
-            "audioMessage/" + selectItem.audioRef
-          );
-          deleteObject(audioMsgRef)
-            .then(() => {
-              update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
-                lastMsg: "Removed Audio",
+                  .then(() => {
+                    toast("Image has been removed");
+                  })
+                  .catch((error) => {
+                    console.log(error.code);
+                  });
               })
-                .then(() => {
-                  toast("Audio has been removed");
-                })
-                .catch((error) => {
-                  console.log(error.code);
-                });
-            })
-            .catch((error) => {
-              console.log(error.code);
-            });
+              .catch((error) => {
+                console.log(error.code);
+              });
+          })
+          .catch((error) => {
+            console.log(error.code);
+          });
+      } else if (selectItem.audio) {
+        update(ref(db, "singleMsg/" + id), {
+          ...rest,
+          audio: "removed",
+          audioRef: "deleted",
+          removedById: data.userData.userInfo.uid,
+          date: `${new Date().getFullYear()}-${
+            new Date().getMonth() + 1
+          }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
         })
-        .catch((error) => {
-          console.log(error.code);
-        });
+          .then(() => {
+            const audioMsgRef = storeRef(
+              storage,
+              "audioMessage/" + selectItem.audioRef
+            );
+            deleteObject(audioMsgRef)
+              .then(() => {
+                update(ref(db, "friends/" + data.activeChat.focusedItem.id), {
+                  lastMsg: "Removed Audio",
+                })
+                  .then(() => {
+                    toast("Audio has been removed");
+                  })
+                  .catch((error) => {
+                    console.log(error.code);
+                  });
+              })
+              .catch((error) => {
+                console.log(error.code);
+              });
+          })
+          .catch((error) => {
+            console.log(error.code);
+          });
+      }
+    } else if (data.activeChat.focusedItem.status === "group") {
+      console.log("group msg");
     }
+
+    console.log(selectItem);
   };
 
   let handleForwardMsg = () => {
@@ -979,7 +989,10 @@ const Message = () => {
                                 </>
                               ) : (
                                 <div className="chat remove__msg">
-                                  image has been removed
+                                  image removed by{" "}
+                                  {item.removedById === item.whoSendId
+                                    ? item.whoSendName
+                                    : item.whoReceiveName}
                                 </div>
                               )}
                             </div>
@@ -1039,7 +1052,10 @@ const Message = () => {
                                 </>
                               ) : (
                                 <div className="chat remove__msg">
-                                  audio has been removed
+                                  audio removed by{" "}
+                                  {item.removedById === item.whoSendId
+                                    ? item.whoSendName
+                                    : item.whoReceiveName}
                                 </div>
                               )}
                             </div>
@@ -1099,7 +1115,10 @@ const Message = () => {
                                 </>
                               ) : (
                                 <div className="chat remove__msg">
-                                  message has been removed
+                                  removed message by{" "}
+                                  {item.removedById === item.whoSendId
+                                    ? item.whoSendName
+                                    : item.whoReceiveName}
                                 </div>
                               )}
                             </div>
@@ -1166,7 +1185,10 @@ const Message = () => {
                               </>
                             ) : (
                               <div className="chat remove__msg">
-                                image has been removed
+                                image removed by{" "}
+                                {item.removedById === item.whoSendId
+                                  ? item.whoSendName
+                                  : item.whoReceiveName}
                               </div>
                             )}
                           </div>
@@ -1228,7 +1250,10 @@ const Message = () => {
                               </>
                             ) : (
                               <div className="chat remove__msg">
-                                audio has been removed
+                                audio removed by{" "}
+                                {item.removedById === item.whoSendId
+                                  ? item.whoSendName
+                                  : item.whoReceiveName}
                               </div>
                             )}
                           </div>
@@ -1287,7 +1312,10 @@ const Message = () => {
                               </>
                             ) : (
                               <div className="chat remove__msg">
-                                message has been removed
+                                removed message by{" "}
+                                {item.removedById === item.whoSendId
+                                  ? item.whoSendName
+                                  : item.whoReceiveName}
                               </div>
                             )}
                           </div>
