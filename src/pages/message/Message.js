@@ -708,12 +708,12 @@ const Message = () => {
   let handleSendAudio = () => {
     setLoading(true);
 
-    const storageRef = storeRef(storage, "audioMessage/" + uuid);
+    if (data.activeChat.focusedItem.status === "single") {
+      const storageRef = storeRef(storage, "audioMessage/" + uuid);
 
-    uploadBytes(storageRef, audioURL).then((snapshot) => {
-      getDownloadURL(storageRef)
-        .then((downloadURL) => {
-          if (data.activeChat.focusedItem.status === "single") {
+      uploadBytes(storageRef, audioURL).then((snapshot) => {
+        getDownloadURL(storageRef)
+          .then((downloadURL) => {
             set(push(ref(db, "singleMsg/")), {
               whoSendName: data.userData.userInfo.displayName,
               whoSendId: data.userData.userInfo.uid,
@@ -756,12 +756,76 @@ const Message = () => {
               .catch((error) => {
                 console.log(error.code);
               });
-          }
-        })
-        .catch((error) => {
-          console.log(error.code);
-        });
-    });
+          })
+          .catch((error) => {
+            console.log(error.code);
+          });
+      });
+    } else if (data.activeChat.focusedItem.status === "group") {
+      const storageRef = storeRef(storage, "groupAudioMessage/" + uuid);
+
+      uploadBytes(storageRef, audioURL).then((snapshot) => {
+        getDownloadURL(storageRef)
+          .then((downloadURL) => {
+            set(push(ref(db, "groupMsg/")), {
+              whoSendName: data.userData.userInfo.displayName,
+              whoSendId: data.userData.userInfo.uid,
+              whoSendPhoto: data.activeChat.focusedItem
+                ? data.activeChat.focusedItem.as === "member"
+                  ? data.activeChat.focusedItem.memberPhoto
+                    ? data.activeChat.focusedItem.memberPhoto
+                    : "memberPhoto__missing"
+                  : data.activeChat.focusedItem.adminPhoto ===
+                    "missing__admin__photoURL"
+                  ? "adminPhoto__missing"
+                  : data.activeChat.focusedItem.adminPhoto
+                : "",
+              whoReceiveName: data.activeChat.focusedItem
+                ? data.activeChat.focusedItem.groupName
+                : "",
+              whoReceiveId: data.activeChat.focusedItem
+                ? data.activeChat.focusedItem.groupId
+                  ? data.activeChat.focusedItem.groupId
+                  : data.activeChat.focusedItem.id
+                : "",
+              audio: downloadURL,
+              audioRef: uuid,
+              ...(data.activeChat.focusedItem &&
+                data.activeChat.focusedItem.as === "member" && {
+                  senderAs: "member",
+                }),
+              ...(data.activeChat.focusedItem &&
+                data.activeChat.focusedItem.as === "admin" && {
+                  senderAs: "admin",
+                }),
+              date: `${new Date().getFullYear()}-${
+                new Date().getMonth() + 1
+              }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
+            })
+              .then(() => {
+                setSms("");
+                setSelectedPhotoURL("");
+                setDataUri("");
+                setAudio("");
+                setAudioURL("");
+                setShow(false);
+                setLoading(false);
+                toast(
+                  `audio sent to ${
+                    data.activeChat.focusedItem &&
+                    data.activeChat.focusedItem.groupName
+                  }`
+                );
+              })
+              .catch((error) => {
+                console.log(error.code);
+              });
+          })
+          .catch((error) => {
+            console.log(error.code);
+          });
+      });
+    }
   };
   // Audio functionality end
 
@@ -1306,6 +1370,66 @@ const Message = () => {
                               {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
                             </div>
                           </div>
+                        ) : item.audio ? (
+                          <div className="sender sender__img__sms" key={index}>
+                            <div className="msg__wrapper sender__wrapper">
+                              {item.audio !== "removed" ? (
+                                <>
+                                  <div className="msg__action">
+                                    <BsFillReplyFill
+                                      className="reply__icon"
+                                      title="reply"
+                                    />
+                                    <div>
+                                      <IconButton
+                                        aria-label="more"
+                                        id="long-button"
+                                        aria-controls={
+                                          open ? "long-menu" : undefined
+                                        }
+                                        aria-expanded={
+                                          open ? "true" : undefined
+                                        }
+                                        aria-haspopup="true"
+                                        onClick={(e) => {
+                                          setAnchorEl(e.currentTarget);
+                                          setSelectItem(item);
+                                        }}
+                                        title="more"
+                                      >
+                                        <MoreVertIcon />
+                                      </IconButton>
+                                      <Menu
+                                        anchorEl={anchorEl}
+                                        open={open}
+                                        onClose={handleClose}
+                                      >
+                                        <MenuItem onClick={handleRemoveMsg}>
+                                          Remove
+                                        </MenuItem>
+                                        <MenuItem onClick={handleForwardMsg}>
+                                          Forward
+                                        </MenuItem>
+                                      </Menu>
+                                    </div>
+                                  </div>
+                                  <div className="sender__img__box">
+                                    <audio src={item.audio} controls />
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="chat remove__msg">
+                                  audio has been removed
+                                </div>
+                              )}
+                            </div>
+                            <div
+                              className="chat__moment  chat__moment__sender"
+                              ref={messagesEndRef}
+                            >
+                              {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
+                            </div>
+                          </div>
                         ) : (
                           <div className="sender" key={index}>
                             <div className="msg__wrapper">
@@ -1444,6 +1568,89 @@ const Message = () => {
                             ) : (
                               <div className="chat remove__msg">
                                 image has been removed
+                              </div>
+                            )}
+                          </div>
+
+                          <div
+                            className="chat__moment chat__moment__receiver"
+                            ref={messagesEndRef}
+                          >
+                            {moment(item.date, "YYYYMMDD hh:mm").fromNow()}
+                          </div>
+                        </div>
+                      ) : item.audio ? (
+                        <div
+                          className="receiver  receiver__img__sms"
+                          key={index}
+                        >
+                          <div className="msg__wrapper  receiver__wrapper">
+                            {item.audio !== "removed" ? (
+                              <>
+                                <div
+                                  className="group__receiver__img__box  self__center"
+                                  title={
+                                    item.whoSendName + ` (${item.senderAs})`
+                                  }
+                                >
+                                  {item.whoSendPhoto ===
+                                    "memberPhoto__missing" ||
+                                  item.whoSendPhoto ===
+                                    "adminPhoto__missing" ? (
+                                    <Avatar
+                                      sx={{ width: "100%", height: "100%" }}
+                                      src="/broken-image.jpg"
+                                    />
+                                  ) : (
+                                    <Image
+                                      className="group__receiver__img"
+                                      imageSource={item.whoSendPhoto}
+                                    />
+                                  )}
+                                </div>
+                                <div className="receiver__img__box">
+                                  <audio src={item.audio} controls />
+                                </div>
+                                <div className="msg__action">
+                                  <div>
+                                    <IconButton
+                                      aria-label="more"
+                                      id="long-button"
+                                      aria-controls={
+                                        open ? "long-menu" : undefined
+                                      }
+                                      aria-expanded={open ? "true" : undefined}
+                                      aria-haspopup="true"
+                                      onClick={(e) => {
+                                        setAnchorEl(e.currentTarget);
+                                        setSelectItem(item);
+                                      }}
+                                      title="more"
+                                    >
+                                      <MoreVertIcon />
+                                    </IconButton>
+                                    <Menu
+                                      anchorEl={anchorEl}
+                                      open={open}
+                                      onClose={handleClose}
+                                    >
+                                      <MenuItem onClick={handleRemoveMsg}>
+                                        Remove
+                                      </MenuItem>
+                                      <MenuItem onClick={handleForwardMsg}>
+                                        Forward
+                                      </MenuItem>
+                                    </Menu>
+                                  </div>
+                                  <BsFillReplyFill
+                                    className="reply__icon"
+                                    title="reply"
+                                  />
+                                </div>
+                              </>
+                            ) : (
+                              <div className="chat remove__msg">
+                                audio has been removed
                               </div>
                             )}
                           </div>
