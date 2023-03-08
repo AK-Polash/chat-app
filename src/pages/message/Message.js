@@ -343,10 +343,72 @@ const Message = () => {
           });
       }
     } else if (data.activeChat.focusedItem.status === "group") {
-      console.log("group msg");
+      if (selectItem.msg) {
+        update(ref(db, "groupMsg/" + selectItem.id), {
+          msg: "removed",
+          removedById: data.userData.userInfo.uid,
+          date: `${new Date().getFullYear()}-${
+            new Date().getMonth() + 1
+          }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
+        })
+          .then(() => {
+            toast("Message has been removed");
+          })
+          .catch((error) => {
+            console.log(error.code);
+          });
+      } else if (selectItem.img) {
+        update(ref(db, "groupMsg/" + selectItem.id), {
+          img: "removed",
+          imgRef: "deleted",
+          removedById: data.userData.userInfo.uid,
+          date: `${new Date().getFullYear()}-${
+            new Date().getMonth() + 1
+          }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
+        })
+          .then(() => {
+            const photoMsgRef = storeRef(
+              storage,
+              "photoMessage/" + selectItem.imgRef
+            );
+            deleteObject(photoMsgRef)
+              .then(() => {
+                toast("Image has been removed");
+              })
+              .catch((error) => {
+                console.log(error.code);
+              });
+          })
+          .catch((error) => {
+            console.log(error.code);
+          });
+      } else if (selectItem.audio) {
+        update(ref(db, "groupMsg/" + selectItem.id), {
+          audio: "removed",
+          audioRef: "deleted",
+          removedById: data.userData.userInfo.uid,
+          date: `${new Date().getFullYear()}-${
+            new Date().getMonth() + 1
+          }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
+        })
+          .then(() => {
+            const audioMsgRef = storeRef(
+              storage,
+              "audioMessage/" + selectItem.audioRef
+            );
+            deleteObject(audioMsgRef)
+              .then(() => {
+                toast("Audio has been removed");
+              })
+              .catch((error) => {
+                console.log(error.code);
+              });
+          })
+          .catch((error) => {
+            console.log(error.code);
+          });
+      }
     }
-
-    console.log(selectItem);
   };
 
   let handleForwardMsg = () => {
