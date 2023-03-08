@@ -238,6 +238,7 @@
   align-self: flex-end;
   cursor: pointer;
   margin-right: 5px;
+  flex-shrink: 0;
 }
 .group__receiver__img {
   width: 100%;
