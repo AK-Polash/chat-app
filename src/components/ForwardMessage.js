@@ -23,6 +23,8 @@ const ForwardMessage = ({ message }) => {
   let [isSent, setIsSent] = useState([]);
   let [buttonChange, setButtonChange] = useState([]);
   let [searchArr, setSearchArr] = useState([]);
+  let [attastGroup, setAttastGroup] = useState([]);
+  let [allMyGroup, setAllMyGroup] = useState([]);
   let [loader, setLoader] = useState(false);
 
   useEffect(() => {
@@ -72,6 +74,12 @@ const ForwardMessage = ({ message }) => {
       setGroupM(arr);
     });
   }, []);
+
+  useEffect(() => {
+    let grp = [...groups, ...groupM];
+
+    setAttastGroup(grp);
+  }, [groupM]);
 
   let handleSendMsg = (msgItem) => {
     if (data.activeChat.focusedItem.status === "single") {
@@ -173,22 +181,35 @@ const ForwardMessage = ({ message }) => {
       : data.activeChat.focusedItem.senderId;
 
   let handleSearch = (e) => {
-    let arr = [];
+    if (data.activeChat.focusedItem.status === "single") {
+      let arr = [];
 
-    friends.filter((item) => {
-      if (
-        data.userData.userInfo.uid === item.receiverId &&
-        item.senderName.toLowerCase().includes(e.target.value.toLowerCase())
-      ) {
-        arr.push(item);
-      } else if (
-        data.userData.userInfo.uid === item.senderId &&
-        item.receiverName.toLowerCase().includes(e.target.value.toLowerCase())
-      ) {
-        arr.push(item);
-      }
-    });
-    setSearchArr(arr);
+      friends.filter((item) => {
+        if (
+          data.userData.userInfo.uid === item.receiverId &&
+          item.senderName.toLowerCase().includes(e.target.value.toLowerCase())
+        ) {
+          arr.push(item);
+        } else if (
+          data.userData.userInfo.uid === item.senderId &&
+          item.receiverName.toLowerCase().includes(e.target.value.toLowerCase())
+        ) {
+          arr.push(item);
+        }
+      });
+      setSearchArr(arr);
+    } else if (data.activeChat.focusedItem.status === "group") {
+      let arr = [];
+
+      attastGroup.filter((item) => {
+        if (
+          item.groupName.toLowerCase().includes(e.target.value.toLowerCase())
+        ) {
+          arr.push(item);
+        }
+      });
+      setAllMyGroup(arr);
+    }
   };
 
   return (
@@ -340,68 +361,113 @@ const ForwardMessage = ({ message }) => {
           <Lists>
             {groups.length > 0 || groupM.length > 0 ? (
               <>
-                {groups.map(
-                  (item, index) =>
-                    data.activeChat.focusedItem.id !== item.id &&
-                    (isSent.includes(data.userData.userInfo.uid + item.id) ? (
-                      <ListItem
-                        key={index}
-                        imageAs="small"
-                        photoURL={item.groupPhotoURL}
-                        userAs="active"
-                        heading={item.groupName}
-                        textAs={item.adminName}
-                        button="afterClickButton"
-                        buttonText="Sent"
-                        loader={loader}
-                      />
-                    ) : (
-                      <ListItem
-                        key={index}
-                        imageAs="small"
-                        photoURL={item.groupPhotoURL}
-                        userAs="active"
-                        heading={item.groupName}
-                        textAs={item.adminName}
-                        button="button"
-                        buttonText="Send"
-                        handleClick={() => handleSendMsg(item)}
-                        loader={loader}
-                      />
-                    ))
-                )}
+                {allMyGroup.length > 0 ? (
+                  allMyGroup.map(
+                    (item, index) =>
+                      data.activeChat.focusedItem.id !== item.id &&
+                      (isSent.includes(data.userData.userInfo.uid + item.id) ? (
+                        <ListItem
+                          key={index}
+                          imageAs="small"
+                          photoURL={
+                            item.groupPhotoURL
+                              ? item.groupPhotoURL
+                              : item.groupPhoto
+                          }
+                          userAs="active"
+                          heading={item.groupName}
+                          textAs={item.adminName}
+                          button="afterClickButton"
+                          buttonText="Sent"
+                          loader={loader}
+                        />
+                      ) : (
+                        <ListItem
+                          key={index}
+                          imageAs="small"
+                          photoURL={
+                            item.groupPhotoURL
+                              ? item.groupPhotoURL
+                              : item.groupPhoto
+                          }
+                          userAs="active"
+                          heading={item.groupName}
+                          textAs={item.adminName}
+                          button="button"
+                          buttonText="Send"
+                          handleClick={() => handleSendMsg(item)}
+                          loader={loader}
+                        />
+                      ))
+                  )
+                ) : (
+                  <>
+                    {groups.map(
+                      (item, index) =>
+                        data.activeChat.focusedItem.id !== item.id &&
+                        (isSent.includes(
+                          data.userData.userInfo.uid + item.id
+                        ) ? (
+                          <ListItem
+                            key={index}
+                            imageAs="small"
+                            photoURL={item.groupPhotoURL}
+                            userAs="active"
+                            heading={item.groupName}
+                            textAs={item.adminName}
+                            button="afterClickButton"
+                            buttonText="Sent"
+                            loader={loader}
+                          />
+                        ) : (
+                          <ListItem
+                            key={index}
+                            imageAs="small"
+                            photoURL={item.groupPhotoURL}
+                            userAs="active"
+                            heading={item.groupName}
+                            textAs={item.adminName}
+                            button="button"
+                            buttonText="Send"
+                            handleClick={() => handleSendMsg(item)}
+                            loader={loader}
+                          />
+                        ))
+                    )}
 
-                {groupM.map(
-                  (item) =>
-                    data.activeChat.focusedItem.groupId !== item.groupId &&
-                    (isSent.includes(
-                      data.userData.userInfo.uid + item.groupId
-                    ) ? (
-                      <ListItem
-                        key={item.groupId}
-                        imageAs="small"
-                        photoURL={item.groupPhoto}
-                        userAs="active"
-                        heading={item.groupName}
-                        textAs={item.groupAdminName}
-                        button="afterClickButton"
-                        buttonText="Sent"
-                        loader={loader}
-                      />
-                    ) : (
-                      <ListItem
-                        key={item.groupId}
-                        imageAs="small"
-                        photoURL={item.groupPhoto}
-                        userAs="active"
-                        heading={item.groupName}
-                        textAs={item.groupAdminName}
-                        button="button"
-                        buttonText="Send"
-                        handleClick={() => handleSendMsg(item)}
-                        loader={loader}
-                      />
-                    ))
+                    {groupM.map(
+                      (item) =>
+                        data.activeChat.focusedItem.groupId !== item.groupId &&
+                        (isSent.includes(
+                          data.userData.userInfo.uid + item.groupId
+                        ) ? (
+                          <ListItem
+                            key={item.groupId}
+                            imageAs="small"
+                            photoURL={item.groupPhoto}
+                            userAs="active"
+                            heading={item.groupName}
+                            textAs={item.groupAdminName}
+                            button="afterClickButton"
+                            buttonText="Sent"
+                            loader={loader}
+                          />
+                        ) : (
+                          <ListItem
+                            key={item.groupId}
+                            imageAs="small"
+                            photoURL={item.groupPhoto}
+                            userAs="active"
+                            heading={item.groupName}
+                            textAs={item.groupAdminName}
+                            button="button"
+                            buttonText="Send"
+                            handleClick={() => handleSendMsg(item)}
+                            loader={loader}
+                          />
+                        ))
+                    )}
+                  </>
                 )}
               </>
             ) : (
