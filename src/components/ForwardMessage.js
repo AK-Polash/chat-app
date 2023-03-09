@@ -18,6 +18,9 @@ const ForwardMessage = ({ message }) => {
   const db = getDatabase();
   let data = useSelector((state) => state);
   let [friends, setFriends] = useState([]);
+  let [groups, setGroups] = useState([]);
+  let [groupM, setGroupM] = useState([]);
+  let [isSent, setIsSent] = useState([]);
   let [buttonChange, setButtonChange] = useState([]);
   let [searchArr, setSearchArr] = useState([]);
   let [loader, setLoader] = useState(false);
@@ -37,6 +40,36 @@ const ForwardMessage = ({ message }) => {
       });
 
       setFriends(friendsArr);
+    });
+  }, []);
+
+  useEffect(() => {
+    const groupRef = ref(db, "groups/");
+    onValue(groupRef, (snapshot) => {
+      let arr = [];
+
+      snapshot.forEach((item) => {
+        if (data.userData.userInfo.uid === item.val().adminId) {
+          arr.push({ ...item.val(), id: item.key });
+        }
+      });
+
+      setGroups(arr);
+    });
+  }, []);
+
+  useEffect(() => {
+    const groupMembersRef = ref(db, "groupMembers/");
+    onValue(groupMembersRef, (snapshot) => {
+      let arr = [];
+
+      snapshot.forEach((item) => {
+        if (data.userData.userInfo.uid === item.val().memberId) {
+          arr.push({ ...item.val(), id: item.key });
+        }
+      });
+
+      setGroupM(arr);
     });
   }, []);
 
@@ -86,6 +119,51 @@ const ForwardMessage = ({ message }) => {
             console.log(error.code);
           });
       });
+    } else if (data.activeChat.focusedItem.status === "group") {
+      let groupTypeId = msgItem.groupId ? msgItem.groupId : msgItem.id;
+
+      set(push(ref(db, "groupMsg/")), {
+        whoSendName: data.userData.userInfo.displayName,
+        whoSendId: data.userData.userInfo.uid,
+
+        ...(data.userData.userInfo.uid === msgItem.adminId && {
+          whoSendPhoto: data.userData.userInfo.photoURL
+            ? data.userData.userInfo.photoURL
+            : "adminPhoto__missing",
+        }),
+        ...(data.userData.userInfo.uid === msgItem.memberId && {
+          whoSendPhoto: data.userData.userInfo.photoURL
+            ? data.userData.userInfo.photoURL
+            : "memberPhoto__missing",
+        }),
+
+        whoReceiveName: msgItem.groupName,
+        whoReceiveId: groupTypeId,
+
+        ...(message.msg && { msg: message.msg }),
+        ...(message.img && { img: message.img, imgRef: message.imgRef }),
+        ...(message.audio && {
+          audio: message.audio,
+          audioRef: message.audioRef,
+        }),
+
+        ...(data.userData.userInfo.uid === msgItem.adminId && {
+          senderAs: "admin",
+        }),
+        ...(data.userData.userInfo.uid === msgItem.memberId && {
+          senderAs: "member",
+        }),
+        date: `${new Date().getFullYear()}-${
+          new Date().getMonth() + 1
+        }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()} `,
+      })
+        .then(() => {
+          setIsSent(data.userData.userInfo.uid + groupTypeId);
+          toast(`Forwarded to ${msgItem.groupName}`);
+        })
+        .catch((error) => {
+          console.log(error.code);
+        });
     }
   };
 
@@ -125,137 +203,219 @@ const ForwardMessage = ({ message }) => {
         />
       </div>
 
-      <Lists>
-        {searchArr.length > 0 ? (
-          searchArr.map((item, index) =>
-            data.userData.userInfo.uid === item.receiverId
-              ? id !== item.senderId &&
-                (buttonChange.includes(
-                  item.senderId + data.userData.userInfo.uid
-                ) ? (
-                  <ListItem
-                    key={index}
-                    imageAs="small"
-                    photoURL={item.senderPhoto}
-                    userAs="active"
-                    heading={item.senderName}
-                    textAs={item.lastMsg}
-                    button="afterClickButton"
-                    buttonText="Sent"
-                    loader={loader}
-                  />
-                ) : (
-                  <ListItem
-                    key={index}
-                    imageAs="small"
-                    photoURL={item.senderPhoto}
-                    userAs="active"
-                    heading={item.senderName}
-                    textAs={item.lastMsg}
-                    button="button"
-                    buttonText="Send"
-                    handleClick={() => handleSendMsg(item)}
-                    loader={loader}
-                  />
-                ))
-              : id !== item.receiverId &&
-                (buttonChange.includes(
-                  data.userData.userInfo.uid + item.receiverId
-                ) ? (
-                  <ListItem
-                    key={index}
-                    imageAs="small"
-                    photoURL={item.receiverPhoto}
-                    userAs="active"
-                    heading={item.receiverName}
-                    textAs={item.lastMsg}
-                    button="afterClickButton"
-                    buttonText="Sent"
-                    loader={loader}
-                  />
-                ) : (
-                  <ListItem
-                    key={index}
-                    imageAs="small"
-                    photoURL={item.receiverPhoto}
-                    userAs="active"
-                    heading={item.receiverName}
-                    textAs={item.lastMsg}
-                    button="button"
-                    buttonText="Send"
-                    handleClick={() => handleSendMsg(item)}
-                    loader={loader}
-                  />
-                ))
-          )
-        ) : friends.length > 0 ? (
-          friends.map((item, index) =>
-            data.userData.userInfo.uid === item.receiverId
-              ? id !== item.senderId &&
-                (buttonChange.includes(
-                  item.senderId + data.userData.userInfo.uid
-                ) ? (
-                  <ListItem
-                    key={index}
-                    imageAs="small"
-                    photoURL={item.senderPhoto}
-                    userAs="active"
-                    heading={item.senderName}
-                    textAs={item.lastMsg}
-                    button="afterClickButton"
-                    buttonText="Sent"
-                    loader={loader}
-                  />
-                ) : (
-                  <ListItem
-                    key={index}
-                    imageAs="small"
-                    photoURL={item.senderPhoto}
-                    userAs="active"
-                    heading={item.senderName}
-                    textAs={item.lastMsg}
-                    button="button"
-                    buttonText="Send"
-                    handleClick={() => handleSendMsg(item)}
-                    loader={loader}
-                  />
-                ))
-              : id !== item.receiverId &&
-                (buttonChange.includes(
-                  data.userData.userInfo.uid + item.receiverId
-                ) ? (
-                  <ListItem
-                    key={index}
-                    imageAs="small"
-                    photoURL={item.receiverPhoto}
-                    userAs="active"
-                    heading={item.receiverName}
-                    textAs={item.lastMsg}
-                    button="afterClickButton"
-                    buttonText="Sent"
-                    loader={loader}
-                  />
-                ) : (
-                  <ListItem
-                    key={index}
-                    imageAs="small"
-                    photoURL={item.receiverPhoto}
-                    userAs="active"
-                    heading={item.receiverName}
-                    textAs={item.lastMsg}
-                    button="button"
-                    buttonText="Send"
-                    handleClick={() => handleSendMsg(item)}
-                    loader={loader}
-                  />
-                ))
-          )
-        ) : (
-          <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
-            No Friends..!
-          </Alert>
-        )}
-      </Lists>
+      {data.activeChat.focusedItem.status === "single" ? (
+        <Lists>
+          {searchArr.length > 0 ? (
+            searchArr.map((item, index) =>
+              data.userData.userInfo.uid === item.receiverId
+                ? id !== item.senderId &&
+                  (buttonChange.includes(
+                    item.senderId + data.userData.userInfo.uid
+                  ) ? (
+                    <ListItem
+                      key={index}
+                      imageAs="small"
+                      photoURL={item.senderPhoto}
+                      userAs="active"
+                      heading={item.senderName}
+                      textAs={item.lastMsg}
+                      button="afterClickButton"
+                      buttonText="Sent"
+                      loader={loader}
+                    />
+                  ) : (
+                    <ListItem
+                      key={index}
+                      imageAs="small"
+                      photoURL={item.senderPhoto}
+                      userAs="active"
+                      heading={item.senderName}
+                      textAs={item.lastMsg}
+                      button="button"
+                      buttonText="Send"
+                      handleClick={() => handleSendMsg(item)}
+                      loader={loader}
+                    />
+                  ))
+                : id !== item.receiverId &&
+                  (buttonChange.includes(
+                    data.userData.userInfo.uid + item.receiverId
+                  ) ? (
+                    <ListItem
+                      key={index}
+                      imageAs="small"
+                      photoURL={item.receiverPhoto}
+                      userAs="active"
+                      heading={item.receiverName}
+                      textAs={item.lastMsg}
+                      button="afterClickButton"
+                      buttonText="Sent"
+                      loader={loader}
+                    />
+                  ) : (
+                    <ListItem
+                      key={index}
+                      imageAs="small"
+                      photoURL={item.receiverPhoto}
+                      userAs="active"
+                      heading={item.receiverName}
+                      textAs={item.lastMsg}
+                      button="button"
+                      buttonText="Send"
+                      handleClick={() => handleSendMsg(item)}
+                      loader={loader}
+                    />
+                  ))
+            )
+          ) : friends.length > 0 ? (
+            friends.map((item, index) =>
+              data.userData.userInfo.uid === item.receiverId
+                ? id !== item.senderId &&
+                  (buttonChange.includes(
+                    item.senderId + data.userData.userInfo.uid
+                  ) ? (
+                    <ListItem
+                      key={index}
+                      imageAs="small"
+                      photoURL={item.senderPhoto}
+                      userAs="active"
+                      heading={item.senderName}
+                      textAs={item.lastMsg}
+                      button="afterClickButton"
+                      buttonText="Sent"
+                      loader={loader}
+                    />
+                  ) : (
+                    <ListItem
+                      key={index}
+                      imageAs="small"
+                      photoURL={item.senderPhoto}
+                      userAs="active"
+                      heading={item.senderName}
+                      textAs={item.lastMsg}
+                      button="button"
+                      buttonText="Send"
+                      handleClick={() => handleSendMsg(item)}
+                      loader={loader}
+                    />
+                  ))
+                : id !== item.receiverId &&
+                  (buttonChange.includes(
+                    data.userData.userInfo.uid + item.receiverId
+                  ) ? (
+                    <ListItem
+                      key={index}
+                      imageAs="small"
+                      photoURL={item.receiverPhoto}
+                      userAs="active"
+                      heading={item.receiverName}
+                      textAs={item.lastMsg}
+                      button="afterClickButton"
+                      buttonText="Sent"
+                      loader={loader}
+                    />
+                  ) : (
+                    <ListItem
+                      key={index}
+                      imageAs="small"
+                      photoURL={item.receiverPhoto}
+                      userAs="active"
+                      heading={item.receiverName}
+                      textAs={item.lastMsg}
+                      button="button"
+                      buttonText="Send"
+                      handleClick={() => handleSendMsg(item)}
+                      loader={loader}
+                    />
+                  ))
+            )
+          ) : (
+            <Alert sx={{ marginTop: "20px" }} variant="filled" severity="info">
+              No Friends..!
+            </Alert>
+          )}
+        </Lists>
+      ) : (
+        <>
+          <Lists>
+            {groups.length > 0 || groupM.length > 0 ? (
+              <>
+                {groups.map(
+                  (item, index) =>
+                    data.activeChat.focusedItem.id !== item.id &&
+                    (isSent.includes(data.userData.userInfo.uid + item.id) ? (
+                      <ListItem
+                        key={index}
+                        imageAs="small"
+                        photoURL={item.groupPhotoURL}
+                        userAs="active"
+                        heading={item.groupName}
+                        textAs={item.adminName}
+                        button="afterClickButton"
+                        buttonText="Sent"
+                        loader={loader}
+                      />
+                    ) : (
+                      <ListItem
+                        key={index}
+                        imageAs="small"
+                        photoURL={item.groupPhotoURL}
+                        userAs="active"
+                        heading={item.groupName}
+                        textAs={item.adminName}
+                        button="button"
+                        buttonText="Send"
+                        handleClick={() => handleSendMsg(item)}
+                        loader={loader}
+                      />
+                    ))
+                )}
+
+                {groupM.map(
+                  (item) =>
+                    data.activeChat.focusedItem.groupId !== item.groupId &&
+                    (isSent.includes(
+                      data.userData.userInfo.uid + item.groupId
+                    ) ? (
+                      <ListItem
+                        key={item.groupId}
+                        imageAs="small"
+                        photoURL={item.groupPhoto}
+                        userAs="active"
+                        heading={item.groupName}
+                        textAs={item.groupAdminName}
+                        button="afterClickButton"
+                        buttonText="Sent"
+                        loader={loader}
+                      />
+                    ) : (
+                      <ListItem
+                        key={item.groupId}
+                        imageAs="small"
+                        photoURL={item.groupPhoto}
+                        userAs="active"
+                        heading={item.groupName}
+                        textAs={item.groupAdminName}
+                        button="button"
+                        buttonText="Send"
+                        handleClick={() => handleSendMsg(item)}
+                        loader={loader}
+                      />
+                    ))
+                )}
+              </>
+            ) : (
+              <Alert
+                sx={{ marginTop: "20px" }}
+                variant="filled"
+                severity="info"
+              >
+                Empty Group List..!
+              </Alert>
+            )}
+          </Lists>
+        </>
+      )}
     </section>
   );
 };
